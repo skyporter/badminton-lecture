@@ -21,7 +21,7 @@ Deployment: GitHub Pages at https://skyporter.github.io/badminton-lecture/. `.gi
 
 Court coordinates are in metres: origin top left, x from 0 to 6.10, y from 0 to 13.40. B is at the top (y < 6.70), A at the bottom (y > 6.70), net at y = 6.70. Singles tramlines are at x = 0.46 and x = 5.64. The UI never stores pixels: the cross, the preview and the map are in court coordinates, so they stay aligned after a resize or rotation.
 
-Both players are right-handed (`handedness: 'droitier'` is a parameter, only that value is implemented). A faces -y, so her forehand is at +x. B faces +y, so his forehand is at -x. Each player disc carries a small dark badge with the handedness letter (« D », `handednessBadge` in `courtView.ts`), at its top on the forehand side: right of A, left of B. The legend explains it (« D = droitier, G = gaucher »).
+Both players are right-handed (`handedness: 'droitier'` is a parameter, only that value is implemented). A faces -y, so her forehand is at +x. B faces +y, so his forehand is at -x. Each player carries a small HTML tag with the handedness letter (« D », `.handedness-tag` in `.trajectory-tags`, placed by `handednessTagPoint` in `courtView.ts`), at its top on the forehand side: right of A, left of B. It follows A to the impact point and B to its recovered position in the reveal. The legend explains it (« D = droitier, G = gaucher »).
 
 ## Colours and trajectory code
 

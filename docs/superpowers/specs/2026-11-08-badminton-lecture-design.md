@@ -48,7 +48,7 @@ Le pourquoi : on apprend à lire le jeu en devinant **avant** de voir la répon
 ### 4.1 Orientation et joueurs
 - Terrain vertical, vu de dessus. **A en bas** (il reçoit, c'est le point de vue de l'élève), **B en haut**.
 - A en bleu, B en rouge, chacun dans un rond avec sa lettre.
-- **Une pastille « D » (droitier) ou « G » (gaucher)** collée en haut du rond de chaque joueur, du côté de son coup droit : à droite de l'écran pour A, à gauche pour B. Elle remplace la raquette dessinée puis l'arc blanc, retirés. La légende l'explique. Seuls les droitiers sont gérés pour l'instant. *(décision de Vincent)*
+- **Une petite étiquette « D » (droitier) ou « G » (gaucher)**, au même design que les autres étiquettes du terrain (texte blanc en taille normale, petit fond sombre), en haut du rond de chaque joueur, du côté de son coup droit : à droite de l'écran pour A, à gauche pour B. Elle remplace la raquette dessinée puis l'arc blanc, retirés. La légende l'explique. Seuls les droitiers sont gérés pour l'instant. *(décision de Vincent)*
 
 ### 4.2 Étape 1 : la question
 Tout se passe sur le terrain, sans panneau à côté.

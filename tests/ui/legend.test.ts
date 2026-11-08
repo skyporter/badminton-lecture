@@ -88,8 +88,11 @@ describe('renderLegend', () => {
     expect(legendText(reachable)).not.toContain('au-delà de la portée de ton coup')
   })
 
-  it('explains the handedness badge', () => {
-    expect(legendText(questionState)).toContain('D = droitier, G = gaucher (côté coup droit)')
+  it('explains the handedness tag with the same small tag', () => {
+    const container = document.createElement('div')
+    renderLegend(container, questionState)
+    expect(container.textContent).toContain('D = droitier, G = gaucher (côté coup droit)')
+    expect(container.querySelector('.handedness-tag')!.textContent).toBe('D')
   })
 
   it('has no trajectory code block anymore', () => {

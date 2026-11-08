@@ -228,16 +228,30 @@ describe('players', () => {
     expect(root.querySelector('svg.court .forehand-arc')).toBeNull()
   })
 
-  it('puts a « D » badge on the forehand side of each right-handed player: right of A, left of B', () => {
+  it('puts a small « D » tag, like the other court tags, on the forehand side of each right-handed player: right of A, left of B', () => {
     const root = startedApp()
     const situation = generateSituation(SEED)
-    const [playerBGroup, playerAGroup] = [...root.querySelectorAll('svg.court > g')].pop()!.children
-    const badgeOf = (group: Element) => group.querySelector('.handedness-badge')!
-    expect(badgeOf(playerAGroup).textContent).toBe('D')
-    expect(badgeOf(playerBGroup).textContent).toBe('D')
-    expect(Number(badgeOf(playerAGroup).querySelector('circle')!.getAttribute('cx'))).toBeGreaterThan(situation.playerA.x)
-    expect(Number(badgeOf(playerBGroup).querySelector('circle')!.getAttribute('cx'))).toBeLessThan(situation.playerBHit.x)
+    const viewBox = root.querySelector<SVGSVGElement>('svg.court')!.viewBox.baseVal
+    const leftPercent = (x: number) => (100 * (x - viewBox.x)) / viewBox.width
+    const tagOf = (kind: string) => root.querySelector<HTMLElement>(`.trajectory-tags > .handedness-tag[data-kind="${kind}"]`)!
+    expect(tagOf('handedness-a').textContent).toBe('D')
+    expect(tagOf('handedness-b').textContent).toBe('D')
+    expect(parseFloat(tagOf('handedness-a').style.left)).toBeGreaterThan(leftPercent(situation.playerA.x))
+    expect(parseFloat(tagOf('handedness-b').style.left)).toBeLessThan(leftPercent(situation.playerBHit.x))
+    expect(root.querySelector('svg.court .handedness-badge')).toBeNull()
   })
+
+  it('follows A to its impact point and B to its recovered position in the reveal', () => {
+    const root = revealed(startedApp())
+    const situation = generateSituation(SEED)
+    const viewBox = root.querySelector<SVGSVGElement>('svg.court')!.viewBox.baseVal
+    const topPercent = (y: number) => (100 * (y - viewBox.y)) / viewBox.height
+    const tagOf = (kind: string) => root.querySelector<HTMLElement>(`.trajectory-tags > .handedness-tag[data-kind="${kind}"]`)!
+    expect(parseFloat(tagOf('handedness-a').style.top)).toBeLessThan(topPercent(situation.impact.y))
+    expect(parseFloat(tagOf('handedness-a').style.top)).toBeGreaterThan(topPercent(situation.impact.y - 0.6))
+    expect(parseFloat(tagOf('handedness-b').style.top)).toBeGreaterThan(topPercent(situation.playerBRecovered.y - 0.6))
+  })
+
 })
 
 describe('second choice wording', () => {
@@ -307,7 +321,7 @@ describe('unreachable choice', () => {
 
 describe('shot tags on the court', () => {
   function tags(root: HTMLElement): HTMLElement[] {
-    return [...root.querySelectorAll<HTMLElement>('.court-frame > .trajectory-tags > .trajectory-tag')]
+    return [...root.querySelectorAll<HTMLElement>('.court-frame > .trajectory-tags > .trajectory-tag')].filter((tag) => !tag.dataset.kind!.startsWith('handedness'))
   }
 
   function described(root: HTMLElement): Array<{text: string; kind: string}> {

@@ -382,9 +382,20 @@ body {
   white-space: nowrap;
 }
 
-.legend-badge {
-  width: 30px;
-  height: 28px;
+.handedness-tag {
+  display: inline-block;
+  height: 16px;
+  padding: 0 4px;
   border-radius: 4px;
-  background: #2f7d4f;
+  background: rgba(20, 22, 26, 0.6);
+  color: #fff;
+  font-size: 11px;
+  line-height: 16px;
+}
+
+.trajectory-tag.handedness-tag {
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 4px;
+  line-height: 16px;
 }
