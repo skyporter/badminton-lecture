@@ -360,8 +360,8 @@ describe('shot tags on the court', () => {
     const {bestZone, alternativeZone} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
     expect(described(root)).toEqual([
       {text: chosen, kind: 'return'},
-      {text: `Meilleur choix 1 · ${SHOTS[bestZone!.shot].label}`, kind: 'zone-1'},
-      ...(alternativeZone === null ? [] : [{text: `Meilleur choix 2 · ${SHOTS[alternativeZone.shot].label}`, kind: 'zone-2'}]),
+      {text: `Meilleur retour 1${SHOTS[bestZone!.shot].label}`, kind: 'zone-1'},
+      ...(alternativeZone === null ? [] : [{text: `Meilleur retour 2${SHOTS[alternativeZone.shot].label}`, kind: 'zone-2'}]),
     ])
   })
 })
@@ -415,6 +415,13 @@ describe('best return zones', () => {
     expect(Number(zoneOne.getAttribute('ry'))).toBeCloseTo(bestZone!.radiusY)
     expect(root.querySelectorAll('svg.court ellipse.zone')).toHaveLength(alternativeZone === null ? 1 : 2)
     expect(root.querySelector('canvas')).toBeNull()
+  })
+
+  it('writes the rank on the first line of a zone tag and the shot on the second', () => {
+    const root = revealed(startedApp())
+    const {bestZone} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
+    const lines = [...root.querySelector('.trajectory-tag[data-kind="zone-1"]')!.children].map((line) => line.textContent)
+    expect(lines).toEqual(['Meilleur retour 1', SHOTS[bestZone!.shot].label])
   })
 
   it('never puts a zone tag on top of the cross that marks the zone point', () => {

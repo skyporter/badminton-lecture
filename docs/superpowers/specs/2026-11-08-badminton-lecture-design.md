@@ -48,7 +48,7 @@ Le pourquoi : on apprend à lire le jeu en devinant **avant** de voir la répon
 ### 4.1 Orientation et joueurs
 - Terrain vertical, vu de dessus. **A en bas** (il reçoit, c'est le point de vue de l'élève), **B en haut**.
 - A en bleu, B en rouge, chacun dans un rond avec sa lettre.
-- **Une pastille ronde « D » (droitier) ou « G » (gaucher)**, de la couleur du joueur, collée au bord de son rond, en haut, du côté de son coup droit : à droite de l'écran pour A, à gauche pour B. Elle remplace la raquette dessinée puis l'arc blanc, retirés. Seuls les droitiers sont gérés pour l'instant. *(décision de Vincent)*
+- **Une pastille ronde « D » (droitier) ou « G » (gaucher)**, de la couleur du joueur, sans bordure, fondue dans le bord de son rond, en haut, du côté de son coup droit : à droite de l'écran pour A, à gauche pour B. Elle remplace la raquette dessinée puis l'arc blanc, retirés. Seuls les droitiers sont gérés pour l'instant. *(décision de Vincent)*
 
 ### 4.2 Étape 1 : la question
 Tout se passe sur le terrain, sans panneau à côté.
@@ -62,7 +62,7 @@ Tout se passe sur le terrain, sans panneau à côté.
 
 ### 4.3 Étape 2 : la révélation
 La révélation se fait sur le terrain.
-- **Plus de carte de couleurs** *(décision de Vincent)* : deux **ovales** sur le terrain de B, coupés aux limites du demi-terrain de simple. **Zone 1** (vert vif) autour du meilleur retour, **zone 2** (vert clair) autour du deuxième choix, c'est-à-dire le meilleur coup d'une autre famille. Chaque ovale est centré sur le point du retour et couvre les points à moins de 1,5 m où le même coup garde 90 % de sa valeur. Une étiquette « Meilleur choix 1 · <coup> » / « Meilleur choix 2 · <coup> » nomme le coup. La ligne du tiroir « Alternative » devient « Deuxième choix ».
+- **Plus de carte de couleurs** *(décision de Vincent)* : deux **ovales** sur le terrain de B, coupés aux limites du demi-terrain de simple. **Zone 1** (vert vif) autour du meilleur retour, **zone 2** (vert clair) autour du deuxième choix, c'est-à-dire le meilleur coup d'une autre famille. Chaque ovale est centré sur le point du retour et couvre les points à moins de 1,5 m où le même coup garde 90 % de sa valeur. Une étiquette « Meilleur retour 1 » / « Meilleur retour 2 », avec le nom du coup sur une deuxième ligne, nomme le coup. La ligne du tiroir « Alternative » devient « Deuxième choix ».
 - B affiché à **sa position replacée** (rond plein) au moment où A frappe, et à sa position de frappe en **rond pointillé**. A affiché à son **point de frappe**, et à sa position de départ en **rond pointillé**. Entre les deux positions de chaque joueur, de **légères traces de pas** (semelle et talon, alternées, dans le sens de la marche) montrent le déplacement. Pas de flèche. *(décision de Vincent)*
 - Retour de l'élève **en pointillé bleu** (couleur de A) avec un petit point bleu au point visé, avec le même style qu'à l'étape 1. *(décision de Vincent, il était d'abord jaune)*
 - Meilleur retour en **pointillé blanc**, comme tout retour de A.

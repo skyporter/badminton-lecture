@@ -302,15 +302,26 @@ body {
   white-space: nowrap;
 }
 
+.trajectory-tag[data-kind^="zone"] {
+  height: auto;
+  padding: 3px 8px;
+  line-height: 1.3;
+  text-align: center;
+}
+
+.tag-line {
+  display: block;
+}
+
 .trajectory-tag.handedness-tag {
   box-sizing: border-box;
   width: 18px;
   height: 18px;
   padding: 0;
-  border: 1.5px solid #2f7d4f;
+  border: none;
   border-radius: 50%;
   font-size: 10px;
   font-weight: bold;
-  line-height: 15px;
+  line-height: 18px;
   text-align: center;
 }

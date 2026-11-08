@@ -118,23 +118,23 @@ function bestReturn(from: Point, best: PairEvaluation): SVGElement[] {
   return [trajectory, pointMarker(best.point, BEST_RETURN_COLOR, 'best-point')]
 }
 
-type CourtTag = {point: Point; text: string; kind: 'shot-b' | 'return' | 'zone-1' | 'zone-2' | 'handedness-a' | 'handedness-b'}
+type CourtTag = {point: Point; lines: string[]; kind: 'shot-b' | 'return' | 'zone-1' | 'zone-2' | 'handedness-a' | 'handedness-b'}
 
 function trajectoryTag(from: Point, to: Point, shot: ShotId, kind: 'shot-b' | 'return'): CourtTag {
-  return {point: trajectoryMiddle(from, to, shot), text: SHOTS[shot].label, kind}
+  return {point: trajectoryMiddle(from, to, shot), lines: [SHOTS[shot].label], kind}
 }
 
 function zoneTag(zone: Zone, rank: 1 | 2): CourtTag {
   const belowCenter = zone.center.y + ZONE_TAG_OFFSET
   const point = {x: zone.center.x, y: belowCenter <= NET_Y - ZONE_TAG_NET_GAP ? belowCenter : zone.center.y - ZONE_TAG_OFFSET}
-  return {point, text: `Meilleur choix ${rank} · ${SHOTS[zone.shot].label}`, kind: rank === 1 ? 'zone-1' : 'zone-2'}
+  return {point, lines: [`Meilleur retour ${rank}`, SHOTS[zone.shot].label], kind: rank === 1 ? 'zone-1' : 'zone-2'}
 }
 
 function handednessTags(situation: Situation, playerA: Point, playerB: Point): CourtTag[] {
   const letter = HANDEDNESS_LETTERS[situation.handedness]
   return [
-    {point: handednessTagPoint(playerB, 'B'), text: letter, kind: 'handedness-b'},
-    {point: handednessTagPoint(playerA, 'A'), text: letter, kind: 'handedness-a'},
+    {point: handednessTagPoint(playerB, 'B'), lines: [letter], kind: 'handedness-b'},
+    {point: handednessTagPoint(playerA, 'A'), lines: [letter], kind: 'handedness-a'},
   ]
 }
 
@@ -198,7 +198,16 @@ function renderCourtTags(container: HTMLElement, state: QuizState, svg: SVGSVGEl
       element.style.background = PLAYER_B_COLOR
     }
     element.dataset.kind = tag.kind
-    element.textContent = tag.text
+    if (tag.lines.length === 1) {
+      element.textContent = tag.lines[0]
+    } else {
+      element.append(...tag.lines.map((line) => {
+        const lineElement = document.createElement('span')
+        lineElement.className = 'tag-line'
+        lineElement.textContent = line
+        return lineElement
+      }))
+    }
     const {left, top} = percentOfViewBox(tag.point, svg)
     element.style.left = left
     element.style.top = top
