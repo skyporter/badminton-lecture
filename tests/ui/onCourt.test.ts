@@ -180,10 +180,10 @@ describe('reveal drawer', () => {
     expect(drawer(root).classList.contains('expanded')).toBe(false)
   })
 
-  it('stacks the legend above the drawer', () => {
+  it('has no legend, neither box nor button', () => {
     const root = revealed(startedApp())
-    const stack = root.querySelector('.court-frame .bottom-stack')!
-    expect([...stack.children].map((child) => child.classList[0])).toEqual(['legend-overlay', 'reveal-drawer'])
+    expect(root.querySelector('.legend, .legend-toggle, .legend-overlay')).toBeNull()
+    expect(root.textContent).not.toContain('Légende')
   })
 })
 
@@ -328,7 +328,7 @@ describe('shot tags on the court', () => {
     return tags(root).map((tag) => ({text: tag.textContent!, kind: tag.dataset.kind!}))
   }
 
-  it('sits in the middle of the trajectory, as an html tag like the legend button', () => {
+  it('sits in the middle of the trajectory, as a small html tag', () => {
     const root = startedApp()
     const situation = generateSituation(SEED)
     const viewBox = root.querySelector<SVGSVGElement>('svg.court')!.viewBox.baseVal
@@ -357,8 +357,8 @@ describe('shot tags on the court', () => {
     const {bestZone, alternativeZone} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
     expect(described(root)).toEqual([
       {text: chosen, kind: 'return'},
-      {text: `1 · ${SHOTS[bestZone!.shot].label}`, kind: 'zone-1'},
-      ...(alternativeZone === null ? [] : [{text: `2 · ${SHOTS[alternativeZone.shot].label}`, kind: 'zone-2'}]),
+      {text: `Choix 1 · ${SHOTS[bestZone!.shot].label}`, kind: 'zone-1'},
+      ...(alternativeZone === null ? [] : [{text: `Choix 2 · ${SHOTS[alternativeZone.shot].label}`, kind: 'zone-2'}]),
     ])
   })
 })

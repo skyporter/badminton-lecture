@@ -48,7 +48,7 @@ Le pourquoi : on apprend à lire le jeu en devinant **avant** de voir la répon
 ### 4.1 Orientation et joueurs
 - Terrain vertical, vu de dessus. **A en bas** (il reçoit, c'est le point de vue de l'élève), **B en haut**.
 - A en bleu, B en rouge, chacun dans un rond avec sa lettre.
-- **Une petite pastille ronde « D » (droitier) ou « G » (gaucher)**, collée au bord du rond de chaque joueur, en haut, du côté de son coup droit : à droite de l'écran pour A, à gauche pour B. Elle remplace la raquette dessinée puis l'arc blanc, retirés. La légende l'explique. Seuls les droitiers sont gérés pour l'instant. *(décision de Vincent)*
+- **Une petite pastille ronde « D » (droitier) ou « G » (gaucher)**, collée au bord du rond de chaque joueur, en haut, du côté de son coup droit : à droite de l'écran pour A, à gauche pour B. Elle remplace la raquette dessinée puis l'arc blanc, retirés. Seuls les droitiers sont gérés pour l'instant. *(décision de Vincent)*
 
 ### 4.2 Étape 1 : la question
 Tout se passe sur le terrain, sans panneau à côté.
@@ -62,20 +62,19 @@ Tout se passe sur le terrain, sans panneau à côté.
 
 ### 4.3 Étape 2 : la révélation
 La révélation se fait sur le terrain.
-- **Plus de carte de couleurs** *(décision de Vincent)* : deux **ovales** sur le terrain de B, coupés aux limites du demi-terrain de simple. **Zone 1** (vert vif) autour du meilleur retour, **zone 2** (vert clair) autour du deuxième choix, c'est-à-dire le meilleur coup d'une autre famille. Chaque ovale est centré sur le point du retour et couvre les points à moins de 1,5 m où le même coup garde 90 % de sa valeur. Une étiquette « 1 · <coup> » / « 2 · <coup> » nomme le coup. La ligne du tiroir « Alternative » devient « Deuxième choix ».
-- B affiché à **sa position replacée** (rond plein) au moment où A frappe, et à sa position de frappe en **rond pointillé**. A affiché à son **point de frappe**, et à sa position de départ en **rond pointillé**. Entre les deux positions de chaque joueur, de **légères traces de pas** (semelle et talon, alternées, dans le sens de la marche) montrent le déplacement, sans entrée dans la légende. Pas de flèche. *(décision de Vincent)*
+- **Plus de carte de couleurs** *(décision de Vincent)* : deux **ovales** sur le terrain de B, coupés aux limites du demi-terrain de simple. **Zone 1** (vert vif) autour du meilleur retour, **zone 2** (vert clair) autour du deuxième choix, c'est-à-dire le meilleur coup d'une autre famille. Chaque ovale est centré sur le point du retour et couvre les points à moins de 1,5 m où le même coup garde 90 % de sa valeur. Une étiquette « Choix 1 · <coup> » / « Choix 2 · <coup> » nomme le coup. La ligne du tiroir « Alternative » devient « Deuxième choix ».
+- B affiché à **sa position replacée** (rond plein) au moment où A frappe, et à sa position de frappe en **rond pointillé**. A affiché à son **point de frappe**, et à sa position de départ en **rond pointillé**. Entre les deux positions de chaque joueur, de **légères traces de pas** (semelle et talon, alternées, dans le sens de la marche) montrent le déplacement. Pas de flèche. *(décision de Vincent)*
 - Retour de l'élève **en pointillé bleu** (couleur de A) avec un petit point bleu au point visé, avec le même style qu'à l'étape 1. *(décision de Vincent, il était d'abord jaune)*
 - Meilleur retour en **pointillé blanc**, comme tout retour de A.
 - Si le coup choisi ne peut pas atterrir à la profondeur du point, « Ton choix » commence par « Coup impossible jusque-là. » (la ligne repliée du tiroir garde seulement le score et le meilleur coup), le trajet bleu s'arrête au vrai point de chute (sur la même ligne, à la profondeur la plus proche que le coup peut atteindre) et la suite jusqu'au point est en pointillé rouge. *(décision de Vincent)*
 - Un **tiroir repliable** en bas du terrain, **déplié dès la validation** (décision de Vincent, il était d'abord replié) : une ligne « Score : NN / 100 — Meilleur : <coup> » avec un chevron. Déplié, il donne le détail : ton choix, score sur 100, meilleur retour (coup + zone), « Pourquoi » en **liste à puces** (une raison par ligne : position/statut, ce que fait B, la zone, le coup, la direction), et une ligne « Alternative : <coup et zone> » sans référence à une couleur.
 - Un changement de niveau après la révélation recalcule la révélation pour la même situation et garde l'état du tiroir.
 
-### 4.4 Légendes
-- Une **légende en surimpression** sur le terrain, qui décrit tout ce qui est dessiné et **nomme les coups de la situation affichée** (coup de B, ton retour, meilleur retour, zones 1 et 2) *(décision de Vincent)* (joueurs, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
+### 4.4 Étiquettes et explications
+- **Pas de légende** *(décision de Vincent, elle a été retirée)* : les étiquettes sur le terrain nomment chaque coup.
 - Chaque bouton de coup a une **infobulle** qui explique le coup, et le coup sélectionné est décrit sous les boutons (pour le mobile, sans survol). *(décision de Vincent)*
-- Sur le terrain, le **nom du coup** est écrit au milieu de chaque tracé, dans une petite étiquette au même design que le bouton « Légende » (fond sombre translucide, texte blanc). Le **meilleur retour** se termine par un **point blanc**, et l'étiquette de sa zone est décalée pour ne pas le couvrir. La consigne en bas à droite est un texte blanc simple, sans ombre. *(décision de Vincent)*
+- Sur le terrain, le **nom du coup** est écrit au milieu de chaque tracé, dans une petite étiquette (fond sombre translucide, texte blanc). Le **meilleur retour** se termine par un **point blanc**, et l'étiquette de sa zone est décalée pour ne pas le couvrir. La consigne en bas à droite est un texte blanc simple, sans ombre. *(décision de Vincent)*
 - Dans le tiroir, « Ton choix » (coup, zone, score et ses raisons) est dans un **encadré à contour blanc**, et « Meilleur retour » (coup, zone et ses raisons) dans un **encadré distinct** (fond légèrement éclairci, sans bordure, titre en vert vif). Il n'y a plus de section « Pourquoi » séparée. *(décision de Vincent)*
-- Un petit bouton « Légende », en bas à gauche, **affiche ou masque la légende**. Il se place au-dessus du tiroir quand celui-ci est là. Le terrain ne change jamais de taille, que la légende soit affichée ou masquée.
 
 ### 4.5 Tracés (vue de dessus)
 *(décision de Vincent : le code « le pointillé dit la vitesse » est abandonné)*
@@ -86,7 +85,6 @@ La révélation se fait sur le terrain.
 
 ### 4.6 Mobile et traits
 - Même écran que sur ordinateur : le terrain en pleine largeur, la barre du haut au-dessus, le bandeau, la fenêtre de choix et le tiroir par-dessus le terrain.
-- Légende masquée par défaut sur mobile, état mémorisé (par appareil).
 - Les **épaisseurs de trait et les longueurs de pointillé sont constantes en pixels**, quelle que soit la taille de la fenêtre ; seules les formes (ronds, point de chute, points visés) suivent la taille du terrain.
 - Chaque situation est **partageable** : l'adresse contient `?seed=&level=`, et la même adresse rechargée affiche la même situation. « Nouvelle situation » ajoute une entrée à l'historique du navigateur : précédent et suivant font revenir aux situations déjà vues, telles qu'elles étaient (avec la révélation si la réponse avait été validée). Le changement de niveau remplace l'entrée courante. *(décision de Vincent)*
 - Une fois la réponse validée, l'adresse contient aussi le choix (`&shot=…&x=…&y=…`, le point visé arrondi au centimètre) : recharger ou partager le lien réaffiche la révélation avec le même score. La validation ajoute une entrée à l'historique : « précédent » réaffiche la même situation sans réponse. *(décision de Vincent)*
@@ -179,7 +177,6 @@ Plus tard, une IA pourra reformuler la justification calculée par le moteur ou 
 - Le coup de B à la couleur de B, et les retours de A à la couleur de A.
 - Le retour qui part du point d'impact.
 - Le comportement tactile : glisser, relâcher, point déplaçable.
-- La légende masquée par défaut sur mobile, état mémorisé.
 - L'abandon de la vue de côté, remplacée par la courbe des tracés.
 - La page web statique (Vincent laisse le choix de la techno libre).
 - La carte composite et le score par couple (point, coup), voir §5.2 bis.
@@ -189,7 +186,7 @@ Plus tard, une IA pourra reformuler la justification calculée par le moteur ou 
 - Le bandeau dans une bande réservée au-dessus du terrain, pour que la ligne de fond de B et la zone « dehors » restent visibles. *(décision de Vincent)*
 - Le clic sur le demi-terrain de B place le point et ouvre la fenêtre de choix du coup, en trois groupes « Vers l'avant », « Vers le fond », « Rapides ». *(décision de Vincent)*
 - Le tiroir de révélation, déplié dès la validation. *(décision de Vincent)*
-- La légende en surimpression avec un petit bouton « Légende » en bas à gauche, au-dessus du tiroir, sans que le terrain change de taille. *(décision de Vincent)*
+- La légende, puis son retrait au profit des étiquettes sur le terrain. *(décision de Vincent)*
 - Des épaisseurs de trait et des pointillés constants en pixels. *(décision de Vincent)*
 - L'adresse partageable `?seed=&level=`, avec une entrée d'historique par nouvelle situation. *(décision de Vincent)*
 - La ligne « Alternative : » sans référence de couleur, et l'étiquette « bon retour » pour le vert clair de la carte. *(décision de Vincent)*

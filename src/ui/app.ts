@@ -10,7 +10,6 @@ import type {ShotId} from '../engine/shots'
 import type {Level, Point} from '../engine/types'
 import {BANNER_RESERVED_METRES, HANDEDNESS_LETTERS, SVG_NAMESPACE, handednessTagPoint, renderCourt, renderPlayers, renderShotB, svgElement} from './courtView'
 import {listenToCourt} from './input'
-import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
 import {renderBanner, renderControls, renderDrawer, renderShotPopover} from './panel'
 import {readSituationParams, situationSearch} from './situationUrl'
 import type {Choice} from './situationUrl'
@@ -42,7 +41,6 @@ const ZONE_TAG_NET_GAP = 0.35
 const ZONE_TAG_OFFSET = 0.45
 const POINT_MARKER_RADIUS = 0.12
 const DEFAULT_LEVEL: Level = 'intermediaire'
-const MOBILE_MEDIA_QUERY = '(max-width: 767px)'
 
 export function canValidate(state: QuizState): state is QuizState & {target: Point; shot: ShotId} {
   return state.result === null && state.target !== null && state.shot !== null
@@ -129,7 +127,7 @@ function trajectoryTag(from: Point, to: Point, shot: ShotId, kind: 'shot-b' | 'r
 function zoneTag(zone: Zone, rank: 1 | 2): CourtTag {
   const belowCenter = zone.center.y + ZONE_TAG_OFFSET
   const point = {x: zone.center.x, y: belowCenter <= NET_Y - ZONE_TAG_NET_GAP ? belowCenter : zone.center.y - ZONE_TAG_OFFSET}
-  return {point, text: `${rank} · ${SHOTS[zone.shot].label}`, kind: rank === 1 ? 'zone-1' : 'zone-2'}
+  return {point, text: `Choix ${rank} · ${SHOTS[zone.shot].label}`, kind: rank === 1 ? 'zone-1' : 'zone-2'}
 }
 
 function handednessTags(situation: Situation, playerA: Point, playerB: Point): CourtTag[] {
@@ -272,20 +270,11 @@ export function startApp(root: HTMLElement): void {
   const hint = document.createElement('div')
   hint.className = 'court-hint'
   hint.textContent = 'Clique sur le terrain de B pour répondre.'
-  const legend = document.createElement('div')
-  legend.className = 'legend'
-  const legendOverlay = document.createElement('div')
-  legendOverlay.className = 'legend-overlay'
-  const legendToggle = document.createElement('button')
-  legendToggle.className = 'button legend-toggle'
-  legendToggle.textContent = 'Légende'
-  legendToggle.addEventListener('click', () => toggleLegend())
-  legendOverlay.append(legend, legendToggle)
   const drawer = document.createElement('div')
   drawer.className = 'reveal-drawer'
   const bottomStack = document.createElement('div')
   bottomStack.className = 'bottom-stack'
-  bottomStack.append(legendOverlay, drawer)
+  bottomStack.append(drawer)
   courtFrame.append(svg, tagLayer, banner, hint, popover, bottomStack)
   const controlsBar = document.createElement('div')
   controlsBar.className = 'controls'
@@ -293,20 +282,6 @@ export function startApp(root: HTMLElement): void {
   layout.className = 'layout'
   layout.append(controlsBar, courtFrame)
   root.replaceChildren(layout)
-
-  let legendVisible = loadLegendVisible(window.matchMedia(MOBILE_MEDIA_QUERY).matches)
-
-  function renderLegendVisibility(): void {
-    legend.hidden = !legendVisible
-    legendToggle.classList.toggle('selected', legendVisible)
-    legendToggle.setAttribute('aria-pressed', String(legendVisible))
-  }
-
-  function toggleLegend(): void {
-    legendVisible = !legendVisible
-    saveLegendVisible(legendVisible)
-    renderLegendVisibility()
-  }
 
   function renderPreview(): void {
     if (preview === null || state.result !== null) {
@@ -355,7 +330,6 @@ export function startApp(root: HTMLElement): void {
 
   function renderChrome(): void {
     renderControls(controlsBar, state, dispatch)
-    renderLegend(legend, state)
     renderBanner(banner, state)
     hint.hidden = state.result !== null
     renderPopover()
@@ -395,7 +369,6 @@ export function startApp(root: HTMLElement): void {
     document.removeEventListener('keydown', closePopoverOnEscape)
     window.removeEventListener('popstate', showSituationOfAddressBar)
   }
-  renderLegendVisibility()
   renderBoard()
   renderChrome()
 }
