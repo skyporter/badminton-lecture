@@ -8,12 +8,12 @@ import type {Situation} from '../engine/generator'
 import {SHOTS} from '../engine/shots'
 import type {ShotId} from '../engine/shots'
 import type {Level, Point} from '../engine/types'
-import {BANNER_RESERVED_METRES, HANDEDNESS_LETTERS, SVG_NAMESPACE, handednessTagPoint, renderCourt, renderPlayers, renderShotB, svgElement} from './courtView'
+import {BANNER_RESERVED_METRES, SVG_NAMESPACE, renderCourt, renderPlayers, renderShotB, svgElement} from './courtView'
 import {listenToCourt} from './input'
 import {renderBanner, renderControls, renderDrawer, renderShotPopover} from './panel'
 import {readSituationParams, situationSearch} from './situationUrl'
 import type {Choice} from './situationUrl'
-import {BEST_RETURN_COLOR, PLAYER_A_COLOR, PLAYER_B_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, ZONE_BEST_COLOR, ZONE_OPACITY, ZONE_SECOND_COLOR, constantStroke, trajectoryMiddle, trajectoryPath} from './trajectory'
+import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, ZONE_BEST_COLOR, ZONE_OPACITY, ZONE_SECOND_COLOR, constantStroke, trajectoryMiddle, trajectoryPath} from './trajectory'
 
 export type QuizState = {
   situation: Situation
@@ -118,7 +118,7 @@ function bestReturn(from: Point, best: PairEvaluation): SVGElement[] {
   return [trajectory, pointMarker(best.point, BEST_RETURN_COLOR, 'best-point')]
 }
 
-type CourtTag = {point: Point; lines: string[]; kind: 'shot-b' | 'return' | 'zone-1' | 'zone-2' | 'handedness-a' | 'handedness-b'}
+type CourtTag = {point: Point; lines: string[]; kind: 'shot-b' | 'return' | 'zone-1' | 'zone-2'}
 
 function trajectoryTag(from: Point, to: Point, shot: ShotId, kind: 'shot-b' | 'return'): CourtTag {
   return {point: trajectoryMiddle(from, to, shot), lines: [SHOTS[shot].label], kind}
@@ -130,24 +130,7 @@ function zoneTag(zone: Zone, rank: 1 | 2): CourtTag {
   return {point, lines: [`Meilleur retour ${rank}`, SHOTS[zone.shot].label], kind: rank === 1 ? 'zone-1' : 'zone-2'}
 }
 
-function handednessTags(situation: Situation, playerA: Point, playerB: Point): CourtTag[] {
-  const letter = HANDEDNESS_LETTERS[situation.handedness]
-  return [
-    {point: handednessTagPoint(playerB, 'B'), lines: [letter], kind: 'handedness-b'},
-    {point: handednessTagPoint(playerA, 'A'), lines: [letter], kind: 'handedness-a'},
-  ]
-}
-
 function courtTags(state: QuizState): CourtTag[] {
-  const {situation, result} = state
-  if (result === null) {
-    return [...handednessTags(situation, situation.playerA, situation.playerBHit), ...shotTags(state)]
-  } else {
-    return [...handednessTags(situation, situation.impact, situation.playerBRecovered), ...shotTags(state)]
-  }
-}
-
-function shotTags(state: QuizState): CourtTag[] {
   const {situation, result} = state
   if (result === null) {
     const shotB = trajectoryTag(situation.playerBHit, situation.landing, situation.shotB, 'shot-b')
@@ -191,12 +174,7 @@ function percentOfViewBox(point: Point, svg: SVGSVGElement): {left: string; top:
 function renderCourtTags(container: HTMLElement, state: QuizState, svg: SVGSVGElement): void {
   container.replaceChildren(...courtTags(state).map((tag) => {
     const element = document.createElement('div')
-    element.className = tag.kind.startsWith('handedness') ? 'trajectory-tag handedness-tag' : 'trajectory-tag'
-    if (tag.kind === 'handedness-a') {
-      element.style.background = PLAYER_A_COLOR
-    } else if (tag.kind === 'handedness-b') {
-      element.style.background = PLAYER_B_COLOR
-    }
+    element.className = 'trajectory-tag'
     element.dataset.kind = tag.kind
     if (tag.lines.length === 1) {
       element.textContent = tag.lines[0]

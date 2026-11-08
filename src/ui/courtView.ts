@@ -26,9 +26,10 @@ const FOOTSTEP_HEEL_CENTER_Y = 0.11
 const FOOTSTEP_HEEL_RADIUS_X = 0.042
 const FOOTSTEP_HEEL_RADIUS_Y = 0.045
 const FOOTSTEP_OPACITY = 0.35
-const HANDEDNESS_TAG_OFFSET_X = 0.28
-const HANDEDNESS_TAG_OFFSET_Y = 0.28
-export const HANDEDNESS_LETTERS: Record<Handedness, string> = {droitier: 'D'}
+const BADGE_OFFSET = 0.28
+const BADGE_RADIUS = 0.22
+const BADGE_FONT_SIZE = 0.25
+const HANDEDNESS_LETTERS: Record<Handedness, string> = {droitier: 'D'}
 const OUT_ZONE_BELOW_BANNER = 0.4
 
 export function svgElement(name: string, attributes: Record<string, string | number>): SVGElement {
@@ -70,12 +71,24 @@ export function renderCourt(svg: SVGSVGElement): void {
   svg.replaceChildren(lines, net)
 }
 
-export function handednessTagPoint(position: Point, side: 'A' | 'B'): Point {
+function handednessBadge(position: Point, side: 'A' | 'B', handedness: Handedness): SVGElement {
   const direction = forehandIsPositiveX(side) ? 1 : -1
-  return {x: position.x + direction * HANDEDNESS_TAG_OFFSET_X, y: position.y - HANDEDNESS_TAG_OFFSET_Y}
+  const center = {x: position.x + direction * BADGE_OFFSET, y: position.y - BADGE_OFFSET}
+  const letter = svgElement('text', {
+    x: center.x,
+    y: center.y + BADGE_FONT_SIZE * 0.36,
+    'font-size': BADGE_FONT_SIZE,
+    'text-anchor': 'middle',
+    fill: '#fff',
+    'font-weight': 'bold',
+  })
+  letter.textContent = HANDEDNESS_LETTERS[handedness]
+  const badge = svgElement('g', {class: 'handedness-badge'})
+  badge.append(svgElement('circle', {cx: center.x, cy: center.y, r: BADGE_RADIUS, fill: side === 'A' ? PLAYER_A_COLOR : PLAYER_B_COLOR}), letter)
+  return badge
 }
 
-function playerDisc(position: Point, side: 'A' | 'B'): SVGElement {
+function playerDisc(position: Point, side: 'A' | 'B', handedness: Handedness): SVGElement {
   const group = svgElement('g', {})
   const text = svgElement('text', {
     x: position.x,
@@ -89,6 +102,7 @@ function playerDisc(position: Point, side: 'A' | 'B'): SVGElement {
   group.append(
     svgElement('circle', {cx: position.x, cy: position.y, r: PLAYER_RADIUS, fill: side === 'A' ? PLAYER_A_COLOR : PLAYER_B_COLOR}),
     text,
+    handednessBadge(position, side, handedness),
   )
   return group
 }
@@ -147,15 +161,15 @@ function footsteps(from: Point, to: Point): SVGElement[] {
 
 export function renderPlayers(layer: SVGGElement, situation: Situation, phase: 'question' | 'reveal'): void {
   if (phase === 'question') {
-    layer.replaceChildren(playerDisc(situation.playerBHit, 'B'), playerDisc(situation.playerA, 'A'))
+    layer.replaceChildren(playerDisc(situation.playerBHit, 'B', situation.handedness), playerDisc(situation.playerA, 'A', situation.handedness))
   } else {
     layer.replaceChildren(
       ...footsteps(situation.playerBHit, situation.playerBRecovered),
       ...footsteps(situation.playerA, situation.impact),
       playerGhost(situation.playerBHit, 'B'),
       playerGhost(situation.playerA, 'A'),
-      playerDisc(situation.playerBRecovered, 'B'),
-      playerDisc(situation.impact, 'A'),
+      playerDisc(situation.playerBRecovered, 'B', situation.handedness),
+      playerDisc(situation.impact, 'A', situation.handedness),
     )
   }
 }

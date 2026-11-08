@@ -228,32 +228,34 @@ describe('players', () => {
     expect(root.querySelector('svg.court .forehand-arc')).toBeNull()
   })
 
-  it('puts a small « D » tag, like the other court tags, on the forehand side of each right-handed player: right of A, left of B', () => {
+  it('puts a « D » badge in the player colour on the forehand side, drawn in the court so it scales with the player', () => {
     const root = startedApp()
     const situation = generateSituation(SEED)
-    const viewBox = root.querySelector<SVGSVGElement>('svg.court')!.viewBox.baseVal
-    const leftPercent = (x: number) => (100 * (x - viewBox.x)) / viewBox.width
-    const tagOf = (kind: string) => root.querySelector<HTMLElement>(`.trajectory-tags > .handedness-tag[data-kind="${kind}"]`)!
-    expect(tagOf('handedness-a').textContent).toBe('D')
-    expect(tagOf('handedness-b').textContent).toBe('D')
-    expect(parseFloat(tagOf('handedness-a').style.left)).toBeGreaterThan(leftPercent(situation.playerA.x))
-    expect(parseFloat(tagOf('handedness-b').style.left)).toBeLessThan(leftPercent(situation.playerBHit.x))
-    expect(root.querySelector('svg.court .handedness-badge')).toBeNull()
-    const hexToRgb = (hex: string) => `rgb(${[1, 3, 5].map((offset) => parseInt(hex.slice(offset, offset + 2), 16)).join(', ')})`
-    expect(tagOf('handedness-a').style.background).toBe(hexToRgb(PLAYER_A_COLOR))
-    expect(tagOf('handedness-b').style.background).toBe(hexToRgb(PLAYER_B_COLOR))
+    const badges = [...root.querySelectorAll('svg.court .handedness-badge')]
+    const badgeNear = (point: {x: number; y: number}) => badges.find((badge) => Math.abs(Number(badge.querySelector('circle')!.getAttribute('cy')) - point.y) < 0.5)!
+    const badgeA = badgeNear(situation.playerA)
+    const badgeB = badgeNear(situation.playerBHit)
+    expect(badges).toHaveLength(2)
+    expect(badgeA.textContent).toBe('D')
+    expect(badgeB.textContent).toBe('D')
+    expect(Number(badgeA.querySelector('circle')!.getAttribute('cx'))).toBeGreaterThan(situation.playerA.x)
+    expect(Number(badgeB.querySelector('circle')!.getAttribute('cx'))).toBeLessThan(situation.playerBHit.x)
+    expect(badgeA.querySelector('circle')!.getAttribute('fill')).toBe(PLAYER_A_COLOR)
+    expect(badgeB.querySelector('circle')!.getAttribute('fill')).toBe(PLAYER_B_COLOR)
+    expect(badgeA.querySelector('circle')!.getAttribute('stroke')).toBeNull()
+    expect(root.querySelector('.handedness-tag')).toBeNull()
   })
 
   it('follows A to its impact point and B to its recovered position in the reveal', () => {
     const root = revealed(startedApp())
     const situation = generateSituation(SEED)
-    const viewBox = root.querySelector<SVGSVGElement>('svg.court')!.viewBox.baseVal
-    const topPercent = (y: number) => (100 * (y - viewBox.y)) / viewBox.height
-    const tagOf = (kind: string) => root.querySelector<HTMLElement>(`.trajectory-tags > .handedness-tag[data-kind="${kind}"]`)!
-    expect(parseFloat(tagOf('handedness-a').style.top)).toBeLessThan(topPercent(situation.impact.y))
-    expect(parseFloat(tagOf('handedness-a').style.top)).toBeGreaterThan(topPercent(situation.impact.y - 0.6))
-    expect(parseFloat(tagOf('handedness-b').style.top)).toBeGreaterThan(topPercent(situation.playerBRecovered.y - 0.6))
+    const centres = [...root.querySelectorAll('svg.court .handedness-badge circle')].map((circle) => ({x: Number(circle.getAttribute('cx')), y: Number(circle.getAttribute('cy'))}))
+    const near = (point: {x: number; y: number}) => centres.some((centre) => Math.hypot(centre.x - point.x, centre.y - point.y) < 0.5)
+    expect(centres).toHaveLength(2)
+    expect(near(situation.impact)).toBe(true)
+    expect(near(situation.playerBRecovered)).toBe(true)
   })
+
 
 })
 
@@ -324,7 +326,7 @@ describe('unreachable choice', () => {
 
 describe('shot tags on the court', () => {
   function tags(root: HTMLElement): HTMLElement[] {
-    return [...root.querySelectorAll<HTMLElement>('.court-frame > .trajectory-tags > .trajectory-tag')].filter((tag) => !tag.dataset.kind!.startsWith('handedness'))
+    return [...root.querySelectorAll<HTMLElement>('.court-frame > .trajectory-tags > .trajectory-tag')]
   }
 
   function described(root: HTMLElement): Array<{text: string; kind: string}> {
