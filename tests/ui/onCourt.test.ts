@@ -239,6 +239,9 @@ describe('players', () => {
     expect(parseFloat(tagOf('handedness-a').style.left)).toBeGreaterThan(leftPercent(situation.playerA.x))
     expect(parseFloat(tagOf('handedness-b').style.left)).toBeLessThan(leftPercent(situation.playerBHit.x))
     expect(root.querySelector('svg.court .handedness-badge')).toBeNull()
+    const hexToRgb = (hex: string) => `rgb(${[1, 3, 5].map((offset) => parseInt(hex.slice(offset, offset + 2), 16)).join(', ')})`
+    expect(tagOf('handedness-a').style.background).toBe(hexToRgb(PLAYER_A_COLOR))
+    expect(tagOf('handedness-b').style.background).toBe(hexToRgb(PLAYER_B_COLOR))
   })
 
   it('follows A to its impact point and B to its recovered position in the reveal', () => {
@@ -357,8 +360,8 @@ describe('shot tags on the court', () => {
     const {bestZone, alternativeZone} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
     expect(described(root)).toEqual([
       {text: chosen, kind: 'return'},
-      {text: `Choix 1 · ${SHOTS[bestZone!.shot].label}`, kind: 'zone-1'},
-      ...(alternativeZone === null ? [] : [{text: `Choix 2 · ${SHOTS[alternativeZone.shot].label}`, kind: 'zone-2'}]),
+      {text: `Meilleur choix 1 · ${SHOTS[bestZone!.shot].label}`, kind: 'zone-1'},
+      ...(alternativeZone === null ? [] : [{text: `Meilleur choix 2 · ${SHOTS[alternativeZone.shot].label}`, kind: 'zone-2'}]),
     ])
   })
 })

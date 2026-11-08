@@ -302,29 +302,15 @@ body {
   white-space: nowrap;
 }
 
-.handedness-tag {
-  display: inline-block;
-  box-sizing: border-box;
-  width: 13px;
-  height: 13px;
-  padding: 0;
-  border-radius: 50%;
-  background: #1b1f23;
-  color: #fff;
-  font-size: 8px;
-  font-weight: bold;
-  line-height: 13px;
-  text-align: center;
-}
-
 .trajectory-tag.handedness-tag {
-  width: 13px;
-  height: 13px;
+  box-sizing: border-box;
+  width: 18px;
+  height: 18px;
   padding: 0;
+  border: 1.5px solid #2f7d4f;
   border-radius: 50%;
-  background: #1b1f23;
-  font-size: 8px;
+  font-size: 10px;
   font-weight: bold;
-  line-height: 13px;
+  line-height: 15px;
   text-align: center;
 }

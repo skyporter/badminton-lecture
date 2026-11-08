@@ -13,7 +13,7 @@ import {listenToCourt} from './input'
 import {renderBanner, renderControls, renderDrawer, renderShotPopover} from './panel'
 import {readSituationParams, situationSearch} from './situationUrl'
 import type {Choice} from './situationUrl'
-import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, ZONE_BEST_COLOR, ZONE_OPACITY, ZONE_SECOND_COLOR, constantStroke, trajectoryMiddle, trajectoryPath} from './trajectory'
+import {BEST_RETURN_COLOR, PLAYER_A_COLOR, PLAYER_B_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, ZONE_BEST_COLOR, ZONE_OPACITY, ZONE_SECOND_COLOR, constantStroke, trajectoryMiddle, trajectoryPath} from './trajectory'
 
 export type QuizState = {
   situation: Situation
@@ -127,7 +127,7 @@ function trajectoryTag(from: Point, to: Point, shot: ShotId, kind: 'shot-b' | 'r
 function zoneTag(zone: Zone, rank: 1 | 2): CourtTag {
   const belowCenter = zone.center.y + ZONE_TAG_OFFSET
   const point = {x: zone.center.x, y: belowCenter <= NET_Y - ZONE_TAG_NET_GAP ? belowCenter : zone.center.y - ZONE_TAG_OFFSET}
-  return {point, text: `Choix ${rank} · ${SHOTS[zone.shot].label}`, kind: rank === 1 ? 'zone-1' : 'zone-2'}
+  return {point, text: `Meilleur choix ${rank} · ${SHOTS[zone.shot].label}`, kind: rank === 1 ? 'zone-1' : 'zone-2'}
 }
 
 function handednessTags(situation: Situation, playerA: Point, playerB: Point): CourtTag[] {
@@ -192,6 +192,11 @@ function renderCourtTags(container: HTMLElement, state: QuizState, svg: SVGSVGEl
   container.replaceChildren(...courtTags(state).map((tag) => {
     const element = document.createElement('div')
     element.className = tag.kind.startsWith('handedness') ? 'trajectory-tag handedness-tag' : 'trajectory-tag'
+    if (tag.kind === 'handedness-a') {
+      element.style.background = PLAYER_A_COLOR
+    } else if (tag.kind === 'handedness-b') {
+      element.style.background = PLAYER_B_COLOR
+    }
     element.dataset.kind = tag.kind
     element.textContent = tag.text
     const {left, top} = percentOfViewBox(tag.point, svg)
