@@ -175,6 +175,16 @@ describe('banner reservation', () => {
     expect(-viewBox.y).toBeGreaterThanOrEqual(BANNER_RESERVED_METRES + 0.4)
   })
 
+  it('reserves just the two lines of the banner and 0.4 m of out zone above B back line', () => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    renderCourt(svg)
+    const viewBox = svg.viewBox.baseVal
+    const twoLinesAndPadding = viewBox.width * (2 * 0.03 * 1.3 + 2 * 0.01)
+    expect(BANNER_RESERVED_METRES).toBeGreaterThanOrEqual(twoLinesAndPadding)
+    expect(BANNER_RESERVED_METRES).toBeLessThan(twoLinesAndPadding + 0.1)
+    expect(-viewBox.y - BANNER_RESERVED_METRES).toBeCloseTo(0.4)
+  })
+
   it('sizes the banner to the reserved strip', () => {
     const root = startedApp()
     const viewBox = root.querySelector<SVGSVGElement>('svg.court')!.viewBox.baseVal
