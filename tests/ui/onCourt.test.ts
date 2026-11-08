@@ -154,22 +154,22 @@ describe('reveal drawer', () => {
     expect(drawer(startedApp()).hidden).toBe(true)
   })
 
-  it('starts collapsed with the score on its one line', () => {
+  it('opens on the detail right after validation, with the score on its summary line', () => {
     const root = revealed(startedApp())
     const situation = generateSituation(SEED)
     const result = scoreChoice(situation, 'debutant', {x: 3, y: 3}, 'drop-slow')
-    expect(drawer(root).classList.contains('expanded')).toBe(false)
+    expect(drawer(root).classList.contains('expanded')).toBe(true)
     expect(drawer(root).querySelector('.drawer-summary')!.textContent).toContain(`Score : ${result.score} / 100`)
-    expect(drawer(root).querySelector('.drawer-body')).toBeNull()
+    expect(drawer(root).querySelector('.drawer-body')!.textContent).toContain('Pourquoi')
   })
 
-  it('expands and collapses with its toggle', () => {
+  it('collapses and expands with its toggle', () => {
     const root = revealed(startedApp())
     drawer(root).querySelector<HTMLButtonElement>('.drawer-toggle')!.click()
-    expect(drawer(root).classList.contains('expanded')).toBe(true)
-    expect(drawer(root).querySelector('.drawer-body')!.textContent).toContain('Pourquoi')
-    drawer(root).querySelector<HTMLButtonElement>('.drawer-toggle')!.click()
     expect(drawer(root).classList.contains('expanded')).toBe(false)
+    expect(drawer(root).querySelector('.drawer-body')).toBeNull()
+    drawer(root).querySelector<HTMLButtonElement>('.drawer-toggle')!.click()
+    expect(drawer(root).classList.contains('expanded')).toBe(true)
   })
 
   it('keeps its state when the level changes after the reveal', () => {
@@ -178,13 +178,13 @@ describe('reveal drawer', () => {
     const levelSelect = root.querySelector<HTMLSelectElement>('.controls .level')!
     levelSelect.value = 'avance'
     levelSelect.dispatchEvent(new Event('change'))
-    expect(drawer(root).classList.contains('expanded')).toBe(true)
+    expect(drawer(root).classList.contains('expanded')).toBe(false)
   })
 
   it('stacks the legend above the drawer', () => {
     const root = revealed(startedApp())
     const stack = root.querySelector('.court-frame .bottom-stack')!
-    expect([...stack.children].map((child) => child.className)).toEqual(['legend-overlay', 'reveal-drawer'])
+    expect([...stack.children].map((child) => child.classList[0])).toEqual(['legend-overlay', 'reveal-drawer'])
   })
 })
 
@@ -242,7 +242,6 @@ describe('forehand arc', () => {
 describe('alternative wording', () => {
   it('starts the alternative line with « Alternative : » and never mentions light green', () => {
     const root = revealed(startedApp())
-    drawer(root).querySelector<HTMLButtonElement>('.drawer-toggle')!.click()
     const text = drawer(root).querySelector('.alternative')!.textContent!
     expect(text.startsWith('Alternative : ')).toBe(true)
     expect(text).not.toContain('vert clair')

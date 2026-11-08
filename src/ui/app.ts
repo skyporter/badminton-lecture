@@ -63,7 +63,7 @@ export function nextState(state: QuizState, action: QuizAction): QuizState {
       return state.result === null ? {...state, shot: action.shot} : state
     case 'validate':
       if (canValidate(state)) {
-        return {...state, result: scoreChoice(state.situation, state.level, state.target, state.shot), popoverOpen: false, drawerExpanded: false}
+        return {...state, result: scoreChoice(state.situation, state.level, state.target, state.shot), popoverOpen: false, drawerExpanded: true}
       } else {
         return state
       }
@@ -134,7 +134,7 @@ function restoredState(state: QuizState, seed: number, level: Level, choice: Cho
   if (choice === null) {
     return question
   } else {
-    return {...question, target: choice.point, shot: choice.shot, result: scoreChoice(situation, level, choice.point, choice.shot)}
+    return {...question, target: choice.point, shot: choice.shot, result: scoreChoice(situation, level, choice.point, choice.shot), drawerExpanded: true}
   }
 }
 

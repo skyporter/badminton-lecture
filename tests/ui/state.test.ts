@@ -61,7 +61,7 @@ describe('nextState', () => {
 
   it('restores a validated choice as the reveal', () => {
     const restored = nextState(state, {type: 'restore-situation', seed: 3, level: 'avance', choice: {point, shot: 'clear-high'}})
-    expect(restored).toMatchObject({target: point, shot: 'clear-high', popoverOpen: false, drawerExpanded: false})
+    expect(restored).toMatchObject({target: point, shot: 'clear-high', popoverOpen: false, drawerExpanded: true})
     expect(restored.result).toEqual(scoreChoice(generateSituation(3), 'avance', point, 'clear-high'))
   })
 
@@ -98,21 +98,21 @@ describe('on-court ui state', () => {
     expect(nextState(closed, {type: 'set-target', point}).popoverOpen).toBe(true)
   })
 
-  it('closes the popover and starts with a collapsed drawer on validation', () => {
-    expect(revealedState).toMatchObject({popoverOpen: false, drawerExpanded: false})
+  it('closes the popover and opens the drawer detail on validation', () => {
+    expect(revealedState).toMatchObject({popoverOpen: false, drawerExpanded: true})
     expect(revealedState.result).not.toBeNull()
   })
 
   it('toggles the drawer only after the reveal', () => {
-    const expanded = nextState(revealedState, {type: 'toggle-drawer'})
-    expect(expanded.drawerExpanded).toBe(true)
-    expect(nextState(expanded, {type: 'toggle-drawer'}).drawerExpanded).toBe(false)
+    const collapsed = nextState(revealedState, {type: 'toggle-drawer'})
+    expect(collapsed.drawerExpanded).toBe(false)
+    expect(nextState(collapsed, {type: 'toggle-drawer'}).drawerExpanded).toBe(true)
     expect(nextState(answeredState, {type: 'toggle-drawer'})).toBe(answeredState)
   })
 
   it('keeps the drawer state when the level changes after the reveal', () => {
-    const expanded = nextState(revealedState, {type: 'toggle-drawer'})
-    expect(nextState(expanded, {type: 'set-level', level: 'avance'}).drawerExpanded).toBe(true)
+    const collapsed = nextState(revealedState, {type: 'toggle-drawer'})
+    expect(nextState(collapsed, {type: 'set-level', level: 'avance'}).drawerExpanded).toBe(false)
   })
 
   it('closes the popover when the level changes before validation', () => {
@@ -120,8 +120,7 @@ describe('on-court ui state', () => {
   })
 
   it('resets the popover and the drawer on a new situation', () => {
-    const expanded = nextState(revealedState, {type: 'toggle-drawer'})
-    expect(nextState(expanded, {type: 'new-situation', seed: 3})).toMatchObject({popoverOpen: false, drawerExpanded: false})
+    expect(nextState(revealedState, {type: 'new-situation', seed: 3})).toMatchObject({popoverOpen: false, drawerExpanded: false})
     expect(nextState(answeredState, {type: 'new-situation', seed: 3}).popoverOpen).toBe(false)
   })
 })
