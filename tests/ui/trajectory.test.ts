@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {trajectoryPath, trajectoryStyle} from '../../src/ui/trajectory'
+import {trajectoryMiddle, trajectoryPath, trajectoryStyle} from '../../src/ui/trajectory'
 
 describe('trajectoryStyle', () => {
   it('draws a smash solid and straight', () => expect(trajectoryStyle('smash')).toEqual({dashArray: '', curvature: 0}))
@@ -15,5 +15,17 @@ describe('trajectoryPath', () => {
   })
   it('keeps the same side when travelling the other way', () => {
     expect(trajectoryPath({x: 1, y: 2}, {x: 1, y: 12}, 'clear-high')).toBe('M 1 2 Q 3 7 1 12')
+  })
+})
+
+describe('trajectoryMiddle', () => {
+  it('is the middle of a straight trajectory', () => {
+    expect(trajectoryMiddle({x: 1, y: 10}, {x: 3, y: 2}, 'smash')).toEqual({x: 2, y: 6})
+  })
+
+  it('follows the curve of a high trajectory', () => {
+    const middle = trajectoryMiddle({x: 1, y: 10}, {x: 1, y: 2}, 'clear-high')
+    expect(middle.y).toBeCloseTo(6)
+    expect(middle.x).not.toBeCloseTo(1)
   })
 })

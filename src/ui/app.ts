@@ -4,6 +4,7 @@ import {reachableLanding} from '../engine/evaluate'
 import type {PairEvaluation} from '../engine/evaluate'
 import {generateSituation} from '../engine/generator'
 import type {Situation} from '../engine/generator'
+import {SHOTS} from '../engine/shots'
 import type {ShotId} from '../engine/shots'
 import type {Level, Point} from '../engine/types'
 import {BANNER_RESERVED_METRES, SVG_NAMESPACE, renderCourt, renderPlayers, renderShotB, svgElement} from './courtView'
@@ -13,7 +14,7 @@ import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
 import {renderBanner, renderControls, renderDrawer, renderShotPopover} from './panel'
 import {readSituationParams, situationSearch} from './situationUrl'
 import type {Choice} from './situationUrl'
-import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
+import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke, trajectoryMiddle, trajectoryPath, trajectoryStyle} from './trajectory'
 
 export type QuizState = {
   situation: Situation
@@ -78,8 +79,8 @@ function layer(): SVGGElement {
   return document.createElementNS(SVG_NAMESPACE, 'g')
 }
 
-function cross(point: Point): SVGElement[] {
-  const style = {stroke: RETURN_COLOR, ...constantStroke(STROKE_PIXELS.cross)}
+function cross(point: Point, color: string): SVGElement[] {
+  const style = {stroke: color, ...constantStroke(STROKE_PIXELS.cross)}
   return [
     svgElement('line', {x1: point.x - CROSS_HALF_SIZE, y1: point.y - CROSS_HALF_SIZE, x2: point.x + CROSS_HALF_SIZE, y2: point.y + CROSS_HALF_SIZE, ...style}),
     svgElement('line', {x1: point.x + CROSS_HALF_SIZE, y1: point.y - CROSS_HALF_SIZE, x2: point.x - CROSS_HALF_SIZE, y2: point.y + CROSS_HALF_SIZE, ...style}),
@@ -93,7 +94,7 @@ function studentTrajectory(from: Point, target: Point, shot: ShotId | null): SVG
 }
 
 function studentReturn(from: Point, target: Point, shot: ShotId | null): SVGElement[] {
-  return [studentTrajectory(from, target, shot), ...cross(target)]
+  return [studentTrajectory(from, target, shot), ...cross(target, RETURN_COLOR)]
 }
 
 function revealedStudentReturn(from: Point, choice: PairEvaluation): SVGElement[] {
@@ -105,25 +106,62 @@ function revealedStudentReturn(from: Point, choice: PairEvaluation): SVGElement[
       fill: 'none',
       ...constantStroke(STROKE_PIXELS.unreachable, STROKE_PIXELS.unreachableDashArray),
     })
-    return [studentTrajectory(from, landing, choice.shot), unreachable, ...cross(choice.point)]
+    return [studentTrajectory(from, landing, choice.shot), unreachable, ...cross(choice.point, RETURN_COLOR)]
   } else {
     return studentReturn(from, choice.point, choice.shot)
   }
 }
 
-function bestReturn(from: Point, best: PairEvaluation): SVGElement {
-  return svgElement('path', {
+function bestReturn(from: Point, best: PairEvaluation): SVGElement[] {
+  const trajectory = svgElement('path', {
     d: trajectoryPath(from, best.point, best.shot),
     stroke: BEST_RETURN_COLOR,
     fill: 'none',
     ...constantStroke(STROKE_PIXELS.bestReturn, trajectoryStyle(best.shot).dashArray),
   })
+  return [trajectory, ...cross(best.point, BEST_RETURN_COLOR)]
+}
+
+type TrajectoryTag = {from: Point; to: Point; shot: ShotId; kind: 'shot-b' | 'return' | 'best'}
+
+function trajectoryTags(state: QuizState): TrajectoryTag[] {
+  const {situation, result} = state
+  if (result === null) {
+    const shotB: TrajectoryTag = {from: situation.playerBHit, to: situation.landing, shot: situation.shotB, kind: 'shot-b'}
+    const studentReturn: TrajectoryTag[] = state.target === null || state.shot === null ? [] : [{from: situation.impact, to: state.target, shot: state.shot, kind: 'return'}]
+    return [shotB, ...studentReturn]
+  } else {
+    const {choice, analysis} = result
+    const landing = choice.infeasibility === 'zone' ? reachableLanding(situation.impact, choice.point, choice.shot) : choice.point
+    const studentReturn: TrajectoryTag = {from: situation.impact, to: landing, shot: choice.shot, kind: 'return'}
+    const bestReturn: TrajectoryTag[] = analysis.best.value === 0 ? [] : [{from: situation.impact, to: analysis.best.point, shot: analysis.best.shot, kind: 'best'}]
+    return [studentReturn, ...bestReturn]
+  }
+}
+
+function percentOfViewBox(point: Point, svg: SVGSVGElement): {left: string; top: string} {
+  const viewBox = svg.viewBox.baseVal
+  return {left: `${(100 * (point.x - viewBox.x)) / viewBox.width}%`, top: `${(100 * (point.y - viewBox.y)) / viewBox.height}%`}
+}
+
+function renderTrajectoryTags(container: HTMLElement, state: QuizState, svg: SVGSVGElement): void {
+  container.replaceChildren(...trajectoryTags(state).map((tag) => {
+    const element = document.createElement('div')
+    element.className = 'trajectory-tag'
+    element.dataset.kind = tag.kind
+    element.textContent = SHOTS[tag.shot].label
+    const {left, top} = percentOfViewBox(trajectoryMiddle(tag.from, tag.to, tag.shot), svg)
+    element.style.left = left
+    element.style.top = top
+    return element
+  }))
 }
 
 function placeNextTo(popover: HTMLElement, point: Point, svg: SVGSVGElement): void {
   const viewBox = svg.viewBox.baseVal
-  popover.style.setProperty('--anchor-x', `${(100 * (point.x - viewBox.x)) / viewBox.width}%`)
-  popover.style.setProperty('--anchor-y', `${(100 * (point.y - viewBox.y)) / viewBox.height}%`)
+  const {left, top} = percentOfViewBox(point, svg)
+  popover.style.setProperty('--anchor-x', left)
+  popover.style.setProperty('--anchor-y', top)
   popover.classList.toggle('to-left', point.x - viewBox.x > viewBox.width / 2)
   popover.classList.toggle('upward', point.y - viewBox.y > viewBox.height / 2)
 }
@@ -184,6 +222,8 @@ export function startApp(root: HTMLElement): void {
   banner.style.height = `${(100 * BANNER_RESERVED_METRES) / viewBox.height}%`
   const popover = document.createElement('div')
   popover.className = 'shot-popover'
+  const tagLayer = document.createElement('div')
+  tagLayer.className = 'trajectory-tags'
   const hint = document.createElement('div')
   hint.className = 'court-hint'
   hint.textContent = 'Clique sur le terrain de B pour choisir ton retour.'
@@ -201,7 +241,7 @@ export function startApp(root: HTMLElement): void {
   const bottomStack = document.createElement('div')
   bottomStack.className = 'bottom-stack'
   bottomStack.append(legendOverlay, drawer)
-  courtFrame.append(heatmap, svg, banner, hint, popover, bottomStack)
+  courtFrame.append(heatmap, svg, tagLayer, banner, hint, popover, bottomStack)
   const controlsBar = document.createElement('div')
   controlsBar.className = 'controls'
   const layout = document.createElement('div')
@@ -233,6 +273,7 @@ export function startApp(root: HTMLElement): void {
 
   function renderBoard(): void {
     const {situation, result} = state
+    renderTrajectoryTags(tagLayer, state, svg)
     heatmap.hidden = result === null
     if (result === null) {
       renderShotB(shotLayer, situation)
@@ -244,7 +285,7 @@ export function startApp(root: HTMLElement): void {
       renderPlayers(playerLayer, {...situation, playerA: situation.impact}, 'reveal')
       renderHeatmap(heatmap, map, best.value)
       returnLayer.replaceChildren(
-        ...(best.value === 0 ? [] : [bestReturn(situation.impact, best)]),
+        ...(best.value === 0 ? [] : bestReturn(situation.impact, best)),
         ...revealedStudentReturn(situation.impact, result.choice),
       )
     }

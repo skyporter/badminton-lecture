@@ -51,11 +51,20 @@ export function trajectoryStyle(shot: ShotId): {dashArray: string; curvature: nu
   return {dashArray: DASH_ARRAYS[speed], curvature: CURVATURES[arc]}
 }
 
-export function trajectoryPath(from: Point, to: Point, shot: ShotId): string {
+function controlPoint(from: Point, to: Point, shot: ShotId): Point {
   const {curvature} = trajectoryStyle(shot)
-  const deltaX = to.x - from.x
-  const deltaY = to.y - from.y
-  const controlX = rounded((from.x + to.x) / 2 + deltaY * curvature)
-  const controlY = rounded((from.y + to.y) / 2 - deltaX * curvature)
-  return `M ${from.x} ${from.y} Q ${controlX} ${controlY} ${to.x} ${to.y}`
+  return {
+    x: rounded((from.x + to.x) / 2 + (to.y - from.y) * curvature),
+    y: rounded((from.y + to.y) / 2 - (to.x - from.x) * curvature),
+  }
+}
+
+export function trajectoryPath(from: Point, to: Point, shot: ShotId): string {
+  const control = controlPoint(from, to, shot)
+  return `M ${from.x} ${from.y} Q ${control.x} ${control.y} ${to.x} ${to.y}`
+}
+
+export function trajectoryMiddle(from: Point, to: Point, shot: ShotId): Point {
+  const control = controlPoint(from, to, shot)
+  return {x: rounded((from.x + 2 * control.x + to.x) / 4), y: rounded((from.y + 2 * control.y + to.y) / 4)}
 }

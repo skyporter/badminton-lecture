@@ -6,7 +6,7 @@ import {RETURN_SHOTS, SHOTS} from '../../src/engine/shots'
 import {generateSituation} from '../../src/engine/generator'
 import {startApp} from '../../src/ui/app'
 import {BANNER_RESERVED_METRES, renderCourt} from '../../src/ui/courtView'
-import {RETURN_COLOR, UNREACHABLE_COLOR, trajectoryPath, trajectoryStyle} from '../../src/ui/trajectory'
+import {BEST_RETURN_COLOR, RETURN_COLOR, UNREACHABLE_COLOR, trajectoryMiddle, trajectoryPath, trajectoryStyle} from '../../src/ui/trajectory'
 import {reachableLanding} from '../../src/engine/evaluate'
 
 const SEED = 5
@@ -289,5 +289,58 @@ describe('unreachable choice', () => {
   it('draws no red segment for a reachable choice', () => {
     const root = revealed(startedApp())
     expect(root.querySelector(`svg.court path[stroke="${UNREACHABLE_COLOR}"]`)).toBeNull()
+  })
+})
+
+describe('shot tags on the court', () => {
+  function tags(root: HTMLElement): HTMLElement[] {
+    return [...root.querySelectorAll<HTMLElement>('.court-frame > .trajectory-tags > .trajectory-tag')]
+  }
+
+  function described(root: HTMLElement): Array<{text: string; kind: string}> {
+    return tags(root).map((tag) => ({text: tag.textContent!, kind: tag.dataset.kind!}))
+  }
+
+  it('sits in the middle of the trajectory, as an html tag like the legend button', () => {
+    const root = startedApp()
+    const situation = generateSituation(SEED)
+    const viewBox = root.querySelector<SVGSVGElement>('svg.court')!.viewBox.baseVal
+    const middle = trajectoryMiddle(situation.playerBHit, situation.landing, situation.shotB)
+    const [tag] = tags(root)
+    expect(parseFloat(tag.style.left)).toBeCloseTo((100 * (middle.x - viewBox.x)) / viewBox.width, 3)
+    expect(parseFloat(tag.style.top)).toBeCloseTo((100 * (middle.y - viewBox.y)) / viewBox.height, 3)
+    expect(root.querySelector('svg.court .trajectory-label')).toBeNull()
+  })
+
+  it('names B shot in the question phase', () => {
+    const root = startedApp()
+    expect(described(root)).toEqual([{text: SHOTS[generateSituation(SEED).shotB].label, kind: 'shot-b'}])
+  })
+
+  it('names the chosen shot before validation', () => {
+    const root = answered(startedApp())
+    const chosen = popover(root).querySelector('.shot.selected')!.textContent!
+    expect(described(root)).toContainEqual({text: chosen, kind: 'return'})
+  })
+
+  it('names the student return and the best return after validation, not B shot', () => {
+    const root = answered(startedApp())
+    const chosen = popover(root).querySelector('.shot.selected')!.textContent!
+    popover(root).querySelector<HTMLButtonElement>('.validate')!.click()
+    const {best} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
+    expect(described(root)).toEqual([{text: chosen, kind: 'return'}, {text: SHOTS[best.shot].label, kind: 'best'}])
+  })
+})
+
+describe('best return cross', () => {
+  it('marks the end of the white line with a white cross', () => {
+    const root = revealed(startedApp())
+    const {best} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
+    const whiteLines = [...root.querySelectorAll(`svg.court line[stroke="${BEST_RETURN_COLOR}"]`)]
+    expect(whiteLines).toHaveLength(2)
+    const centerX = whiteLines.map((line) => (Number(line.getAttribute('x1')) + Number(line.getAttribute('x2'))) / 2)
+    const centerY = whiteLines.map((line) => (Number(line.getAttribute('y1')) + Number(line.getAttribute('y2'))) / 2)
+    centerX.forEach((x) => expect(x).toBeCloseTo(best.point.x))
+    centerY.forEach((y) => expect(y).toBeCloseTo(best.point.y))
   })
 })
