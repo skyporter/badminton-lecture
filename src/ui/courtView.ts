@@ -17,7 +17,6 @@ export const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const PLAYER_RADIUS = 0.35
 export const BANNER_RESERVED_METRES = 0.75
 const COURT_MARGIN = 0.6
-const COURT_LINE_OPACITY = 0.5
 const FOOTSTEP_SPACING = 0.42
 const FOOTSTEP_SIDE_OFFSET = 0.08
 const FOOTSTEP_SOLE_CENTER_Y = -0.04
@@ -51,7 +50,7 @@ export function renderCourt(svg: SVGSVGElement): void {
   svg.setAttribute('viewBox', `${-COURT_MARGIN} ${top} ${COURT_WIDTH + 2 * COURT_MARGIN} ${COURT_LENGTH + COURT_MARGIN - top}`)
   svg.classList.add('court')
 
-  const lines = svgElement('g', {stroke: '#fff', fill: 'none', opacity: COURT_LINE_OPACITY})
+  const lines = svgElement('g', {stroke: '#fff', fill: 'none'})
   const shortServiceFar = NET_Y - SHORT_SERVICE_DISTANCE
   const shortServiceNear = NET_Y + SHORT_SERVICE_DISTANCE
   lines.append(

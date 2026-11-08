@@ -512,13 +512,3 @@ describe('student target point', () => {
     expect(root.querySelectorAll(`svg.court line[stroke="${RETURN_COLOR}"]`)).toHaveLength(0)
   })
 })
-
-describe('court lines', () => {
-  it('draws the court lines at half opacity and keeps the net fully visible', () => {
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
-    renderCourt(svg)
-    const [lines, net] = [...svg.children]
-    expect(lines.getAttribute('opacity')).toBe('0.5')
-    expect(net.getAttribute('opacity')).toBeNull()
-  })
-})
