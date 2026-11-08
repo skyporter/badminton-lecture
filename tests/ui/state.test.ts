@@ -55,6 +55,12 @@ describe('nextState', () => {
     expect(renewed.level).toBe('avance')
   })
 
+  it('restores the situation and level of a history entry as a fresh question', () => {
+    const restored = nextState(revealedState, {type: 'restore-situation', seed: 3, level: 'debutant'})
+    expect(restored.situation).toEqual(generateSituation(3))
+    expect(restored).toMatchObject({level: 'debutant', target: null, shot: null, result: null, popoverOpen: false, drawerExpanded: false})
+  })
+
   it('resets the answer when the level changes before validation (Review Focus 3)', () => {
     expect(nextState(answeredState, {type: 'set-level', level: 'debutant'})).toMatchObject({level: 'debutant', target: null, shot: null, result: null})
   })

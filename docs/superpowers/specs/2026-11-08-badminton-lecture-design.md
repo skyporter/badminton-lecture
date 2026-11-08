@@ -92,7 +92,7 @@ Deux règles, valables pour le coup de B (orange), l'aperçu et le retour de l'�
 - Même écran que sur ordinateur : le terrain en pleine largeur, la barre du haut au-dessus, le bandeau, la fenêtre de choix et le tiroir par-dessus le terrain.
 - Légende masquée par défaut sur mobile, état mémorisé (par appareil).
 - Les **épaisseurs de trait et les longueurs de pointillé sont constantes en pixels**, quelle que soit la taille de la fenêtre ; seules les formes (ronds, point de chute, croix, tête de raquette) suivent la taille du terrain.
-- Chaque situation est **partageable** : l'adresse contient `?seed=&level=`, mise à jour avec `replaceState`, et la même adresse rechargée affiche la même situation.
+- Chaque situation est **partageable** : l'adresse contient `?seed=&level=`, et la même adresse rechargée affiche la même situation. « Nouvelle situation » ajoute une entrée à l'historique du navigateur : précédent et suivant font revenir aux situations déjà vues, en question (sans la réponse). Le changement de niveau remplace l'entrée courante. *(décision de Vincent)*
 
 ## 5. Le moteur de décision
 
@@ -193,5 +193,5 @@ Plus tard, une IA pourra reformuler la justification calculée par le moteur ou 
 - Le tiroir de révélation, replié au départ. *(décision de Vincent)*
 - La légende en surimpression avec un petit bouton « Légende » en bas à gauche, au-dessus du tiroir, sans que le terrain change de taille. *(décision de Vincent)*
 - Des épaisseurs de trait et des pointillés constants en pixels. *(décision de Vincent)*
-- L'adresse partageable `?seed=&level=` mise à jour avec `replaceState`. *(décision de Vincent)*
+- L'adresse partageable `?seed=&level=`, avec une entrée d'historique par nouvelle situation. *(décision de Vincent)*
 - La ligne « Alternative : » sans référence de couleur, et l'étiquette « bon retour » pour le vert clair de la carte. *(décision de Vincent)*

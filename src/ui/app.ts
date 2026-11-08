@@ -26,6 +26,7 @@ export type QuizState = {
 
 export type QuizAction =
   | {type: 'new-situation'; seed: number}
+  | {type: 'restore-situation'; seed: number; level: Level}
   | {type: 'set-level'; level: Level}
   | {type: 'set-target'; point: Point}
   | {type: 'set-shot'; shot: ShotId}
@@ -46,6 +47,8 @@ export function nextState(state: QuizState, action: QuizAction): QuizState {
   switch (action.type) {
     case 'new-situation':
       return {...state, situation: generateSituation(action.seed), target: null, shot: null, result: null, popoverOpen: false, drawerExpanded: false}
+    case 'restore-situation':
+      return {...state, situation: generateSituation(action.seed), level: action.level, target: null, shot: null, result: null, popoverOpen: false, drawerExpanded: false}
     case 'set-level':
       if (state.result === null) {
         return {...state, level: action.level, target: null, shot: null, popoverOpen: false}
@@ -124,7 +127,7 @@ function placeNextTo(popover: HTMLElement, point: Point, svg: SVGSVGElement): vo
   popover.classList.toggle('upward', point.y - viewBox.y > viewBox.height / 2)
 }
 
-let removeEscapeListener = (): void => undefined
+let removeGlobalListeners = (): void => undefined
 
 export function startApp(root: HTMLElement): void {
   const params = readSituationParams(window.location.search)
@@ -226,7 +229,12 @@ export function startApp(root: HTMLElement): void {
 
   function dispatch(action: QuizAction): void {
     state = nextState(state, action)
-    history.replaceState(null, '', situationSearch(state.situation.seed, state.level))
+    const search = situationSearch(state.situation.seed, state.level)
+    if (action.type === 'new-situation') {
+      history.pushState(null, '', search)
+    } else {
+      history.replaceState(null, '', search)
+    }
     renderBoard()
     renderPreview()
     renderChrome()
@@ -257,14 +265,22 @@ export function startApp(root: HTMLElement): void {
     },
     onTarget: (point) => dispatch({type: 'set-target', point}),
   })
-  removeEscapeListener()
+  removeGlobalListeners()
   const closePopoverOnEscape = (event: KeyboardEvent): void => {
     if (event.key === 'Escape' && state.popoverOpen) {
       dispatch({type: 'close-popover'})
     }
   }
   document.addEventListener('keydown', closePopoverOnEscape)
-  removeEscapeListener = () => document.removeEventListener('keydown', closePopoverOnEscape)
+  const showSituationOfAddressBar = (): void => {
+    const restored = readSituationParams(window.location.search)
+    dispatch({type: 'restore-situation', seed: restored.seed ?? state.situation.seed, level: restored.level ?? DEFAULT_LEVEL})
+  }
+  window.addEventListener('popstate', showSituationOfAddressBar)
+  removeGlobalListeners = () => {
+    document.removeEventListener('keydown', closePopoverOnEscape)
+    window.removeEventListener('popstate', showSituationOfAddressBar)
+  }
   renderLegendVisibility()
   renderBoard()
   renderChrome()
