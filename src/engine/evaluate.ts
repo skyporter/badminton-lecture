@@ -7,6 +7,8 @@ import {
   BEHIND_PENALTY_PER_METER,
   BEHIND_THRESHOLD,
   CROSS_FLIGHT_TIME_FACTOR,
+  CROSS_PENALTY_FULL_LATERAL,
+  CROSS_PENALTY_START_LATERAL,
   CROSS_RISK,
   LANDING_DEPTH_TOLERANCE,
   LINE_RISK_DISTANCE,
@@ -52,9 +54,9 @@ export function allowedShots(situation: Situation): ShotId[] {
 export function evaluatePair(situation: Situation, level: Level, point: Point, shot: ShotId): PairEvaluation {
   const direction = directionBetween(situation.impact, point)
   const rawByCriterion: Record<CriterionId, number> = {
-    reachTime: reachTimeScore(situation, point, shot, direction),
+    reachTime: reachTimeScore(situation, point, shot),
     weakSide: weakSideScore(point),
-    risk: riskScore(situation, point, shot, direction),
+    risk: riskScore(situation, point, shot),
     recoveryTime: SHOT_RECOVERY[shot],
     pressure: SHOT_PRESSURE[shot] * PRESSURE_MULTIPLIER_BY_STATUS[situation.status],
   }
@@ -95,12 +97,12 @@ function infeasibilityOf(situation: Situation, point: Point, shot: ShotId): Infe
   }
 }
 
-function reachTimeScore(situation: Situation, point: Point, shot: ShotId, direction: Direction): number {
+function reachTimeScore(situation: Situation, point: Point, shot: ShotId): number {
   const recovered = situation.playerBRecovered
   const behindDistance = Math.max(0, recovered.y - point.y)
   const behindPenalty = Math.max(0, behindDistance - BEHIND_THRESHOLD) * BEHIND_PENALTY_PER_METER
   const reachTime = Math.max(0, distance(recovered, point) - B_REACH) / B_SPEED + behindPenalty
-  const flightTime = SHOTS[shot].flightTime * (direction === 'croise' ? CROSS_FLIGHT_TIME_FACTOR : 1)
+  const flightTime = SHOTS[shot].flightTime * (1 + (CROSS_FLIGHT_TIME_FACTOR - 1) * crossFraction(situation, point))
   return clamp(0.5 + (reachTime - flightTime) / (2 * REACH_REFERENCE_TIME))
 }
 
@@ -114,11 +116,16 @@ function weakSideScore(point: Point): number {
   }
 }
 
-function riskScore(situation: Situation, point: Point, shot: ShotId, direction: Direction): number {
+function riskScore(situation: Situation, point: Point, shot: ShotId): number {
   const distanceToLine = Math.max(0, Math.min(point.x - SINGLES_LEFT, SINGLES_RIGHT - point.x, point.y))
   const lineRisk = clamp(1 - distanceToLine / LINE_RISK_DISTANCE)
-  const crossRisk = direction === 'croise' ? CROSS_RISK[situation.status === 'defense' ? 'defense' : 'neutral'] : 0
+  const crossRisk = CROSS_RISK[situation.status === 'defense' ? 'defense' : 'neutral'] * crossFraction(situation, point)
   return clamp(1 - Math.max(lineRisk, SHOT_RISK[shot] + crossRisk))
+}
+
+function crossFraction(situation: Situation, point: Point): number {
+  const lateralChange = Math.abs(point.x - situation.impact.x)
+  return clamp((lateralChange - CROSS_PENALTY_START_LATERAL) / (CROSS_PENALTY_FULL_LATERAL - CROSS_PENALTY_START_LATERAL))
 }
 
 function clamp(value: number): number {

@@ -137,6 +137,9 @@ La révélation se fait sur le terrain.
 ### 5.2 ter Situations de service
 B peut aussi **servir** *(décision de Vincent)*. Le générateur applique alors les règles du simple : B dans sa zone de service (droite si son score est pair, gauche s'il est impair, tirée au hasard), A dans la zone de réception en diagonale, toujours à la position de réception habituelle : 3 m du filet (environ 1 m derrière la ligne de service court) et 0,5 m de la ligne centrale. *(décision de Vincent)* Service court : le volant tombe au-delà de la ligne de service court, dans la zone de service de A. Service long : il tombe au fond, jusqu'à la ligne de fond. A répond selon les mêmes règles qu'en cours d'échange.
 
+### 5.2 ter bis Croisé progressif
+La pénalité du croisé (risque et temps de vol) grandit progressivement avec le changement de côté entre le point d'impact de A et le point visé : nulle jusqu'à 1 m, complète à partir de 3 m. Deux points voisins ne sont plus jugés très différemment selon qu'ils tombent d'un côté ou de l'autre du seuil de 2 m, qui ne sert plus qu'aux mots « en ligne » et « croisé ». *(décision de Vincent)*
+
 ### 5.2 quater Calibrage
 Vincent ne fournira pas de situations de référence : **Claude calibre** les poids à partir des principes du §5.4. Le livrable inclut une série de situations types (au moins une par famille de coup de B et par statut de A), avec la réponse attendue par niveau et sa justification par les principes. Ces situations servent de tests automatisés et de base de discussion pour la suite.
 

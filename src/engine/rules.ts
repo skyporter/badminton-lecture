@@ -84,6 +84,8 @@ export const BEHIND_PENALTY_PER_METER = 0.3
 export const CROSS_FLIGHT_TIME_FACTOR = 1.1
 export const REACH_REFERENCE_TIME = 1.0
 export const CROSS_RISK: Record<'neutral' | 'defense', number> = {neutral: 0.1, defense: 0.4}
+export const CROSS_PENALTY_START_LATERAL = 1.0
+export const CROSS_PENALTY_FULL_LATERAL = 3.0
 export const WEAK_SIDE_BACKHAND_VALUE = 1
 export const WEAK_SIDE_FOREHAND_REAR_VALUE = 0.5
 export const PRESSURE_MULTIPLIER_BY_STATUS: Record<Status, number> = {attaque: 1, neutre: 0.6, defense: 0.3}
@@ -189,6 +191,8 @@ export const RULE_SOURCES: Record<string, string[]> = {
   CROSS_FLIGHT_TIME_FACTOR: ['badmintonBibleCrossNet', 'badmintonBibleCrossLift'],
   REACH_REFERENCE_TIME: ['dearBadminton'],
   CROSS_RISK: ['badmintonBibleCrossNet', 'badmintonBibleCrossLift', 'mobilesport'],
+  CROSS_PENALTY_START_LATERAL: ['badmintonBibleCrossNet', 'badmintonBibleCrossLift'],
+  CROSS_PENALTY_FULL_LATERAL: ['badmintonBibleCrossNet', 'badmintonBibleCrossLift'],
   WEAK_SIDE: ['badmintonCoach', 'wikibooksStrategy'],
   PRESSURE_MULTIPLIER_BY_STATUS: ['mobilesport', 'epsGrenoble'],
   FRONT_MAXIMUM_DEPTH: ['badmintonBibleCrossNet', 'epsGrenoble'],

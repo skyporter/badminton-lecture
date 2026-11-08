@@ -1,6 +1,8 @@
 import {describe, expect, it} from 'vitest'
 import {allowedShots, evaluatePair, reachableLanding} from '../../src/engine/evaluate'
-import {buildSituation} from '../../src/engine/generator'
+import {buildSituation, generateSituation} from '../../src/engine/generator'
+import {scoreChoice} from '../../src/engine/analysis'
+import {EXCELLENT_SCORE} from '../../src/engine/rules'
 
 const situation = buildSituation({playerA: {x: 3.05, y: 10.6}, playerBHit: {x: 3.05, y: 1.5}, shotB: 'clear-high', landing: {x: 3.05, y: 12.7}})
 const lowSituation = buildSituation({playerA: {x: 3.05, y: 10.6}, playerBHit: {x: 3.05, y: 5.5}, shotB: 'net', landing: {x: 3.05, y: 7.7}})
@@ -93,5 +95,31 @@ describe('reachableLanding', () => {
 
   it('carries a smash aimed too short to its shortest landing', () => {
     expect(reachableLanding(from, {x: 3, y: 5.7}, 'smash').y).toBeCloseTo(5.0)
+  })
+})
+
+describe('cross-court penalty', () => {
+  const sidelineDefence = buildSituation({playerA: {x: 5.5, y: 7.5}, playerBHit: {x: 3.05, y: 1.5}, shotB: 'clear-high', landing: {x: 0.6, y: 12.7}})
+  const riskAt = (lateral: number) => criterionRaw(evaluatePair(sidelineDefence, 'intermediaire', {x: sidelineDefence.impact.x + lateral, y: 1.5}, 'lob-defensive'), 'risk')
+  const reachAt = (lateral: number) => criterionRaw(evaluatePair(sidelineDefence, 'intermediaire', {x: sidelineDefence.impact.x + lateral, y: 1.5}, 'lob-defensive'), 'reachTime')
+
+  it('uses a defence situation', () => {
+    expect(sidelineDefence.status).toBe('defense')
+  })
+
+  it('grows progressively with the lateral change, with no jump at the 2 m line/cross boundary', () => {
+    expect(Math.abs(riskAt(1.9) - riskAt(2.1))).toBeLessThan(0.05)
+    expect(Math.abs(reachAt(1.9) - reachAt(2.1))).toBeLessThan(0.05)
+  })
+
+  it('costs nothing up to 1 m and the full defence penalty from 3 m', () => {
+    expect(riskAt(0.5)).toBeCloseTo(riskAt(1.0))
+    expect(riskAt(1.0) - riskAt(3.0)).toBeCloseTo(0.4)
+    expect(riskAt(3.0)).toBeCloseTo(riskAt(3.5))
+  })
+
+  it('rates a lob 24 cm beside the best lob as an excellent choice', () => {
+    const situation = generateSituation(1794165939430)
+    expect(scoreChoice(situation, 'intermediaire', {x: 4.45, y: 0.5}, 'lob-defensive').score).toBeGreaterThanOrEqual(EXCELLENT_SCORE)
   })
 })
