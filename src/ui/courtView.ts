@@ -11,7 +11,7 @@ import {
 } from '../engine/court'
 import type {Situation} from '../engine/generator'
 import type {Point} from '../engine/types'
-import {trajectoryPath, trajectoryStyle} from './trajectory'
+import {STROKE_PIXELS, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const PLAYER_RADIUS = 0.35
@@ -25,33 +25,35 @@ function svgElement(name: string, attributes: Record<string, string | number>): 
   return element
 }
 
-function line(x1: number, y1: number, x2: number, y2: number): SVGElement {
-  return svgElement('line', {x1, y1, x2, y2})
+function line(x1: number, y1: number, x2: number, y2: number, stroke: Record<string, string | number> = {}): SVGElement {
+  return svgElement('line', {x1, y1, x2, y2, ...stroke})
+}
+
+function courtLine(x1: number, y1: number, x2: number, y2: number): SVGElement {
+  return line(x1, y1, x2, y2, constantStroke(STROKE_PIXELS.courtLine))
 }
 
 export function renderCourt(svg: SVGSVGElement): void {
   svg.setAttribute('viewBox', '-0.6 -0.6 7.3 14.6')
   svg.classList.add('court')
 
-  const lines = svgElement('g', {stroke: '#fff', 'stroke-width': 0.05, fill: 'none'})
+  const lines = svgElement('g', {stroke: '#fff', fill: 'none'})
   const shortServiceFar = NET_Y - SHORT_SERVICE_DISTANCE
   const shortServiceNear = NET_Y + SHORT_SERVICE_DISTANCE
   lines.append(
-    svgElement('rect', {x: 0, y: 0, width: COURT_WIDTH, height: COURT_LENGTH}),
-    line(SINGLES_LEFT, 0, SINGLES_LEFT, COURT_LENGTH),
-    line(SINGLES_RIGHT, 0, SINGLES_RIGHT, COURT_LENGTH),
-    line(0, shortServiceFar, COURT_WIDTH, shortServiceFar),
-    line(0, shortServiceNear, COURT_WIDTH, shortServiceNear),
-    line(0, DOUBLES_LONG_SERVICE_INSET, COURT_WIDTH, DOUBLES_LONG_SERVICE_INSET),
-    line(0, COURT_LENGTH - DOUBLES_LONG_SERVICE_INSET, COURT_WIDTH, COURT_LENGTH - DOUBLES_LONG_SERVICE_INSET),
-    line(CENTER_X, 0, CENTER_X, shortServiceFar),
-    line(CENTER_X, shortServiceNear, CENTER_X, COURT_LENGTH),
+    svgElement('rect', {x: 0, y: 0, width: COURT_WIDTH, height: COURT_LENGTH, ...constantStroke(STROKE_PIXELS.courtLine)}),
+    courtLine(SINGLES_LEFT, 0, SINGLES_LEFT, COURT_LENGTH),
+    courtLine(SINGLES_RIGHT, 0, SINGLES_RIGHT, COURT_LENGTH),
+    courtLine(0, shortServiceFar, COURT_WIDTH, shortServiceFar),
+    courtLine(0, shortServiceNear, COURT_WIDTH, shortServiceNear),
+    courtLine(0, DOUBLES_LONG_SERVICE_INSET, COURT_WIDTH, DOUBLES_LONG_SERVICE_INSET),
+    courtLine(0, COURT_LENGTH - DOUBLES_LONG_SERVICE_INSET, COURT_WIDTH, COURT_LENGTH - DOUBLES_LONG_SERVICE_INSET),
+    courtLine(CENTER_X, 0, CENTER_X, shortServiceFar),
+    courtLine(CENTER_X, shortServiceNear, CENTER_X, COURT_LENGTH),
   )
 
-  const net = line(-0.4, NET_Y, COURT_WIDTH + 0.4, NET_Y)
-  net.setAttribute('stroke', '#ddd')
-  net.setAttribute('stroke-width', '0.12')
-  net.setAttribute('stroke-dasharray', '0.2 0.1')
+
+  const net = line(-0.4, NET_Y, COURT_WIDTH + 0.4, NET_Y, {stroke: '#ddd', ...constantStroke(STROKE_PIXELS.net, STROKE_PIXELS.netDashArray)})
 
   svg.replaceChildren(lines, net)
 }
@@ -59,9 +61,7 @@ export function renderCourt(svg: SVGSVGElement): void {
 export function racket(position: Point, side: 'A' | 'B'): SVGElement {
   const direction = forehandIsPositiveX(side) ? 1 : -1
   const racketGroup = svgElement('g', {})
-  const handle = line(position.x + direction * 0.3, position.y, position.x + direction * 0.55, position.y - direction * 0.35)
-  handle.setAttribute('stroke', '#222')
-  handle.setAttribute('stroke-width', '0.06')
+  const handle = line(position.x + direction * 0.3, position.y, position.x + direction * 0.55, position.y - direction * 0.35, {stroke: '#222', ...constantStroke(STROKE_PIXELS.racket)})
   const centerX = position.x + direction * 0.68
   const centerY = position.y - direction * 0.62
   const head = svgElement('ellipse', {
@@ -72,7 +72,7 @@ export function racket(position: Point, side: 'A' | 'B'): SVGElement {
     transform: `rotate(35 ${centerX} ${centerY})`,
     fill: '#fffbe6',
     stroke: '#222',
-    'stroke-width': 0.05,
+    ...constantStroke(STROKE_PIXELS.racket),
   })
   racketGroup.append(handle, head)
   return racketGroup
@@ -115,8 +115,7 @@ function playerGhost(position: Point): SVGElement {
       r: PLAYER_RADIUS,
       fill: 'none',
       stroke: '#fff',
-      'stroke-width': 0.05,
-      'stroke-dasharray': '0.12 0.08',
+      ...constantStroke(STROKE_PIXELS.ghost, STROKE_PIXELS.ghostDashArray),
       opacity: 0.8,
     }),
     text,
@@ -138,10 +137,9 @@ export function renderShotB(layer: SVGGElement, situation: Situation): void {
   const path = svgElement('path', {
     d: trajectoryPath(situation.playerBHit, situation.landing, situation.shotB),
     stroke: SHOT_B_COLOR,
-    'stroke-width': 0.08,
     fill: 'none',
+    ...constantStroke(STROKE_PIXELS.trajectory, dashArray),
   })
-  if (dashArray !== '') path.setAttribute('stroke-dasharray', dashArray)
   const landingDot = svgElement('circle', {cx: situation.landing.x, cy: situation.landing.y, r: 0.18, fill: SHOT_B_COLOR})
   layer.replaceChildren(path, landingDot)
 }

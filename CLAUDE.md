@@ -12,7 +12,7 @@ Static TypeScript web quiz (Vite, Vitest) to learn reading badminton singles pla
 ## Architecture
 
 - `src/engine/`: pure, deterministic logic. Same situation and same level give the same result, bit for bit. `rules.ts` holds every rule, weight, threshold and colour of the heat map: all values live in `rules.ts` and nowhere else. Other files: `court.ts` (geometry), `shots.ts` (shot catalogue), `generator.ts` (seeded situations), `evaluate.ts` and `analysis.ts` (value map, best return, alternative, score), `recovery.ts`, `status.ts`, `explain.ts` (French explanations), `rng.ts`, `types.ts`.
-- `src/ui/`: rendering and input only. `app.ts` (state, `nextState` reducer, wiring), `panel.ts` (controls and question/reveal panel), `legend.ts` (legend and its visibility in `localStorage`), `courtView.ts` (SVG court and players), `trajectory.ts` (trajectory code and shared colours), `heatmap.ts` (canvas map), `input.ts` (pointer to court coordinates), `styles.css`.
+- `src/ui/`: rendering and input only. `app.ts` (state, `nextState` reducer, wiring), `panel.ts` (controls and question/reveal panel), `legend.ts` (legend and its visibility in `localStorage`), `courtView.ts` (SVG court and players), `trajectory.ts` (trajectory code and shared colours), `situationUrl.ts` (`?seed=&level=` read and write), `heatmap.ts` (canvas map), `input.ts` (pointer to court coordinates), `styles.css`.
 - `tests/engine/`, `tests/ui/`, `tests/calibration/` (reference situations with expected results; re-run after any change in `rules.ts`).
 
 ## Coordinates and players
@@ -27,6 +27,8 @@ A `#3b82f6`, B `#e05252`, B's shot `#ff8a65`, the student's return `#ffd54a`, be
 
 Trajectories (top view, `trajectory.ts`): the dash pattern says the speed (solid = very fast, long tight dashes = fast, medium dashes = medium, spaced dots = slow), the curvature says the height (straight = flat, slight curve = low arc, strong curve = high arc). The same code is used for B's shot and the student's return. The legend reuses these constants and `trajectoryPath` for its swatches.
 
+Stroke widths and dash lengths are constant in screen pixels, whatever the zoom or court size: every stroke in the court SVG carries `vector-effect="non-scaling-stroke"` through `constantStroke(...)` and its width comes from `STROKE_PIXELS` (`trajectory.ts`, also used by the legend swatches). Only shapes (discs, landing dot, cross size, racket head) scale with the court. Each situation writes `?seed=<integer>&level=<level>` with `history.replaceState`, and the same URL on load restores it.
+
 ## Layout
 
-Below 768 px the layout is one column (court full width, panel below). The « Légende » button and the legend box float over the bottom of the court frame (`.legend-overlay`, absolutely positioned, semi-opaque, scrollable); the court frame's size depends only on the viewport, never on legend visibility. Pointer events on the overlay do not reach the court input. The legend is visible by default on desktop and hidden on mobile, the choice is remembered in `localStorage` (`badminton-lecture:legend-visible`, every access in `try/catch`).
+Below 768 px the layout is one column (court full width, panel below). The small « Légende » button (24 px tall) and the legend box float over the bottom of the court frame (`.legend-overlay`, absolutely positioned, semi-opaque, scrollable); the court frame's size depends only on the viewport, never on legend visibility. Pointer events on the overlay do not reach the court input. The legend is visible by default on desktop and hidden on mobile, the choice is remembered in `localStorage` (`badminton-lecture:legend-visible`, every access in `try/catch`).

@@ -10,7 +10,8 @@ import {placeOverHalfOfB, renderHeatmap} from './heatmap'
 import {listenToCourt} from './input'
 import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
 import {renderControls, renderPanel} from './panel'
-import {BEST_RETURN_COLOR, BEST_RETURN_DASH_ARRAY, RETURN_COLOR, trajectoryPath, trajectoryStyle} from './trajectory'
+import {readSituationParams, situationSearch} from './situationUrl'
+import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
 
 export type QuizState = {situation: Situation; level: Level; target: Point | null; shot: ShotId | null; result: ChoiceResult | null}
 
@@ -62,7 +63,7 @@ function layer(): SVGGElement {
 }
 
 function cross(point: Point): SVGElement[] {
-  const style = {stroke: RETURN_COLOR, 'stroke-width': 0.08}
+  const style = {stroke: RETURN_COLOR, ...constantStroke(STROKE_PIXELS.cross)}
   return [
     svgElement('line', {x1: point.x - CROSS_HALF_SIZE, y1: point.y - CROSS_HALF_SIZE, x2: point.x + CROSS_HALF_SIZE, y2: point.y + CROSS_HALF_SIZE, ...style}),
     svgElement('line', {x1: point.x + CROSS_HALF_SIZE, y1: point.y - CROSS_HALF_SIZE, x2: point.x - CROSS_HALF_SIZE, y2: point.y + CROSS_HALF_SIZE, ...style}),
@@ -72,7 +73,7 @@ function cross(point: Point): SVGElement[] {
 function studentReturn(from: Point, target: Point, shot: ShotId | null): SVGElement[] {
   const path = shot === null ? `M ${from.x} ${from.y} L ${target.x} ${target.y}` : trajectoryPath(from, target, shot)
   const dashArray = shot === null ? '' : trajectoryStyle(shot).dashArray
-  const trajectory = svgElement('path', {d: path, stroke: RETURN_COLOR, 'stroke-width': 0.08, fill: 'none', 'stroke-dasharray': dashArray || 'none'})
+  const trajectory = svgElement('path', {d: path, stroke: RETURN_COLOR, fill: 'none', ...constantStroke(STROKE_PIXELS.trajectory, dashArray)})
   return [trajectory, ...cross(target)]
 }
 
@@ -80,14 +81,21 @@ function bestReturn(from: Point, best: PairEvaluation): SVGElement {
   return svgElement('path', {
     d: trajectoryPath(from, best.point, best.shot),
     stroke: BEST_RETURN_COLOR,
-    'stroke-width': 0.06,
     fill: 'none',
-    'stroke-dasharray': BEST_RETURN_DASH_ARRAY,
+    ...constantStroke(STROKE_PIXELS.bestReturn, STROKE_PIXELS.bestReturnDashArray),
   })
 }
 
 export function startApp(root: HTMLElement): void {
-  let state: QuizState = {situation: generateSituation(Date.now()), level: DEFAULT_LEVEL, target: null, shot: null, result: null}
+  const params = readSituationParams(window.location.search)
+  let state: QuizState = {
+    situation: generateSituation(params.seed ?? Date.now()),
+    level: params.level ?? DEFAULT_LEVEL,
+    target: null,
+    shot: null,
+    result: null,
+  }
+  history.replaceState(null, '', situationSearch(state.situation.seed, state.level))
   let preview: Point | null = null
 
   const svg = document.createElementNS(SVG_NAMESPACE, 'svg')
@@ -169,6 +177,7 @@ export function startApp(root: HTMLElement): void {
 
   function dispatch(action: QuizAction): void {
     state = nextState(state, action)
+    history.replaceState(null, '', situationSearch(state.situation.seed, state.level))
     renderBoard()
     renderPreview()
     renderChrome()

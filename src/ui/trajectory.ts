@@ -4,19 +4,37 @@ import type {Arc, ShotId, Speed} from '../engine/shots'
 
 export const RETURN_COLOR = '#ffd54a'
 export const BEST_RETURN_COLOR = '#ffffff'
-export const BEST_RETURN_DASH_ARRAY = '0.2 0.12'
+
+export const STROKE_PIXELS = {
+  courtLine: 1.5,
+  net: 3,
+  netDashArray: '6 4',
+  trajectory: 2.5,
+  bestReturn: 2,
+  bestReturnDashArray: '6 4',
+  cross: 2.5,
+  racket: 1.5,
+  ghost: 1.5,
+  ghostDashArray: '4 3',
+}
 
 const DASH_ARRAYS: Record<Speed, string> = {
   'very-fast': '',
-  'fast': '0.4 0.1',
-  'medium': '0.2 0.2',
-  'slow': '0.06 0.3',
+  'fast': '12 3',
+  'medium': '6 6',
+  'slow': '2 8',
 }
 
 const CURVATURES: Record<Arc, number> = {
   flat: 0,
   low: 0.08,
   high: 0.2,
+}
+
+export function constantStroke(width: number, dashArray = ''): Record<string, string | number> {
+  const attributes: Record<string, string | number> = {'stroke-width': width, 'vector-effect': 'non-scaling-stroke'}
+  if (dashArray !== '') attributes['stroke-dasharray'] = dashArray
+  return attributes
 }
 
 function rounded(value: number): number {

@@ -2,13 +2,12 @@ import {MAP_BRIGHT_GREEN, MAP_LIGHT_GREEN, MAP_RED} from '../engine/rules'
 import {SHOTS} from '../engine/shots'
 import type {ShotId} from '../engine/shots'
 import {PLAYER_A_COLOR, PLAYER_B_COLOR, SHOT_B_COLOR, racket} from './courtView'
-import {BEST_RETURN_COLOR, BEST_RETURN_DASH_ARRAY, RETURN_COLOR, trajectoryPath, trajectoryStyle} from './trajectory'
+import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const STORAGE_KEY = 'badminton-lecture:legend-visible'
 const SWATCH_WIDTH = 1.6
 const SWATCH_HEIGHT = 0.5
-const STROKE_WIDTH = 0.08
 const TRAJECTORY_CODE_SHOTS: ShotId[] = ['smash', 'drive', 'clear-attack', 'drop-slow', 'clear-high', 'net']
 
 type Phase = 'question' | 'reveal'
@@ -30,16 +29,15 @@ export function saveLegendVisible(visible: boolean): void {
   }
 }
 
-function lineSwatch(path: string, color: string, dashArray: string, strokeWidth = STROKE_WIDTH): SVGSVGElement {
+function lineSwatch(path: string, color: string, dashArray: string, strokeWidth = STROKE_PIXELS.trajectory): SVGSVGElement {
   const svg = document.createElementNS(SVG_NAMESPACE, 'svg')
   svg.setAttribute('viewBox', `0 0 ${SWATCH_WIDTH} ${SWATCH_HEIGHT}`)
   svg.classList.add('legend-line')
   const stroke = document.createElementNS(SVG_NAMESPACE, 'path')
   stroke.setAttribute('d', path)
   stroke.setAttribute('stroke', color)
-  stroke.setAttribute('stroke-width', String(strokeWidth))
   stroke.setAttribute('fill', 'none')
-  if (dashArray !== '') stroke.setAttribute('stroke-dasharray', dashArray)
+  Object.entries(constantStroke(strokeWidth, dashArray)).forEach(([attribute, value]) => stroke.setAttribute(attribute, String(value)))
   svg.append(stroke)
   return svg
 }
@@ -93,7 +91,7 @@ function revealRows(): HTMLElement[] {
     row(ghost, 'B au moment de sa frappe'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), 'B replacé quand tu frappes'),
     row(straightLine(RETURN_COLOR, ''), 'ton retour (✕ = point visé)'),
-    row(straightLine(BEST_RETURN_COLOR, BEST_RETURN_DASH_ARRAY, 0.06), 'meilleur retour'),
+    row(straightLine(BEST_RETURN_COLOR, STROKE_PIXELS.bestReturnDashArray, STROKE_PIXELS.bestReturn), 'meilleur retour'),
     row(shapeSwatch('square', MAP_BRIGHT_GREEN), 'meilleur spot'),
     row(shapeSwatch('square', MAP_LIGHT_GREEN), 'bonne alternative'),
     row(shapeSwatch('square', MAP_RED), 'à éviter'),

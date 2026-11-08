@@ -3,9 +3,9 @@ import {trajectoryPath, trajectoryStyle} from '../../src/ui/trajectory'
 
 describe('trajectoryStyle', () => {
   it('draws a smash solid and straight', () => expect(trajectoryStyle('smash')).toEqual({dashArray: '', curvature: 0}))
-  it('draws a high clear dotted and strongly curved', () => expect(trajectoryStyle('clear-high')).toEqual({dashArray: '0.06 0.3', curvature: 0.2}))
-  it('draws an attacking lob with long dashes and a slight curve', () => expect(trajectoryStyle('lob-attack')).toEqual({dashArray: '0.4 0.1', curvature: 0.08}))
-  it('draws a medium speed shot with even dashes', () => expect(trajectoryStyle('drop-slow').dashArray).toBe('0.2 0.2'))
+  it('draws a high clear dotted and strongly curved', () => expect(trajectoryStyle('clear-high')).toEqual({dashArray: '2 8', curvature: 0.2}))
+  it('draws an attacking lob with long dashes and a slight curve', () => expect(trajectoryStyle('lob-attack')).toEqual({dashArray: '12 3', curvature: 0.08}))
+  it('draws a medium speed shot with even dashes', () => expect(trajectoryStyle('drop-slow').dashArray).toBe('6 6'))
 })
 
 describe('trajectoryPath', () => {
