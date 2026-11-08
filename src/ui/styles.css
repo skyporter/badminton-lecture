@@ -193,8 +193,11 @@ body {
 }
 
 .best-box {
-  border-left: 3px solid #00e676;
   background: rgba(255, 255, 255, 0.08);
+}
+
+.best-box .label {
+  color: #00e676;
 }
 
 .choice-box p,
@@ -315,11 +318,6 @@ body {
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: #9aa4ad;
-}
-
-.sublabel {
-  margin-top: 6px;
-  font-weight: bold;
 }
 
 .button,

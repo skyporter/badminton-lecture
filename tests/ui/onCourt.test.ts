@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {scoreChoice} from '../../src/engine/analysis'
-import {SHOT_DESCRIPTIONS, describeReturn, describeShotB} from '../../src/engine/explain'
+import {SHOT_DESCRIPTIONS, describeReturn, describeShotB, explainBest, explainChoice} from '../../src/engine/explain'
 import {RETURN_SHOTS, SHOTS} from '../../src/engine/shots'
 import {generateSituation} from '../../src/engine/generator'
 import {startApp} from '../../src/ui/app'
@@ -160,7 +160,7 @@ describe('reveal drawer', () => {
     const result = scoreChoice(situation, 'debutant', {x: 3, y: 3}, 'drop-slow')
     expect(drawer(root).classList.contains('expanded')).toBe(true)
     expect(drawer(root).querySelector('.drawer-summary')!.textContent).toContain(`Score : ${result.score} / 100`)
-    expect(drawer(root).querySelector('.drawer-body')!.textContent).toContain('Pourquoi')
+    expect(drawer(root).querySelector('.drawer-body .choice-box')).not.toBeNull()
   })
 
   it('collapses and expands with its toggle', () => {
@@ -356,5 +356,16 @@ describe('reveal boxes', () => {
     expect(bestBox.textContent).toContain('Meilleur retour')
     expect(bestBox.textContent).toContain(describeReturn(result.analysis.best))
     expect(choiceBox.compareDocumentPosition(bestBox) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+  })
+
+  it('puts the reasons of each return inside its own box, with no separate « Pourquoi » section', () => {
+    const root = revealed(startedApp())
+    const situation = generateSituation(SEED)
+    const result = scoreChoice(situation, 'debutant', {x: 3, y: 3}, 'drop-slow')
+    const bulletsOf = (box: Element) => [...box.querySelectorAll('li')].map((item) => item.textContent)
+    expect(bulletsOf(drawer(root).querySelector('.choice-box')!)).toEqual(explainChoice(situation, result))
+    expect(bulletsOf(drawer(root).querySelector('.best-box')!)).toEqual(explainBest(situation, result.analysis))
+    expect(drawer(root).textContent).not.toContain('Pourquoi')
+    expect(drawer(root).querySelector('.drawer-body > :last-child')!.className).toBe('alternative')
   })
 })
