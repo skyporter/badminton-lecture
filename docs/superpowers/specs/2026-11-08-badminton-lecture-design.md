@@ -48,7 +48,7 @@ Le pourquoi : on apprend à lire le jeu en devinant **avant** de voir la répon
 ### 4.1 Orientation et joueurs
 - Terrain vertical, vu de dessus. **A en bas** (il reçoit, c'est le point de vue de l'élève), **B en haut**.
 - A en bleu, B en rouge, chacun dans un rond avec sa lettre.
-- **Une pastille ronde « D » (droitier) ou « G » (gaucher)**, de la couleur du joueur, sans bordure, fondue dans le bord de son rond, en haut, du côté de son coup droit : à droite de l'écran pour A, à gauche pour B. Elle remplace la raquette dessinée puis l'arc blanc, retirés. Seuls les droitiers sont gérés pour l'instant. *(décision de Vincent)*
+- **Aucun repère de latéralité** sur le terrain : la raquette, l'arc puis la pastille « D / G » ont été essayés puis retirés. Les deux joueurs restent droitiers. *(décision de Vincent)*
 
 ### 4.2 Étape 1 : la question
 Tout se passe sur le terrain, sans panneau à côté.
@@ -173,7 +173,7 @@ Plus tard, une IA pourra reformuler la justification calculée par le moteur ou 
 
 ## 8. Choix faits par Claude (à vérifier par Vincent)
 - Les trois niveaux nommés débutant, intermédiaire et avancé.
-- Une pastille fixe de latéralité, sans posture de frappe.
+- Aucun repère de latéralité, ni posture de frappe.
 - Le coup de B à la couleur de B, et les retours de A à la couleur de A.
 - Le retour qui part du point d'impact.
 - Le comportement tactile : glisser, relâcher, point déplaçable.

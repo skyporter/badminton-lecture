@@ -228,33 +228,13 @@ describe('players', () => {
     expect(root.querySelector('svg.court .forehand-arc')).toBeNull()
   })
 
-  it('puts a « D » badge in the player colour on the forehand side, drawn in the court so it scales with the player', () => {
+  it('draws no handedness badge on the players, in both phases', () => {
     const root = startedApp()
-    const situation = generateSituation(SEED)
-    const badges = [...root.querySelectorAll('svg.court .handedness-badge')]
-    const badgeNear = (point: {x: number; y: number}) => badges.find((badge) => Math.abs(Number(badge.querySelector('circle')!.getAttribute('cy')) - point.y) < 0.5)!
-    const badgeA = badgeNear(situation.playerA)
-    const badgeB = badgeNear(situation.playerBHit)
-    expect(badges).toHaveLength(2)
-    expect(badgeA.textContent).toBe('D')
-    expect(badgeB.textContent).toBe('D')
-    expect(Number(badgeA.querySelector('circle')!.getAttribute('cx'))).toBeGreaterThan(situation.playerA.x)
-    expect(Number(badgeB.querySelector('circle')!.getAttribute('cx'))).toBeLessThan(situation.playerBHit.x)
-    expect(badgeA.querySelector('circle')!.getAttribute('fill')).toBe(PLAYER_A_COLOR)
-    expect(badgeB.querySelector('circle')!.getAttribute('fill')).toBe(PLAYER_B_COLOR)
-    expect(badgeA.querySelector('circle')!.getAttribute('stroke')).toBeNull()
-    expect(root.querySelector('.handedness-tag')).toBeNull()
+    expect(root.querySelector('svg.court .handedness-badge, .handedness-tag')).toBeNull()
+    revealed(root)
+    expect(root.querySelector('svg.court .handedness-badge, .handedness-tag')).toBeNull()
   })
 
-  it('follows A to its impact point and B to its recovered position in the reveal', () => {
-    const root = revealed(startedApp())
-    const situation = generateSituation(SEED)
-    const centres = [...root.querySelectorAll('svg.court .handedness-badge circle')].map((circle) => ({x: Number(circle.getAttribute('cx')), y: Number(circle.getAttribute('cy'))}))
-    const near = (point: {x: number; y: number}) => centres.some((centre) => Math.hypot(centre.x - point.x, centre.y - point.y) < 0.5)
-    expect(centres).toHaveLength(2)
-    expect(near(situation.impact)).toBe(true)
-    expect(near(situation.playerBRecovered)).toBe(true)
-  })
 
 
 })
