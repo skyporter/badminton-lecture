@@ -23,7 +23,7 @@ Both players are right-handed (`handedness: 'droitier'` is a parameter, only tha
 
 ## Colours and trajectory code
 
-A `#3b82f6`, B `#e05252`. B's shot is a solid line in B's colour landing on a dot in A's colour; the student's return is dashed in A's colour (cross included); the best return is dashed `#ffffff` (with a white cross at its landing point), unreachable part of the student's return `#ff5252` dotted (when the chosen shot cannot land at the cross depth, the blue trajectory stops at `reachableLanding` from `evaluate.ts` and the drawer line reads « <shot> impossible jusque-là »). Map: bright green `#00e676`, light green `#b2ff59`, red `#ff5252` (constants in `rules.ts`).
+A `#7cc4ff` (sky blue, chosen for contrast on the green court), B `#e05252`. B's shot is a solid line in B's colour landing on a dot in A's colour; the student's return is dashed in A's colour (cross included); the best return is dashed `#ffffff` (with a white cross at its landing point), unreachable part of the student's return `#ff5252` dotted (when the chosen shot cannot land at the cross depth, the blue trajectory stops at `reachableLanding` from `evaluate.ts` and the drawer line reads « <shot> impossible jusque-là »). Map: bright green `#00e676`, light green `#b2ff59`, red `#ff5252` (constants in `rules.ts`).
 
 Trajectories (top view, `trajectory.ts`, which also holds the player colours): solid for B's shot, `STROKE_PIXELS.returnDashArray` for every return of A; there is no speed code anymore. Only the curvature still varies with the shot (`trajectoryCurvature`: straight = flat, slight curve = low arc, strong curve = high arc). The legend reuses these constants for its swatches and has no trajectory code block.
 

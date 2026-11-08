@@ -2,7 +2,7 @@ import type {Point} from '../engine/types'
 import {SHOTS} from '../engine/shots'
 import type {Arc, ShotId} from '../engine/shots'
 
-export const PLAYER_A_COLOR = '#3b82f6'
+export const PLAYER_A_COLOR = '#7cc4ff'
 export const PLAYER_B_COLOR = '#e05252'
 export const SHOT_B_COLOR = PLAYER_B_COLOR
 export const LANDING_COLOR = PLAYER_A_COLOR
