@@ -1,12 +1,12 @@
 import type {Arrival, ShotId} from './shots'
 import type {Level, Point, Status} from './types'
 
-export type CriterionId = 'distance' | 'weakSide' | 'risk' | 'recoveryTime' | 'pressure'
+export type CriterionId = 'reachTime' | 'weakSide' | 'risk' | 'recoveryTime' | 'pressure'
 
 export const WEIGHTS: Record<Level, Record<CriterionId, number>> = {
-  debutant: {risk: 0.35, recoveryTime: 0.25, distance: 0.2, weakSide: 0.15, pressure: 0.05},
-  intermediaire: {distance: 0.3, pressure: 0.2, risk: 0.2, recoveryTime: 0.15, weakSide: 0.15},
-  avance: {distance: 0.35, pressure: 0.25, weakSide: 0.2, risk: 0.1, recoveryTime: 0.1},
+  debutant: {risk: 0.35, recoveryTime: 0.25, reachTime: 0.2, weakSide: 0.15, pressure: 0.05},
+  intermediaire: {reachTime: 0.3, pressure: 0.2, risk: 0.2, recoveryTime: 0.15, weakSide: 0.15},
+  avance: {reachTime: 0.35, pressure: 0.25, weakSide: 0.2, risk: 0.1, recoveryTime: 0.1},
 }
 
 export const SHOT_RISK: Record<ShotId, number> = {
@@ -77,6 +77,18 @@ export const REACTION_TIME = 0.25
 export const ATTACK_MARGIN = 0.3
 export const NEUTRAL_MARGIN_BY_ARRIVAL: Record<Arrival, number> = {high: 0, mid: 0.2, low: 0.4}
 export const LINE_RISK_DISTANCE = 0.5
+export const B_REACH = 0.8
+export const B_SPEED = 4.0
+export const BEHIND_THRESHOLD = 0.35
+export const BEHIND_PENALTY_PER_METER = 0.3
+export const CROSS_FLIGHT_TIME_FACTOR = 1.1
+export const REACH_REFERENCE_TIME = 1.0
+export const CROSS_RISK: Record<'neutral' | 'defense', number> = {neutral: 0.1, defense: 0.4}
+export const WEAK_SIDE_REAR_DEPTH = 4.7
+export const WEAK_SIDE_BACKHAND_VALUE = 1
+export const WEAK_SIDE_FOREHAND_REAR_VALUE = 0.5
+export const PRESSURE_MULTIPLIER_BY_STATUS: Record<Status, number> = {attaque: 1, neutre: 0.6, defense: 0.3}
+export const LANDING_DEPTH_TOLERANCE = 0.3
 export const RECOVERY_FULL_TIME = 1.2
 export const RECOVERY_MIN_FRACTION = 0.3
 export const RECOVERY_CROSS_PENALTY = 0.2
@@ -151,6 +163,15 @@ export const RULE_SOURCES: Record<string, string[]> = {
   ATTACK_MARGIN: ['epsGrenoble', 'badmintonCoach'],
   NEUTRAL_MARGIN_BY_ARRIVAL: ['epsGrenoble', 'badmintonCoach'],
   RECOVERY_BASE_BY_SHOT: ['badmintonBibleCentralBase', 'dearBadminton'],
+  B_REACH: ['dearBadminton', 'badmintonBibleCentralBase'],
+  B_SPEED: ['dearBadminton', 'epsGrenoble'],
+  BEHIND_THRESHOLD: ['dearBadminton', 'wikibooksStrategy'],
+  BEHIND_PENALTY_PER_METER: ['dearBadminton', 'wikibooksStrategy'],
+  CROSS_FLIGHT_TIME_FACTOR: ['badmintonBibleCrossNet', 'badmintonBibleCrossLift'],
+  REACH_REFERENCE_TIME: ['dearBadminton'],
+  CROSS_RISK: ['badmintonBibleCrossNet', 'badmintonBibleCrossLift', 'mobilesport'],
+  WEAK_SIDE: ['badmintonCoach', 'wikibooksStrategy'],
+  PRESSURE_MULTIPLIER_BY_STATUS: ['mobilesport', 'epsGrenoble'],
 }
 
 export const SERVE_PROBABILITY = 0.15
