@@ -48,7 +48,7 @@ Le pourquoi : on apprend à lire le jeu en devinant **avant** de voir la répon
 ### 4.1 Orientation et joueurs
 - Terrain vertical, vu de dessus. **A en bas** (il reçoit, c'est le point de vue de l'élève), **B en haut**.
 - A en bleu, B en rouge, chacun dans un rond avec sa lettre.
-- **Une petite étiquette « D » (droitier) ou « G » (gaucher)**, au même design que les autres étiquettes du terrain (texte blanc en taille normale, petit fond sombre), en haut du rond de chaque joueur, du côté de son coup droit : à droite de l'écran pour A, à gauche pour B. Elle remplace la raquette dessinée puis l'arc blanc, retirés. La légende l'explique. Seuls les droitiers sont gérés pour l'instant. *(décision de Vincent)*
+- **Une petite pastille ronde « D » (droitier) ou « G » (gaucher)**, collée au bord du rond de chaque joueur, en haut, du côté de son coup droit : à droite de l'écran pour A, à gauche pour B. Elle remplace la raquette dessinée puis l'arc blanc, retirés. La légende l'explique. Seuls les droitiers sont gérés pour l'instant. *(décision de Vincent)*
 
 ### 4.2 Étape 1 : la question
 Tout se passe sur le terrain, sans panneau à côté.
@@ -73,7 +73,7 @@ La révélation se fait sur le terrain.
 ### 4.4 Légendes
 - Une **légende en surimpression** sur le terrain, qui décrit tout ce qui est dessiné et **nomme les coups de la situation affichée** (coup de B, ton retour, meilleur retour, zones 1 et 2) *(décision de Vincent)* (joueurs, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
 - Chaque bouton de coup a une **infobulle** qui explique le coup, et le coup sélectionné est décrit sous les boutons (pour le mobile, sans survol). *(décision de Vincent)*
-- Sur le terrain, le **nom du coup** est écrit au milieu de chaque tracé, dans une petite étiquette au même design que le bouton « Légende » (fond sombre translucide, texte blanc). Le **meilleur retour** se termine par une **croix blanche**. La consigne en bas à droite est un texte blanc simple, sans ombre. *(décision de Vincent)*
+- Sur le terrain, le **nom du coup** est écrit au milieu de chaque tracé, dans une petite étiquette au même design que le bouton « Légende » (fond sombre translucide, texte blanc). Le **meilleur retour** se termine par un **point blanc**, et l'étiquette de sa zone est décalée pour ne pas le couvrir. La consigne en bas à droite est un texte blanc simple, sans ombre. *(décision de Vincent)*
 - Dans le tiroir, « Ton choix » (coup, zone, score et ses raisons) est dans un **encadré à contour blanc**, et « Meilleur retour » (coup, zone et ses raisons) dans un **encadré distinct** (fond légèrement éclairci, sans bordure, titre en vert vif). Il n'y a plus de section « Pourquoi » séparée. *(décision de Vincent)*
 - Un petit bouton « Légende », en bas à gauche, **affiche ou masque la légende**. Il se place au-dessus du tiroir quand celui-ci est là. Le terrain ne change jamais de taille, que la légende soit affichée ou masquée.
 
