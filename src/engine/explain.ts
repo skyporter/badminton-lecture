@@ -44,6 +44,8 @@ const STATUS_TOO_WEAK_BULLETS: Record<Status, (shotName: string) => string> = {
   neutre: (shotName) => `Tu n'es pas en attaque : ${shotName} demande d'être en avance, bien placé sous le volant.`,
   defense: (shotName) => `Tu es en défense, en retard sur le volant : tu n'as pas le temps de jouer ${shotName}.`,
 }
+const NOT_PLAYABLE_BULLET = 'Coup impossible dans ta situation.'
+const UNREACHABLE_BULLET = 'Coup impossible jusque-là.'
 const NO_PLAYABLE_SHOT_BULLET = "Aucun coup n'est vraiment jouable ici."
 const DROP_TOO_DEEP_BULLET = "Un amorti ne va pas jusqu'au fond."
 const TOO_DEEP_BULLET = 'Ce coup ne va pas aussi loin.'
@@ -110,9 +112,11 @@ export function explainChoice(situation: Situation, result: ChoiceResult): strin
   if (result.choice.feasible) {
     return explainFeasibleChoice(result)
   } else if (result.choice.infeasibility === 'statut') {
-    return [notPlayableBullet(situation, result.choice.shot), playableShotsBullet(situation)]
+    return [NOT_PLAYABLE_BULLET, notPlayableBullet(situation, result.choice.shot), playableShotsBullet(situation)]
+  } else if (result.choice.infeasibility === 'zone') {
+    return [UNREACHABLE_BULLET, zoneBullet(result.choice)]
   } else {
-    return [infeasibilityBullet(result.choice)]
+    return [OUT_OF_COURT_BULLET]
   }
 }
 
@@ -145,10 +149,6 @@ export function predictNextShotB(evaluation: PairEvaluation): string {
 function forBullet(criterion: CriterionScore): string {
   const onForehandRear = criterion.id === 'weakSide' && criterion.raw !== WEAK_SIDE_BACKHAND_VALUE
   return onForehandRear ? REAR_FOR_BULLET : FOR_BULLETS[criterion.id]
-}
-
-function infeasibilityBullet(choice: PairEvaluation): string {
-  return choice.infeasibility === 'dehors' ? OUT_OF_COURT_BULLET : zoneBullet(choice)
 }
 
 function notPlayableBullet(situation: Situation, shot: ShotId): string {

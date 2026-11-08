@@ -122,7 +122,7 @@ describe('explainChoice', () => {
   })
 
   it('explains a smash on a low shuttle by the height of the shuttle', () => {
-    expect(explainChoice(F3, scoreChoice(F3, 'avance', {x: 3, y: 3}, 'smash'))[0]).toBe('Volant pris bas\u00a0: un smash se joue seulement sur un volant pris haut.')
+    expect(explainChoice(F3, scoreChoice(F3, 'avance', {x: 3, y: 3}, 'smash')).slice(0, 2)).toEqual(['Coup impossible dans ta situation.', 'Volant pris bas\u00a0: un smash se joue seulement sur un volant pris haut.'])
   })
 
   describe('for a shot not playable in the situation', () => {
@@ -131,6 +131,7 @@ describe('explainChoice', () => {
     it('explains a status that leaves no time, then lists the playable shots', () => {
       expect(defenseAtTheNet).toMatchObject({status: 'defense', arrival: 'low'})
       expect(explainChoice(defenseAtTheNet, scoreChoice(defenseAtTheNet, 'intermediaire', {x: 3, y: 1}, 'lob-attack'))).toEqual([
+        'Coup impossible dans ta situation.',
         "Tu es en défense, en retard sur le volant\u00a0: tu n'as pas le temps de jouer un lob d'attaque.",
         'Coups jouables ici\u00a0: un lob défensif ou un filet.',
       ])
@@ -139,7 +140,7 @@ describe('explainChoice', () => {
     it('explains a shot that cannot be played from that part of the court', () => {
       const lowInMidCourt = generateSituation(9)
       expect(allowedShots(lowInMidCourt)).not.toContain('net')
-      expect(explainChoice(lowInMidCourt, scoreChoice(lowInMidCourt, 'intermediaire', {x: 3, y: 5.5}, 'net'))[0]).toBe('Depuis le milieu de ton terrain, un filet ne se joue pas.')
+      expect(explainChoice(lowInMidCourt, scoreChoice(lowInMidCourt, 'intermediaire', {x: 3, y: 5.5}, 'net'))[1]).toBe('Depuis le milieu de ton terrain, un filet ne se joue pas.')
     })
 
     it('never falls back to the generic sentence', () => {
@@ -147,16 +148,17 @@ describe('explainChoice', () => {
         const situation = generateSituation(seed)
         RETURN_SHOTS.filter((shot) => !allowedShots(situation).includes(shot)).forEach((shot) => {
           const bullets = explainChoice(situation, scoreChoice(situation, 'intermediaire', {x: 3, y: 3}, shot))
-          expect(bullets).toHaveLength(2)
-          expect(bullets[0]).not.toContain("n'est pas jouable")
-          expect(bullets[1].startsWith('Coups jouables ici\u00a0: ')).toBe(true)
+          expect(bullets).toHaveLength(3)
+          expect(bullets[0]).toBe('Coup impossible dans ta situation.')
+          expect(bullets[1]).not.toContain("n'est pas jouable")
+          expect(bullets[2].startsWith('Coups jouables ici\u00a0: ')).toBe(true)
         })
       }
     })
   })
 
-  it('gives a single bullet for a drop aimed at the back line', () => {
-    expect(explainChoice(F1, scoreChoice(F1, 'avance', {x: 3, y: 0.5}, 'drop-slow'))).toEqual(["Un amorti ne va pas jusqu'au fond."])
+  it('says the shot is impossible for a drop aimed at the back line', () => {
+    expect(explainChoice(F1, scoreChoice(F1, 'avance', {x: 3, y: 0.5}, 'drop-slow'))).toEqual(['Coup impossible jusque-là.', "Un amorti ne va pas jusqu'au fond."])
   })
 
   it('says excellent choice at 100', () => {

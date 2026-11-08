@@ -135,7 +135,7 @@ Deux règles, valables pour le coup de B (orange), l'aperçu et le retour de l'�
   - « Meilleur retour » : les critères qui ont le plus pesé pour le meilleur couple ;
   - « Ton choix » : la comparaison critère par critère entre le couple de l'élève et le meilleur ; les plus gros écarts deviennent des puces (par ex. « tu vises à 1 m de l'endroit où B se replace », « un amorti lent depuis le fond lui laisse un filet serré »).
   Décision de Vincent : expliquer aussi le choix de l'élève. Méthode déterministe : choix de Claude.
-  Quand le coup choisi n'est pas jouable dans la situation, « Ton choix » dit pourquoi en une puce (hauteur du volant, statut trop faible ou zone du terrain d'où l'élève frappe), puis liste les coups jouables ici. *(décision de Vincent)*
+  Quand le coup choisi n'est pas jouable dans la situation, « Ton choix » commence par « Coup impossible dans ta situation. », dit pourquoi en une puce (hauteur du volant, statut trop faible ou zone du terrain d'où l'élève frappe), puis liste les coups jouables ici. Quand le coup ne peut pas atterrir à la profondeur visée, elle commence par « Coup impossible jusque-là. ». *(décision de Vincent)*
 - **Le niveau** ne change que les pondérations, donc la bonne réponse, le score et la justification. Les situations générées, les coups proposés et l'interface sont les mêmes à tous les niveaux. *(décision de Vincent)*
 - **Les règles** vivent dans un seul fichier de configuration lisible dans le projet (critères, poids par niveau, seuils, et source de chaque principe). Pas d'écran d'édition. *(décision de Vincent)* Afficher la source dans l'appli n'est pas requis.
 
