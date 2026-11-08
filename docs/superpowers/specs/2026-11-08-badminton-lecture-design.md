@@ -72,6 +72,7 @@ La révélation se fait sur le terrain.
 
 ### 4.4 Légendes
 - Une **légende en surimpression** sur le terrain, qui décrit tout ce qui est dessiné (joueurs, arc côté coup droit, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
+- Chaque bouton de coup a une **infobulle** qui explique le coup, et le coup sélectionné est décrit sous les boutons (pour le mobile, sans survol). Dans la légende, le bloc « Code des trajectoires » est **ouvert par défaut**. *(décision de Vincent)*
 - Un petit bouton « Légende », en bas à gauche, **affiche ou masque la légende**. Il se place au-dessus du tiroir quand celui-ci est là. Le terrain ne change jamais de taille, que la légende soit affichée ou masquée.
 
 ### 4.5 Code des trajectoires (vue de dessus)
