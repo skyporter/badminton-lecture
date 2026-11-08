@@ -74,6 +74,8 @@ describe('renderLegend', () => {
     const {best, bestZone, alternativeZone} = revealedState.result!.analysis
     const text = legendText(revealedState)
     expect(text).toContain('B au moment de sa frappe')
+    expect(text).toContain('A avant de se déplacer')
+    expect(text).not.toContain('pas\u00a0:')
     expect(text).toContain('ton retour\u00a0: Filet')
     expect(text).toContain(`meilleur retour\u00a0: ${SHOTS[best.shot].label} (● = point idéal)`)
     expect(text).toContain(`zone 1 · meilleur coup\u00a0: ${SHOTS[bestZone!.shot].label}`)

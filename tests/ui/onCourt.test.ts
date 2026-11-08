@@ -442,3 +442,50 @@ describe('best return zones', () => {
     expect([clipRect.getAttribute('x'), clipRect.getAttribute('y'), clipRect.getAttribute('width'), clipRect.getAttribute('height')].map(Number)).toEqual([0.46, 0, 5.18, 6.7])
   })
 })
+
+describe('player moves', () => {
+  const distanceToSegment = (point: {x: number; y: number}, from: {x: number; y: number}, to: {x: number; y: number}) => {
+    const length = Math.hypot(to.x - from.x, to.y - from.y)
+    const along = ((point.x - from.x) * (to.x - from.x) + (point.y - from.y) * (to.y - from.y)) / length
+    const across = Math.abs((point.x - from.x) * (to.y - from.y) - (point.y - from.y) * (to.x - from.x)) / length
+    return {along, across, length}
+  }
+
+  function footstepsBetween(root: HTMLElement, from: {x: number; y: number}, to: {x: number; y: number}): Element[] {
+    return [...root.querySelectorAll('svg.court .footstep')].filter((step) => {
+      const [x, y] = step.getAttribute('transform')!.match(/translate\(([-\d.]+) ([-\d.]+)\)/)!.slice(1).map(Number)
+      const point = {x, y}
+      const {along, across, length} = distanceToSegment(point, from, to)
+      return across < 0.15 && along > 0 && along < length
+    })
+  }
+
+  it('draws each footstep as a sole and a heel, the sole ahead in the walking direction', () => {
+    const root = revealed(startedApp())
+    const step = root.querySelector('svg.court .footstep')!
+    const [sole, heel] = [...step.querySelectorAll('ellipse')]
+    expect(Number(sole.getAttribute('cy'))).toBeLessThan(Number(heel.getAttribute('cy')))
+    expect(Number(sole.getAttribute('ry'))).toBeGreaterThan(Number(heel.getAttribute('ry')))
+  })
+
+  it('shows no footsteps in the question phase', () => {
+    expect(startedApp().querySelector('svg.court .footstep')).toBeNull()
+  })
+
+  it('shows where A started as a dashed ghost and footsteps from there to the impact point', () => {
+    const root = revealed(startedApp())
+    const situation = generateSituation(SEED)
+    const ghostLetters = [...root.querySelectorAll('svg.court .player-ghost text')].map((text) => text.textContent)
+    expect(ghostLetters.sort()).toEqual(['A', 'B'])
+    const ghostA = [...root.querySelectorAll('svg.court .player-ghost')].find((ghost) => ghost.textContent === 'A')!
+    expect(Number(ghostA.querySelector('circle')!.getAttribute('cx'))).toBeCloseTo(situation.playerA.x)
+    expect(footstepsBetween(root, situation.playerA, situation.impact).length).toBeGreaterThanOrEqual(Math.floor(Math.hypot(situation.impact.x - situation.playerA.x, situation.impact.y - situation.playerA.y) / 0.42) - 2)
+  })
+
+  it('shows footsteps from where B hit to where B recovered', () => {
+    const root = revealed(startedApp())
+    const situation = generateSituation(SEED)
+    const moved = Math.hypot(situation.playerBRecovered.x - situation.playerBHit.x, situation.playerBRecovered.y - situation.playerBHit.y)
+    expect(footstepsBetween(root, situation.playerBHit, situation.playerBRecovered).length).toBeGreaterThanOrEqual(Math.max(0, Math.floor(moved / 0.42) - 2))
+  })
+})

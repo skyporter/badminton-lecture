@@ -332,7 +332,7 @@ export function startApp(root: HTMLElement): void {
     } else {
       const {best, bestZone, alternativeZone} = result.analysis
       shotLayer.replaceChildren()
-      renderPlayers(playerLayer, {...situation, playerA: situation.impact}, 'reveal')
+      renderPlayers(playerLayer, situation, 'reveal')
       zoneLayer.replaceChildren(
         ...(bestZone === null ? [] : [zoneEllipse(bestZone, 1)]),
         ...(alternativeZone === null ? [] : [zoneEllipse(alternativeZone, 2)]),

@@ -17,6 +17,15 @@ export const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const PLAYER_RADIUS = 0.35
 export const BANNER_RESERVED_METRES = 0.75
 const COURT_MARGIN = 0.6
+const FOOTSTEP_SPACING = 0.42
+const FOOTSTEP_SIDE_OFFSET = 0.08
+const FOOTSTEP_SOLE_CENTER_Y = -0.04
+const FOOTSTEP_SOLE_RADIUS_X = 0.055
+const FOOTSTEP_SOLE_RADIUS_Y = 0.095
+const FOOTSTEP_HEEL_CENTER_Y = 0.11
+const FOOTSTEP_HEEL_RADIUS_X = 0.042
+const FOOTSTEP_HEEL_RADIUS_Y = 0.045
+const FOOTSTEP_OPACITY = 0.35
 const HANDEDNESS_TAG_OFFSET_X = 0.27
 const HANDEDNESS_TAG_OFFSET_Y = 0.27
 export const HANDEDNESS_LETTERS: Record<Handedness, string> = {droitier: 'D'}
@@ -84,8 +93,8 @@ function playerDisc(position: Point, side: 'A' | 'B'): SVGElement {
   return group
 }
 
-function playerGhost(position: Point): SVGElement {
-  const group = svgElement('g', {})
+function playerGhost(position: Point, side: 'A' | 'B'): SVGElement {
+  const group = svgElement('g', {class: 'player-ghost'})
   const text = svgElement('text', {
     x: position.x,
     y: position.y + 0.15,
@@ -94,7 +103,7 @@ function playerGhost(position: Point): SVGElement {
     fill: '#fff',
     opacity: 0.8,
   })
-  text.textContent = 'B'
+  text.textContent = side
   group.append(
     svgElement('circle', {
       cx: position.x,
@@ -110,12 +119,44 @@ function playerGhost(position: Point): SVGElement {
   return group
 }
 
+function footsteps(from: Point, to: Point): SVGElement[] {
+  const length = Math.hypot(to.x - from.x, to.y - from.y)
+  const unit = {x: (to.x - from.x) / length, y: (to.y - from.y) / length}
+  const angle = (Math.atan2(unit.y, unit.x) * 180) / Math.PI + 90
+  const steps: SVGElement[] = []
+  for (let along = PLAYER_RADIUS + FOOTSTEP_SPACING / 2, index = 0; along < length - PLAYER_RADIUS; along += FOOTSTEP_SPACING, index++) {
+    const side = index % 2 === 0 ? 1 : -1
+    const center = {
+      x: Number((from.x + unit.x * along - unit.y * side * FOOTSTEP_SIDE_OFFSET).toFixed(3)),
+      y: Number((from.y + unit.y * along + unit.x * side * FOOTSTEP_SIDE_OFFSET).toFixed(3)),
+    }
+    const step = svgElement('g', {
+      class: 'footstep',
+      transform: `translate(${center.x} ${center.y}) rotate(${Number(angle.toFixed(1))})`,
+      fill: '#fff',
+      opacity: FOOTSTEP_OPACITY,
+    })
+    step.append(
+      svgElement('ellipse', {cx: 0, cy: FOOTSTEP_SOLE_CENTER_Y, rx: FOOTSTEP_SOLE_RADIUS_X, ry: FOOTSTEP_SOLE_RADIUS_Y}),
+      svgElement('ellipse', {cx: 0, cy: FOOTSTEP_HEEL_CENTER_Y, rx: FOOTSTEP_HEEL_RADIUS_X, ry: FOOTSTEP_HEEL_RADIUS_Y}),
+    )
+    steps.push(step)
+  }
+  return steps
+}
+
 export function renderPlayers(layer: SVGGElement, situation: Situation, phase: 'question' | 'reveal'): void {
-  const playerA = playerDisc(situation.playerA, 'A')
   if (phase === 'question') {
-    layer.replaceChildren(playerDisc(situation.playerBHit, 'B'), playerA)
+    layer.replaceChildren(playerDisc(situation.playerBHit, 'B'), playerDisc(situation.playerA, 'A'))
   } else {
-    layer.replaceChildren(playerGhost(situation.playerBHit), playerDisc(situation.playerBRecovered, 'B'), playerA)
+    layer.replaceChildren(
+      ...footsteps(situation.playerBHit, situation.playerBRecovered),
+      ...footsteps(situation.playerA, situation.impact),
+      playerGhost(situation.playerBHit, 'B'),
+      playerGhost(situation.playerA, 'A'),
+      playerDisc(situation.playerBRecovered, 'B'),
+      playerDisc(situation.impact, 'A'),
+    )
   }
 }
 

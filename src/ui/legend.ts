@@ -81,6 +81,7 @@ function revealRows(result: ChoiceResult): HTMLElement[] {
   const {best, bestZone, alternativeZone} = analysis
   return [
     row(shapeSwatch('disc ghost', 'transparent'), 'B au moment de sa frappe'),
+    row(shapeSwatch('disc ghost', 'transparent'), 'A avant de se déplacer'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), 'B replacé quand tu frappes'),
     row(straightLine(RETURN_COLOR, STROKE_PIXELS.returnDashArray), `ton retour\u00a0: ${SHOTS[choice.shot].label} (✕ = point visé)`),
     ...(choice.infeasibility === 'zone' ? [row(straightLine(UNREACHABLE_COLOR, STROKE_PIXELS.unreachableDashArray, STROKE_PIXELS.unreachable), 'au-delà de la portée de ton coup')] : []),
