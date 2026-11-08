@@ -48,7 +48,7 @@ Le pourquoi : on apprend à lire le jeu en devinant **avant** de voir la répon
 ### 4.1 Orientation et joueurs
 - Terrain vertical, vu de dessus. **A en bas** (il reçoit, c'est le point de vue de l'élève), **B en haut**.
 - A en bleu, B en rouge, chacun dans un rond avec sa lettre.
-- **Un arc blanc** autour du rond du joueur, du côté de la main droite, pour repérer le coup droit : à droite de l'écran pour A (il regarde vers le haut, arc de 13 h 30 à 16 h 30), à gauche de l'écran pour B (il regarde vers le bas, en miroir). Il remplace la raquette dessinée, jugée peu lisible. *(décision de Vincent)*
+- **Pas de repère du côté coup droit** sur le terrain : la raquette dessinée, puis l'arc blanc qui l'a remplacée, ont été retirés. *(décision de Vincent)*
 
 ### 4.2 Étape 1 : la question
 Tout se passe sur le terrain, sans panneau à côté.
@@ -71,7 +71,7 @@ La révélation se fait sur le terrain.
 - Un changement de niveau après la révélation recalcule la révélation pour la même situation et garde l'état du tiroir.
 
 ### 4.4 Légendes
-- Une **légende en surimpression** sur le terrain, qui décrit tout ce qui est dessiné (joueurs, arc côté coup droit, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
+- Une **légende en surimpression** sur le terrain, qui décrit tout ce qui est dessiné (joueurs, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
 - Chaque bouton de coup a une **infobulle** qui explique le coup, et le coup sélectionné est décrit sous les boutons (pour le mobile, sans survol). *(décision de Vincent)*
 - Sur le terrain, le **nom du coup** est écrit au milieu de chaque tracé, dans une petite étiquette au même design que le bouton « Légende » (fond sombre translucide, texte blanc). Le **meilleur retour** se termine par une **croix blanche**. La consigne en bas à droite est un texte blanc simple, sans ombre. *(décision de Vincent)*
 - Dans le tiroir, « Ton choix » (coup, zone, score et ses raisons) est dans un **encadré à contour blanc**, et « Meilleur retour » (coup, zone et ses raisons) dans un **encadré distinct** (fond légèrement éclairci, sans bordure, titre en vert vif). Il n'y a plus de section « Pourquoi » séparée. *(décision de Vincent)*
@@ -87,7 +87,7 @@ La révélation se fait sur le terrain.
 ### 4.6 Mobile et traits
 - Même écran que sur ordinateur : le terrain en pleine largeur, la barre du haut au-dessus, le bandeau, la fenêtre de choix et le tiroir par-dessus le terrain.
 - Légende masquée par défaut sur mobile, état mémorisé (par appareil).
-- Les **épaisseurs de trait et les longueurs de pointillé sont constantes en pixels**, quelle que soit la taille de la fenêtre ; seules les formes (ronds, point de chute, croix, rayon de l'arc côté coup droit) suivent la taille du terrain.
+- Les **épaisseurs de trait et les longueurs de pointillé sont constantes en pixels**, quelle que soit la taille de la fenêtre ; seules les formes (ronds, point de chute, croix) suivent la taille du terrain.
 - Chaque situation est **partageable** : l'adresse contient `?seed=&level=`, et la même adresse rechargée affiche la même situation. « Nouvelle situation » ajoute une entrée à l'historique du navigateur : précédent et suivant font revenir aux situations déjà vues, telles qu'elles étaient (avec la révélation si la réponse avait été validée). Le changement de niveau remplace l'entrée courante. *(décision de Vincent)*
 - Une fois la réponse validée, l'adresse contient aussi le choix (`&shot=…&x=…&y=…`, le point visé arrondi au centimètre) : recharger ou partager le lien réaffiche la révélation avec le même score. La validation ajoute une entrée à l'historique : « précédent » réaffiche la même situation sans réponse. *(décision de Vincent)*
 
@@ -175,7 +175,7 @@ Plus tard, une IA pourra reformuler la justification calculée par le moteur ou 
 
 ## 8. Choix faits par Claude (à vérifier par Vincent)
 - Les trois niveaux nommés débutant, intermédiaire et avancé.
-- Un arc fixe côté coup droit, sans posture de frappe.
+- Aucun repère du côté coup droit, ni posture de frappe.
 - Le coup de B à la couleur de B, et les retours de A à la couleur de A.
 - Le retour qui part du point d'impact.
 - Le comportement tactile : glisser, relâcher, croix déplaçable.

@@ -223,19 +223,10 @@ describe('banner reservation', () => {
   })
 })
 
-describe('forehand arc', () => {
-  it('draws a white arc on the -x side of B and on the +x side of A, with no racket', () => {
+describe('players', () => {
+  it('draws no forehand marker around the players', () => {
     const root = startedApp()
-    const situation = generateSituation(SEED)
-    const [playerBGroup, playerAGroup] = [...root.querySelectorAll('svg.court > g')].pop()!.children
-    const arcEndsX = (group: Element) => {
-      const numbers = group.querySelector('.forehand-arc')!.getAttribute('d')!.match(/-?[\d.]+/g)!.map(Number)
-      return [numbers[0], numbers[numbers.length - 2]]
-    }
-    arcEndsX(playerBGroup).forEach((x) => expect(x).toBeLessThan(situation.playerBHit.x))
-    arcEndsX(playerAGroup).forEach((x) => expect(x).toBeGreaterThan(situation.playerA.x))
-    expect(playerAGroup.querySelector('.forehand-arc')!.getAttribute('stroke')).toBe('#ffffff')
-    expect(root.querySelector('svg.court ellipse')).toBeNull()
+    expect(root.querySelector('svg.court .forehand-arc')).toBeNull()
   })
 })
 

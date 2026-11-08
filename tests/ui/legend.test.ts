@@ -53,7 +53,7 @@ describe('renderLegend', () => {
 
   it('lists the question entries', () => {
     const text = legendText('question')
-    ;['A : toi', 'arc blanc = côté coup droit', 'coup de B', 'point de chute', 'ton retour au survol'].forEach((entry) => expect(text).toContain(entry))
+    ;['A : toi', 'coup de B', 'point de chute', 'ton retour au survol'].forEach((entry) => expect(text).toContain(entry))
     expect(text).not.toContain('meilleur spot')
   })
 
@@ -61,6 +61,12 @@ describe('renderLegend', () => {
     const text = legendText('reveal')
     ;['B au moment de sa frappe', 'B replacé', 'ton retour', 'meilleur retour', 'au-delà de la portée de ton coup', 'meilleur spot', 'bon retour', 'à éviter'].forEach((entry) => expect(text).toContain(entry))
     expect(text).not.toContain('point de chute')
+  })
+
+  it('has no forehand marker entry', () => {
+    const container = document.createElement('div')
+    renderLegend(container, 'question')
+    expect(container.textContent).not.toContain('coup droit')
   })
 
   it('has no trajectory code block anymore', () => {

@@ -7,7 +7,6 @@ import {
   SHORT_SERVICE_DISTANCE,
   SINGLES_LEFT,
   SINGLES_RIGHT,
-  forehandIsPositiveX,
 } from '../engine/court'
 import type {Situation} from '../engine/generator'
 import type {Point} from '../engine/types'
@@ -17,9 +16,6 @@ export const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const PLAYER_RADIUS = 0.35
 export const BANNER_RESERVED_METRES = 0.75
 const COURT_MARGIN = 0.6
-const FOREHAND_ARC_COLOR = '#ffffff'
-const FOREHAND_ARC_RADIUS = 0.45
-const FOREHAND_ARC_HALF_SPAN = 45
 const OUT_ZONE_BELOW_BANNER = 0.4
 
 export function svgElement(name: string, attributes: Record<string, string | number>): SVGElement {
@@ -61,24 +57,6 @@ export function renderCourt(svg: SVGSVGElement): void {
   svg.replaceChildren(lines, net)
 }
 
-export function forehandArc(position: Point, side: 'A' | 'B'): SVGElement {
-  const centerAngle = forehandIsPositiveX(side) ? 0 : 180
-  const pointAt = (angle: number): Point => ({
-    x: Number((position.x + FOREHAND_ARC_RADIUS * Math.cos((angle * Math.PI) / 180)).toFixed(3)),
-    y: Number((position.y + FOREHAND_ARC_RADIUS * Math.sin((angle * Math.PI) / 180)).toFixed(3)),
-  })
-  const start = pointAt(centerAngle - FOREHAND_ARC_HALF_SPAN)
-  const end = pointAt(centerAngle + FOREHAND_ARC_HALF_SPAN)
-  return svgElement('path', {
-    class: 'forehand-arc',
-    d: `M ${start.x} ${start.y} A ${FOREHAND_ARC_RADIUS} ${FOREHAND_ARC_RADIUS} 0 0 1 ${end.x} ${end.y}`,
-    fill: 'none',
-    stroke: FOREHAND_ARC_COLOR,
-    'stroke-linecap': 'round',
-    ...constantStroke(STROKE_PIXELS.forehandArc),
-  })
-}
-
 function playerDisc(position: Point, side: 'A' | 'B'): SVGElement {
   const group = svgElement('g', {})
   const text = svgElement('text', {
@@ -91,7 +69,6 @@ function playerDisc(position: Point, side: 'A' | 'B'): SVGElement {
   })
   text.textContent = side
   group.append(
-    forehandArc(position, side),
     svgElement('circle', {cx: position.x, cy: position.y, r: PLAYER_RADIUS, fill: side === 'A' ? PLAYER_A_COLOR : PLAYER_B_COLOR}),
     text,
   )

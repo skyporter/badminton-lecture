@@ -218,11 +218,6 @@ body {
   line-height: 1.9;
 }
 
-.legend-forehand {
-  width: 22px;
-  height: 22px;
-}
-
 .legend-row {
   display: flex;
   align-items: center;
