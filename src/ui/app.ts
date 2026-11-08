@@ -293,7 +293,8 @@ export function startApp(root: HTMLElement): void {
   function dispatch(action: QuizAction): void {
     state = nextState(state, action)
     const search = stateSearch(state)
-    if (action.type === 'new-situation') {
+    const answerJustRevealed = action.type === 'validate' && search !== window.location.search
+    if (action.type === 'new-situation' || answerJustRevealed) {
       history.pushState(null, '', search)
     } else {
       history.replaceState(null, '', search)

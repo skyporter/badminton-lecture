@@ -73,6 +73,22 @@ describe('shareable situation url', () => {
     expect(window.location.search).toBe(search)
   })
 
+  it('adds a history entry on validation, so going back shows the same situation unanswered', () => {
+    const root = started('?seed=5&level=debutant')
+    const svg = root.querySelector<SVGSVGElement>('svg.court')!
+    svg.getScreenCTM = () => ({inverse: () => ({a: 1, b: 0, c: 0, d: 1, e: 0, f: 0})}) as unknown as DOMMatrix
+    svg.setPointerCapture = () => undefined
+    for (const type of ['pointerdown', 'pointerup']) svg.dispatchEvent(new MouseEvent(type, {bubbles: true, clientX: 3, clientY: 3}))
+    root.querySelector<HTMLButtonElement>('.shot-popover .shot')!.click()
+    const historyLength = history.length
+    root.querySelector<HTMLButtonElement>('.shot-popover .validate')!.click()
+    expect(history.length).toBe(historyLength + 1)
+    history.replaceState(null, '', '/?seed=5&level=debutant')
+    window.dispatchEvent(new PopStateEvent('popstate'))
+    expect(root.querySelector<HTMLElement>('.reveal-drawer')!.hidden).toBe(true)
+    expect(root.querySelector('.banner-shot')!.textContent).toBe(describeShotB(generateSituation(5)))
+  })
+
   it('drops the choice from the address bar on a new situation', () => {
     const root = started('?seed=5&level=debutant&shot=lob-defensive&x=3&y=1')
     root.querySelector<HTMLButtonElement>('.controls .button')!.click()

@@ -89,7 +89,7 @@ La révélation se fait sur le terrain.
 - Légende masquée par défaut sur mobile, état mémorisé (par appareil).
 - Les **épaisseurs de trait et les longueurs de pointillé sont constantes en pixels**, quelle que soit la taille de la fenêtre ; seules les formes (ronds, point de chute, croix, rayon de l'arc côté coup droit) suivent la taille du terrain.
 - Chaque situation est **partageable** : l'adresse contient `?seed=&level=`, et la même adresse rechargée affiche la même situation. « Nouvelle situation » ajoute une entrée à l'historique du navigateur : précédent et suivant font revenir aux situations déjà vues, telles qu'elles étaient (avec la révélation si la réponse avait été validée). Le changement de niveau remplace l'entrée courante. *(décision de Vincent)*
-- Une fois la réponse validée, l'adresse contient aussi le choix (`&shot=…&x=…&y=…`, le point visé arrondi au centimètre) : recharger ou partager le lien réaffiche la révélation avec le même score. *(décision de Vincent)*
+- Une fois la réponse validée, l'adresse contient aussi le choix (`&shot=…&x=…&y=…`, le point visé arrondi au centimètre) : recharger ou partager le lien réaffiche la révélation avec le même score. La validation ajoute une entrée à l'historique : « précédent » réaffiche la même situation sans réponse. *(décision de Vincent)*
 
 ## 5. Le moteur de décision
 
