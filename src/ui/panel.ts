@@ -39,7 +39,15 @@ export function renderControls(container: HTMLElement, state: QuizState, dispatc
   container.replaceChildren(levelSelect, newSituationButton)
 }
 
-function questionSection(state: QuizState, dispatch: Dispatch): HTMLElement[] {
+export function renderBanner(container: HTMLElement, situation: Situation): void {
+  container.textContent = describeShotB(situation)
+}
+
+export function renderShotPopover(container: HTMLElement, state: QuizState, dispatch: Dispatch): void {
+  const closeButton = element('button', 'popover-close', '✕')
+  closeButton.setAttribute('aria-label', 'Fermer')
+  closeButton.addEventListener('click', () => dispatch({type: 'close-popover'}))
+
   const shotButtons = element('div', 'shots')
   shotButtons.append(...(Object.keys(SHOT_FAMILIES) as ShotFamily[]).map((family) => {
     const group = element('div', 'shot-group')
@@ -57,15 +65,7 @@ function questionSection(state: QuizState, dispatch: Dispatch): HTMLElement[] {
   validateButton.disabled = !canValidate(state)
   validateButton.addEventListener('click', () => dispatch({type: 'validate'}))
 
-  return [
-    element('div', 'label', 'Coup de B'),
-    element('p', '', describeShotB(state.situation)),
-    element('div', 'label', 'À toi'),
-    element('p', 'step', '1. Clique sur le terrain de B, là où tu renvoies.'),
-    element('p', 'step', '2. Choisis ton coup :'),
-    shotButtons,
-    validateButton,
-  ]
+  container.replaceChildren(closeButton, shotButtons, validateButton)
 }
 
 function revealSection(situation: Situation, result: ChoiceResult): HTMLElement[] {
@@ -99,7 +99,28 @@ function revealSection(situation: Situation, result: ChoiceResult): HTMLElement[
   }
 }
 
-export function renderPanel(container: HTMLElement, state: QuizState, dispatch: Dispatch): void {
-  const section = state.result === null ? questionSection(state, dispatch) : revealSection(state.situation, state.result)
-  container.replaceChildren(...section)
+function drawerSummary(result: ChoiceResult): string {
+  const {best} = result.analysis
+  const bestReturn = best.value > 0 ? `Meilleur : ${SHOTS[best.shot].label}` : 'Aucun coup jouable'
+  return `Score : ${result.score} / 100 — ${bestReturn}`
+}
+
+export function renderDrawer(container: HTMLElement, state: QuizState, dispatch: Dispatch): void {
+  container.hidden = state.result === null
+  container.classList.toggle('expanded', state.drawerExpanded)
+  if (state.result === null) {
+    container.replaceChildren()
+  } else {
+    const toggle = element('button', 'drawer-toggle')
+    toggle.setAttribute('aria-expanded', String(state.drawerExpanded))
+    toggle.append(element('span', 'drawer-summary', drawerSummary(state.result)), element('span', 'drawer-chevron', state.drawerExpanded ? '▾' : '▴'))
+    toggle.addEventListener('click', () => dispatch({type: 'toggle-drawer'}))
+    if (state.drawerExpanded) {
+      const body = element('div', 'drawer-body')
+      body.append(...revealSection(state.situation, state.result))
+      container.replaceChildren(toggle, body)
+    } else {
+      container.replaceChildren(toggle)
+    }
+  }
 }

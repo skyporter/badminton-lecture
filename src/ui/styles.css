@@ -13,44 +13,157 @@ body {
 }
 
 .layout {
-  --chrome-height: 40px;
-  display: grid;
-  grid-template-columns: auto minmax(280px, 1fr);
-  grid-template-areas:
-    "court controls"
-    "court panel";
-  grid-template-rows: auto 1fr;
-  gap: 8px 24px;
-  align-items: start;
-  max-width: 900px;
-  margin: 0 auto;
-  padding: 16px;
-}
-
-.court-column {
-  grid-area: court;
+  --page-padding: 16px;
+  --chrome-height: calc(2 * var(--page-padding) + 44px);
   display: flex;
   flex-direction: column;
   align-items: center;
+  gap: 8px;
+  padding: var(--page-padding);
 }
 
 .court-frame {
   position: relative;
-  width: max(240px, calc((100dvh - var(--chrome-height)) / 2));
+  width: min(100vw - 2 * var(--page-padding), (100dvh - var(--chrome-height)) / 2);
+  min-width: 240px;
+  container-type: inline-size;
   background: #2f7d4f;
   border-radius: 6px;
 }
 
-.legend-overlay {
+.shot-banner {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 4px 8px;
+  border-radius: 6px 6px 0 0;
+  background: rgba(20, 22, 26, 0.75);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.shot-popover {
+  --popover-width: min(250px, 100% - 8px);
+  --anchor-gap: 14px;
+  position: absolute;
+  z-index: 1;
+  box-sizing: border-box;
+  width: var(--popover-width);
+  left: clamp(4px, var(--anchor-x) + var(--anchor-gap), 100% - var(--popover-width) - 4px);
+  top: calc(var(--anchor-y) + var(--anchor-gap));
+  max-height: calc(100% - var(--anchor-y) - var(--anchor-gap) - 4px);
+  overflow-y: auto;
+  padding: 6px 8px 8px;
+  border: 1px solid #4a525a;
+  border-radius: 8px;
+  background: rgba(20, 22, 26, 0.94);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+.shot-popover.to-left {
+  left: clamp(4px, var(--anchor-x) - var(--anchor-gap) - var(--popover-width), 100% - var(--popover-width) - 4px);
+}
+
+.shot-popover.upward {
+  top: auto;
+  bottom: calc(100% - var(--anchor-y) + var(--anchor-gap));
+  max-height: calc(var(--anchor-y) - var(--anchor-gap) - 4px);
+}
+
+.shot-popover[hidden],
+.reveal-drawer[hidden] {
+  display: none;
+}
+
+.popover-close {
+  float: right;
+  padding: 0 4px;
+  border: none;
+  background: none;
+  color: #9aa4ad;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.shot-popover .validate {
+  width: 100%;
+}
+
+.bottom-stack {
   position: absolute;
   left: 4px;
+  right: 4px;
   bottom: 4px;
   display: flex;
   flex-direction: column;
   align-items: flex-start;
   gap: 4px;
-  max-width: calc(100% - 8px);
-  max-height: 70%;
+  max-height: 85%;
+  pointer-events: none;
+}
+
+.bottom-stack > * {
+  pointer-events: auto;
+}
+
+.legend-overlay {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 4px;
+  min-height: 0;
+  max-width: 100%;
+  flex-shrink: 1;
+}
+
+.reveal-drawer {
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  width: 100%;
+  max-height: 120cqw;
+  border-radius: 8px;
+  background: rgba(20, 22, 26, 0.92);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.drawer-toggle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  padding: 6px 10px;
+  border: none;
+  background: none;
+  color: #fff;
+  font: inherit;
+  font-weight: bold;
+  text-align: left;
+  cursor: pointer;
+}
+
+.drawer-summary {
+  flex: 1;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.drawer-chevron {
+  font-size: 16px;
+}
+
+.drawer-body {
+  min-height: 0;
+  overflow-y: auto;
+  padding: 0 10px 8px;
+}
+
+.drawer-body p {
+  margin: 4px 0 12px;
 }
 
 .legend {
@@ -141,22 +254,7 @@ body {
   clip-path: inset(0);
 }
 
-.panel {
-  grid-area: panel;
-  font-size: 14px;
-  line-height: 1.5;
-}
-
-.panel p {
-  margin: 4px 0 12px;
-}
-
-.panel .step {
-  margin: 4px 0;
-}
-
 .controls {
-  grid-area: controls;
   display: flex;
   flex-wrap: wrap;
   gap: 8px;
@@ -205,7 +303,7 @@ body {
 }
 
 .shots {
-  margin: 6px 0 12px;
+  margin: 0 0 8px;
 }
 
 .shot-group {
@@ -245,18 +343,6 @@ body {
 
 @media (max-width: 767px) {
   .layout {
-    --chrome-height: 130px;
-    grid-template-columns: minmax(0, 1fr);
-    grid-template-areas:
-      "controls"
-      "court"
-      "panel";
-    gap: 12px;
-    padding: 8px;
+    --page-padding: 8px;
   }
-
-  .court-frame {
-    width: min(100%, calc((100dvh - var(--chrome-height)) / 2));
-  }
-
 }

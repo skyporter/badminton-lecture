@@ -5,7 +5,7 @@ import {generateSituation} from '../../src/engine/generator'
 import {canValidate, nextState} from '../../src/ui/app'
 import type {QuizState} from '../../src/ui/app'
 
-const state: QuizState = {situation: generateSituation(7), level: 'intermediaire', target: null, shot: null, result: null}
+const state: QuizState = {situation: generateSituation(7), level: 'intermediaire', target: null, shot: null, result: null, popoverOpen: false, drawerExpanded: false}
 const point = {x: 1.5, y: 2.0}
 const answeredState = nextState(nextState(state, {type: 'set-target', point}), {type: 'set-shot', shot: 'clear-high'})
 const revealedState = nextState(answeredState, {type: 'validate'})
@@ -64,5 +64,48 @@ describe('nextState', () => {
     expect(changed.result?.analysis).toEqual(analyse(revealedState.situation, 'avance'))
     expect(changed.result).toEqual(scoreChoice(state.situation, 'avance', point, 'clear-high'))
     expect(changed).toMatchObject({situation: state.situation, target: point, shot: 'clear-high'})
+  })
+})
+
+describe('on-court ui state', () => {
+  it('opens the shot popover when a target is placed', () => {
+    expect(nextState(state, {type: 'set-target', point})).toMatchObject({target: point, popoverOpen: true})
+  })
+
+  it('closes the popover and keeps the cross', () => {
+    const closed = nextState(answeredState, {type: 'close-popover'})
+    expect(closed).toMatchObject({target: point, shot: 'clear-high', popoverOpen: false})
+  })
+
+  it('reopens the popover when the target is placed again', () => {
+    const closed = nextState(answeredState, {type: 'close-popover'})
+    expect(nextState(closed, {type: 'set-target', point}).popoverOpen).toBe(true)
+  })
+
+  it('closes the popover and starts with a collapsed drawer on validation', () => {
+    expect(revealedState).toMatchObject({popoverOpen: false, drawerExpanded: false})
+    expect(revealedState.result).not.toBeNull()
+  })
+
+  it('toggles the drawer only after the reveal', () => {
+    const expanded = nextState(revealedState, {type: 'toggle-drawer'})
+    expect(expanded.drawerExpanded).toBe(true)
+    expect(nextState(expanded, {type: 'toggle-drawer'}).drawerExpanded).toBe(false)
+    expect(nextState(answeredState, {type: 'toggle-drawer'})).toBe(answeredState)
+  })
+
+  it('keeps the drawer state when the level changes after the reveal', () => {
+    const expanded = nextState(revealedState, {type: 'toggle-drawer'})
+    expect(nextState(expanded, {type: 'set-level', level: 'avance'}).drawerExpanded).toBe(true)
+  })
+
+  it('closes the popover when the level changes before validation', () => {
+    expect(nextState(answeredState, {type: 'set-level', level: 'debutant'}).popoverOpen).toBe(false)
+  })
+
+  it('resets the popover and the drawer on a new situation', () => {
+    const expanded = nextState(revealedState, {type: 'toggle-drawer'})
+    expect(nextState(expanded, {type: 'new-situation', seed: 3})).toMatchObject({popoverOpen: false, drawerExpanded: false})
+    expect(nextState(answeredState, {type: 'new-situation', seed: 3}).popoverOpen).toBe(false)
   })
 })

@@ -4,14 +4,14 @@ import {generateSituation} from '../../src/engine/generator'
 import {SHOT_FAMILIES} from '../../src/engine/rules'
 import {SHOTS} from '../../src/engine/shots'
 import type {QuizState} from '../../src/ui/app'
-import {renderPanel} from '../../src/ui/panel'
+import {renderShotPopover} from '../../src/ui/panel'
 
 describe('shot buttons', () => {
-  const state: QuizState = {situation: generateSituation(1), level: 'intermediaire', target: null, shot: null, result: null}
+  const state: QuizState = {situation: generateSituation(1), level: 'intermediaire', target: null, shot: null, result: null, popoverOpen: true, drawerExpanded: false}
 
   function renderedGroups(): HTMLElement[] {
     const container = document.createElement('div')
-    renderPanel(container, state, () => undefined)
+    renderShotPopover(container, state, () => undefined)
     return [...container.querySelectorAll<HTMLElement>('.shot-group')]
   }
 

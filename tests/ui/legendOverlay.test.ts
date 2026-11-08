@@ -66,7 +66,7 @@ describe('legend overlay', () => {
     const legend = root.querySelector('.legend')!
     const toggle = root.querySelector('.legend-toggle')!
     const boardBefore = svg.innerHTML
-    const validate = root.querySelector<HTMLButtonElement>('.validate')!
+    const popover = root.querySelector<HTMLElement>('.shot-popover')!
 
     ;[legend, toggle].forEach((pressed) => {
       pressed.dispatchEvent(new MouseEvent('pointerdown', {bubbles: true, clientX: 50, clientY: 50}))
@@ -74,7 +74,7 @@ describe('legend overlay', () => {
     })
 
     expect(svg.innerHTML).toBe(boardBefore)
-    expect(validate.disabled).toBe(true)
+    expect(popover.hidden).toBe(true)
   })
 
   it('does set a target when the court itself is pressed', () => {

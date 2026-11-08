@@ -9,11 +9,19 @@ import {renderCourt, renderPlayers, renderShotB} from './courtView'
 import {placeOverHalfOfB, renderHeatmap} from './heatmap'
 import {listenToCourt} from './input'
 import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
-import {renderControls, renderPanel} from './panel'
+import {renderBanner, renderControls, renderDrawer, renderShotPopover} from './panel'
 import {readSituationParams, situationSearch} from './situationUrl'
 import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
 
-export type QuizState = {situation: Situation; level: Level; target: Point | null; shot: ShotId | null; result: ChoiceResult | null}
+export type QuizState = {
+  situation: Situation
+  level: Level
+  target: Point | null
+  shot: ShotId | null
+  result: ChoiceResult | null
+  popoverOpen: boolean
+  drawerExpanded: boolean
+}
 
 export type QuizAction =
   | {type: 'new-situation'; seed: number}
@@ -21,6 +29,8 @@ export type QuizAction =
   | {type: 'set-target'; point: Point}
   | {type: 'set-shot'; shot: ShotId}
   | {type: 'validate'}
+  | {type: 'close-popover'}
+  | {type: 'toggle-drawer'}
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const CROSS_HALF_SIZE = 0.15
@@ -35,20 +45,28 @@ export function canValidate(state: QuizState): state is QuizState & {target: Poi
 export function nextState(state: QuizState, action: QuizAction): QuizState {
   switch (action.type) {
     case 'new-situation':
-      return {...state, situation: generateSituation(action.seed), target: null, shot: null, result: null}
+      return {...state, situation: generateSituation(action.seed), target: null, shot: null, result: null, popoverOpen: false, drawerExpanded: false}
     case 'set-level':
       if (state.result === null) {
-        return {...state, level: action.level, target: null, shot: null}
+        return {...state, level: action.level, target: null, shot: null, popoverOpen: false}
       } else {
         const {point, shot} = state.result.choice
         return {...state, level: action.level, result: scoreChoice(state.situation, action.level, point, shot)}
       }
     case 'set-target':
-      return state.result === null ? {...state, target: action.point} : state
+      return state.result === null ? {...state, target: action.point, popoverOpen: true} : state
     case 'set-shot':
       return state.result === null ? {...state, shot: action.shot} : state
     case 'validate':
-      return canValidate(state) ? {...state, result: scoreChoice(state.situation, state.level, state.target, state.shot)} : state
+      if (canValidate(state)) {
+        return {...state, result: scoreChoice(state.situation, state.level, state.target, state.shot), popoverOpen: false, drawerExpanded: false}
+      } else {
+        return state
+      }
+    case 'close-popover':
+      return {...state, popoverOpen: false}
+    case 'toggle-drawer':
+      return state.result === null ? state : {...state, drawerExpanded: !state.drawerExpanded}
   }
 }
 
@@ -86,6 +104,14 @@ function bestReturn(from: Point, best: PairEvaluation): SVGElement {
   })
 }
 
+function placeNextTo(popover: HTMLElement, point: Point, svg: SVGSVGElement): void {
+  const viewBox = svg.viewBox.baseVal
+  popover.style.setProperty('--anchor-x', `${(100 * (point.x - viewBox.x)) / viewBox.width}%`)
+  popover.style.setProperty('--anchor-y', `${(100 * (point.y - viewBox.y)) / viewBox.height}%`)
+  popover.classList.toggle('to-left', point.x - viewBox.x > viewBox.width / 2)
+  popover.classList.toggle('upward', point.y - viewBox.y > viewBox.height / 2)
+}
+
 export function startApp(root: HTMLElement): void {
   const params = readSituationParams(window.location.search)
   let state: QuizState = {
@@ -94,6 +120,8 @@ export function startApp(root: HTMLElement): void {
     target: null,
     shot: null,
     result: null,
+    popoverOpen: false,
+    drawerExpanded: false,
   }
   history.replaceState(null, '', situationSearch(state.situation.seed, state.level))
   let preview: Point | null = null
@@ -112,6 +140,10 @@ export function startApp(root: HTMLElement): void {
   placeOverHalfOfB(heatmap, svg)
   const courtFrame = document.createElement('div')
   courtFrame.className = 'court-frame'
+  const banner = document.createElement('div')
+  banner.className = 'shot-banner'
+  const popover = document.createElement('div')
+  popover.className = 'shot-popover'
   const legend = document.createElement('div')
   legend.className = 'legend'
   const legendOverlay = document.createElement('div')
@@ -121,17 +153,17 @@ export function startApp(root: HTMLElement): void {
   legendToggle.textContent = 'Légende'
   legendToggle.addEventListener('click', () => toggleLegend())
   legendOverlay.append(legend, legendToggle)
-  courtFrame.append(heatmap, svg, legendOverlay)
-  const courtColumn = document.createElement('div')
-  courtColumn.className = 'court-column'
-  courtColumn.append(courtFrame)
+  const drawer = document.createElement('div')
+  drawer.className = 'reveal-drawer'
+  const bottomStack = document.createElement('div')
+  bottomStack.className = 'bottom-stack'
+  bottomStack.append(legendOverlay, drawer)
+  courtFrame.append(heatmap, svg, banner, popover, bottomStack)
   const controlsBar = document.createElement('div')
   controlsBar.className = 'controls'
-  const panel = document.createElement('div')
-  panel.className = 'panel'
   const layout = document.createElement('div')
   layout.className = 'layout'
-  layout.append(controlsBar, courtColumn, panel)
+  layout.append(controlsBar, courtFrame)
   root.replaceChildren(layout)
 
   let legendVisible = loadLegendVisible(window.matchMedia(MOBILE_MEDIA_QUERY).matches)
@@ -186,7 +218,19 @@ export function startApp(root: HTMLElement): void {
   function renderChrome(): void {
     renderControls(controlsBar, state, dispatch)
     renderLegend(legend, state.result === null ? 'question' : 'reveal')
-    renderPanel(panel, state, dispatch)
+    renderBanner(banner, state.situation)
+    renderPopover()
+    renderDrawer(drawer, state, dispatch)
+  }
+
+  function renderPopover(): void {
+    popover.hidden = !state.popoverOpen || state.target === null
+    if (state.popoverOpen && state.target !== null) {
+      placeNextTo(popover, state.target, svg)
+      renderShotPopover(popover, state, dispatch)
+    } else {
+      popover.replaceChildren()
+    }
   }
 
   listenToCourt(svg, {
@@ -195,6 +239,11 @@ export function startApp(root: HTMLElement): void {
       renderPreview()
     },
     onTarget: (point) => dispatch({type: 'set-target', point}),
+  })
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && state.popoverOpen) {
+      dispatch({type: 'close-popover'})
+    }
   })
   renderLegendVisibility()
   renderBoard()
