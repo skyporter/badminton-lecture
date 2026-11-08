@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest'
 import {analyse, scoreChoice} from '../../src/engine/analysis'
-import {AGAINST_BULLETS, FOR_BULLETS, REAR_FOR_BULLET, describeShotB, explainBest, explainChoice, predictNextShotB} from '../../src/engine/explain'
+import {AGAINST_BULLETS, FOR_BULLETS, REAR_FOR_BULLET, describeReturn, describeShotB, explainBest, explainChoice, predictNextShotB} from '../../src/engine/explain'
 import {evaluatePair} from '../../src/engine/evaluate'
 import {generateSituation} from '../../src/engine/generator'
 import {EXPLAIN_FOR_MINIMUM_RAW} from '../../src/engine/rules'
@@ -25,6 +25,20 @@ describe('describeShotB', () => {
 
   it('describes the fast drop of F2', () => {
     expect(describeShotB(F2)).toBe("Amorti rapide en ligne, vers l'avant côté coup droit de A. Volant pris bas, en coup droit.")
+  })
+})
+
+describe('describeReturn', () => {
+  it('describes a straight return to the front on the forehand of B', () => {
+    expect(describeReturn(evaluatePair(F1, 'intermediaire', {x: 1.0, y: 5.6}, 'drop-fast'))).toBe("Amorti rapide en ligne, vers l'avant côté coup droit de B.")
+  })
+
+  it('describes a cross-court return to the rear on the backhand of B', () => {
+    expect(describeReturn(evaluatePair(F1, 'intermediaire', {x: 5.0, y: 0.9}, 'clear-attack'))).toBe("Dégagement d'attaque croisé, vers le fond côté revers de B.")
+  })
+
+  it('says when the return leaves the singles court of B', () => {
+    expect(describeReturn(evaluatePair(F1, 'intermediaire', {x: 3, y: 7.5}, 'smash'))).toBe('Smash, hors du terrain de simple de B.')
   })
 })
 
@@ -138,6 +152,7 @@ describe('French typography', () => {
       const analysis = analyse(situation, level)
       const bullets = [
         describeShotB(situation),
+        describeReturn(analysis.best),
         ...explainBest(situation, analysis),
         ...explainChoice(situation, scoreChoice(situation, level, {x: 3, y: 3}, 'drop-fast')),
         ...explainChoice(situation, scoreChoice(situation, level, analysis.alternative.point, analysis.alternative.shot)),

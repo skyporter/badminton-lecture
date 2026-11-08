@@ -1,5 +1,5 @@
 import type {Analysis, ChoiceResult} from './analysis'
-import {CENTER_X, depthFromNet, forehandIsPositiveX} from './court'
+import {CENTER_X, depthFromNet, forehandIsPositiveX, isInSinglesHalf} from './court'
 import type {CriterionScore, PairEvaluation} from './evaluate'
 import type {Situation} from './generator'
 import {EXCELLENT_SCORE, EXPLAIN_CRITERIA_MAXIMUM, EXPLAIN_FOR_MINIMUM_RAW, EXPLAIN_GAP_THRESHOLD, LIKELY_REPLIES, WEAK_SIDE_BACKHAND_VALUE} from './rules'
@@ -74,6 +74,15 @@ export function describeShotB(situation: Situation): string {
   const landsOnForehand = (situation.landing.x > CENTER_X) === forehandIsPositiveX('A')
   const side = landsOnForehand ? 'coup droit' : 'revers'
   return `${shotWithDirection}, vers ${ZONE_LABELS[hitZoneOf(situation.landing)]} côté ${side} de A. Volant pris ${ARRIVAL_LABELS[situation.arrival]}, ${CONTACT_LABELS[situation.contact]}.`
+}
+
+export function describeReturn(evaluation: PairEvaluation): string {
+  const {label} = SHOTS[evaluation.shot]
+  if (!isInSinglesHalf(evaluation.point, 'B')) return `${label}, hors du terrain de simple de B.`
+
+  const landsOnForehand = (evaluation.point.x > CENTER_X) === forehandIsPositiveX('B')
+  const side = landsOnForehand ? 'coup droit' : 'revers'
+  return `${label} ${DIRECTION_LABELS[evaluation.direction]}, vers ${ZONE_LABELS[hitZoneOf(evaluation.point)]} côté ${side} de B.`
 }
 
 export function explainBest(situation: Situation, analysis: Analysis): string[] {

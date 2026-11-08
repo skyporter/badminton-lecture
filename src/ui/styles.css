@@ -13,3 +13,116 @@ body {
   background: #2f7d4f;
   border-radius: 6px;
 }
+
+.layout {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 24px;
+  align-items: flex-start;
+  justify-content: center;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+.court-frame {
+  position: relative;
+  flex: 0 1 360px;
+  width: 100%;
+  max-width: 360px;
+  background: #2f7d4f;
+  border-radius: 6px;
+}
+
+.court-frame .court {
+  position: relative;
+  background: transparent;
+  touch-action: none;
+  cursor: crosshair;
+}
+
+.heatmap {
+  position: absolute;
+  opacity: 0.75;
+  filter: blur(4px);
+  clip-path: inset(0);
+}
+
+.panel {
+  flex: 1 1 280px;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.panel p {
+  margin: 4px 0 12px;
+}
+
+.panel .step {
+  margin: 4px 0;
+}
+
+.controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.label {
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: #9aa4ad;
+}
+
+.sublabel {
+  margin-top: 6px;
+  font-weight: bold;
+}
+
+.button,
+.level {
+  padding: 6px 12px;
+  border: 1px solid #4a525a;
+  border-radius: 6px;
+  background: #2a3036;
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+}
+
+.button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.shots {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin: 6px 0 12px;
+}
+
+.shot {
+  padding: 4px 8px;
+  font-size: 12px;
+}
+
+.shot.selected {
+  border-color: #ffd54a;
+  color: #ffd54a;
+}
+
+.score {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.bullets {
+  margin: 4px 0;
+  padding-left: 18px;
+}
+
+.alternative {
+  color: #9aa4ad;
+}
