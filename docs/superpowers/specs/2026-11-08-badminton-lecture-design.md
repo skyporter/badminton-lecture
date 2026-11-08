@@ -65,7 +65,7 @@ La révélation se fait sur le terrain.
 - Carte de couleurs sur le terrain de B : **vert vif** = meilleur spot, **vert clair** = bon retour, **rouge** = à éviter. Dégradé continu, pas de zones à bords nets.
 - B affiché à **sa position replacée** (rond plein) au moment où A frappe, et à sa position de frappe en **rond pointillé**. **Pas de flèche** entre les deux.
 - Retour de l'élève **en jaune** avec une petite croix au point visé, avec le même style qu'à l'étape 1.
-- Meilleur retour en **pointillé blanc**.
+- Meilleur retour en **blanc**, avec le même code des trajectoires que le coup de B et ton retour.
 - Un **tiroir repliable** en bas du terrain, **replié au départ** : une ligne « Score : NN / 100 — Meilleur : <coup> » avec un chevron. Déplié, il donne le détail : ton choix, score sur 100, meilleur retour (coup + zone), « Pourquoi » en **liste à puces** (une raison par ligne : position/statut, ce que fait B, la zone, le coup, la direction), et une ligne « Alternative : <coup et zone> » sans référence à une couleur.
 - Un changement de niveau après la révélation recalcule la révélation pour la même situation et garde l'état du tiroir.
 

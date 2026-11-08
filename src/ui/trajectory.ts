@@ -11,7 +11,6 @@ export const STROKE_PIXELS = {
   netDashArray: '6 4',
   trajectory: 2.5,
   bestReturn: 2,
-  bestReturnDashArray: '6 4',
   cross: 2.5,
   racket: 1.5,
   ghost: 1.5,

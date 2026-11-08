@@ -85,7 +85,7 @@ function revealRows(): HTMLElement[] {
     row(ghost, 'B au moment de sa frappe'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), 'B replacé quand tu frappes'),
     row(straightLine(RETURN_COLOR, ''), 'ton retour (✕ = point visé)'),
-    row(straightLine(BEST_RETURN_COLOR, STROKE_PIXELS.bestReturnDashArray, STROKE_PIXELS.bestReturn), 'meilleur retour'),
+    row(straightLine(BEST_RETURN_COLOR, '', STROKE_PIXELS.bestReturn), 'meilleur retour'),
     row(shapeSwatch('square', MAP_BRIGHT_GREEN), 'meilleur spot'),
     row(shapeSwatch('square', MAP_LIGHT_GREEN), 'bon retour'),
     row(shapeSwatch('square', MAP_RED), 'à éviter'),

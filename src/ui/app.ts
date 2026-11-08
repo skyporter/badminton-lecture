@@ -93,7 +93,7 @@ function bestReturn(from: Point, best: PairEvaluation): SVGElement {
     d: trajectoryPath(from, best.point, best.shot),
     stroke: BEST_RETURN_COLOR,
     fill: 'none',
-    ...constantStroke(STROKE_PIXELS.bestReturn, STROKE_PIXELS.bestReturnDashArray),
+    ...constantStroke(STROKE_PIXELS.bestReturn, trajectoryStyle(best.shot).dashArray),
   })
 }
 

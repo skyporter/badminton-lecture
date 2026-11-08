@@ -5,6 +5,7 @@ import {describeShotB} from '../../src/engine/explain'
 import {generateSituation} from '../../src/engine/generator'
 import {startApp} from '../../src/ui/app'
 import {BANNER_RESERVED_METRES, renderCourt} from '../../src/ui/courtView'
+import {trajectoryPath, trajectoryStyle} from '../../src/ui/trajectory'
 
 const SEED = 5
 
@@ -205,5 +206,16 @@ describe('alternative wording', () => {
     const text = drawer(root).querySelector('.alternative')!.textContent!
     expect(text.startsWith('Alternative : ')).toBe(true)
     expect(text).not.toContain('vert clair')
+  })
+})
+
+describe('best return trajectory', () => {
+  it('follows the trajectory code of the best shot', () => {
+    const root = revealed(startedApp())
+    const {best} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'clear-attack').analysis
+    const path = root.querySelector<SVGPathElement>('svg.court path[stroke="#ffffff"]')!
+    const situation = generateSituation(SEED)
+    expect(path.getAttribute('d')).toBe(trajectoryPath(situation.impact, best.point, best.shot))
+    expect(path.getAttribute('stroke-dasharray') ?? '').toBe(trajectoryStyle(best.shot).dashArray)
   })
 })

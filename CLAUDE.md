@@ -23,9 +23,9 @@ Both players are right-handed (`handedness: 'droitier'` is a parameter, only tha
 
 ## Colours and trajectory code
 
-A `#3b82f6`, B `#e05252`, B's shot `#ff8a65`, the student's return `#ffd54a`, best return `#ffffff` dashed. Map: bright green `#00e676`, light green `#b2ff59`, red `#ff5252` (constants in `rules.ts`).
+A `#3b82f6`, B `#e05252`, B's shot `#ff8a65`, the student's return `#ffd54a`, best return `#ffffff`. Map: bright green `#00e676`, light green `#b2ff59`, red `#ff5252` (constants in `rules.ts`).
 
-Trajectories (top view, `trajectory.ts`): the dash pattern says the speed (solid = very fast, long tight dashes = fast, medium dashes = medium, spaced dots = slow), the curvature says the height (straight = flat, slight curve = low arc, strong curve = high arc). The same code is used for B's shot and the student's return. The legend reuses these constants and `trajectoryPath` for its swatches.
+Trajectories (top view, `trajectory.ts`): the dash pattern says the speed (solid = very fast, long tight dashes = fast, medium dashes = medium, spaced dots = slow), the curvature says the height (straight = flat, slight curve = low arc, strong curve = high arc). The same code is used for B's shot, the student's return and the best return. The legend reuses these constants and `trajectoryPath` for its swatches.
 
 Stroke widths and dash lengths are constant in screen pixels, whatever the zoom or court size: every stroke in the court SVG carries `vector-effect="non-scaling-stroke"` through `constantStroke(...)` and its width comes from `STROKE_PIXELS` (`trajectory.ts`, also used by the legend swatches). Only shapes (discs, landing dot, cross size, racket head) scale with the court. Each situation writes `?seed=<integer>&level=<level>` with `history.replaceState`, and the same URL on load restores it.
 
