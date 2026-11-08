@@ -14,7 +14,7 @@ import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
 import {renderBanner, renderControls, renderDrawer, renderShotPopover} from './panel'
 import {readSituationParams, situationSearch} from './situationUrl'
 import type {Choice} from './situationUrl'
-import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke, trajectoryMiddle, trajectoryPath, trajectoryStyle} from './trajectory'
+import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke, trajectoryMiddle, trajectoryPath} from './trajectory'
 
 export type QuizState = {
   situation: Situation
@@ -89,8 +89,7 @@ function cross(point: Point, color: string): SVGElement[] {
 
 function studentTrajectory(from: Point, target: Point, shot: ShotId | null): SVGElement {
   const path = shot === null ? `M ${from.x} ${from.y} L ${target.x} ${target.y}` : trajectoryPath(from, target, shot)
-  const dashArray = shot === null ? '' : trajectoryStyle(shot).dashArray
-  return svgElement('path', {d: path, stroke: RETURN_COLOR, fill: 'none', ...constantStroke(STROKE_PIXELS.trajectory, dashArray)})
+  return svgElement('path', {d: path, stroke: RETURN_COLOR, fill: 'none', ...constantStroke(STROKE_PIXELS.trajectory, STROKE_PIXELS.returnDashArray)})
 }
 
 function studentReturn(from: Point, target: Point, shot: ShotId | null): SVGElement[] {
@@ -117,7 +116,7 @@ function bestReturn(from: Point, best: PairEvaluation): SVGElement[] {
     d: trajectoryPath(from, best.point, best.shot),
     stroke: BEST_RETURN_COLOR,
     fill: 'none',
-    ...constantStroke(STROKE_PIXELS.bestReturn, trajectoryStyle(best.shot).dashArray),
+    ...constantStroke(STROKE_PIXELS.bestReturn, STROKE_PIXELS.returnDashArray),
   })
   return [trajectory, ...cross(best.point, BEST_RETURN_COLOR)]
 }

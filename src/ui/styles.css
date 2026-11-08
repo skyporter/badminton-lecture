@@ -265,20 +265,6 @@ body {
   border-radius: 3px;
 }
 
-.legend-code {
-  margin-top: 4px;
-}
-
-.legend-code summary {
-  cursor: pointer;
-  color: #9aa4ad;
-}
-
-.legend-code p {
-  margin: 2px 0;
-  color: #9aa4ad;
-}
-
 .court-frame .court {
   position: relative;
   background: transparent;

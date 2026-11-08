@@ -63,26 +63,10 @@ describe('renderLegend', () => {
     expect(text).not.toContain('point de chute')
   })
 
-  it('shows the six trajectory styles in a collapsible block', () => {
+  it('has no trajectory code block anymore', () => {
     const container = document.createElement('div')
     renderLegend(container, 'question')
-    const details = container.querySelector('details')!
-    expect(details.querySelectorAll('.legend-row')).toHaveLength(6)
-  })
-
-  it('opens the collapsible block by default', () => {
-    const container = document.createElement('div')
-    renderLegend(container, 'question')
-    expect(container.querySelector('details')!.open).toBe(true)
-  })
-
-  it('keeps the collapsible block as the player left it across phases', () => {
-    const container = document.createElement('div')
-    renderLegend(container, 'question')
-    renderLegend(container, 'reveal')
-    expect(container.querySelector('details')!.open).toBe(true)
-    container.querySelector('details')!.open = false
-    renderLegend(container, 'question')
-    expect(container.querySelector('details')!.open).toBe(false)
+    expect(container.querySelector('details')).toBeNull()
+    expect(container.textContent).not.toContain('Code des trajectoires')
   })
 })

@@ -1,11 +1,10 @@
 import {describe, expect, it} from 'vitest'
-import {trajectoryMiddle, trajectoryPath, trajectoryStyle} from '../../src/ui/trajectory'
+import {trajectoryCurvature, trajectoryMiddle, trajectoryPath} from '../../src/ui/trajectory'
 
-describe('trajectoryStyle', () => {
-  it('draws a smash solid and straight', () => expect(trajectoryStyle('smash')).toEqual({dashArray: '', curvature: 0}))
-  it('draws a high clear dotted and strongly curved', () => expect(trajectoryStyle('clear-high')).toEqual({dashArray: '2 8', curvature: 0.2}))
-  it('draws an attacking lob with long dashes and a slight curve', () => expect(trajectoryStyle('lob-attack')).toEqual({dashArray: '12 3', curvature: 0.08}))
-  it('draws a medium speed shot with even dashes', () => expect(trajectoryStyle('drop-slow').dashArray).toBe('6 6'))
+describe('trajectoryCurvature', () => {
+  it('draws a smash straight', () => expect(trajectoryCurvature('smash')).toBe(0))
+  it('curves a high clear strongly', () => expect(trajectoryCurvature('clear-high')).toBe(0.2))
+  it('curves an attacking lob slightly', () => expect(trajectoryCurvature('lob-attack')).toBe(0.08))
 })
 
 describe('trajectoryPath', () => {

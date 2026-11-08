@@ -1,8 +1,12 @@
 import type {Point} from '../engine/types'
 import {SHOTS} from '../engine/shots'
-import type {Arc, ShotId, Speed} from '../engine/shots'
+import type {Arc, ShotId} from '../engine/shots'
 
-export const RETURN_COLOR = '#ffd54a'
+export const PLAYER_A_COLOR = '#3b82f6'
+export const PLAYER_B_COLOR = '#e05252'
+export const SHOT_B_COLOR = PLAYER_B_COLOR
+export const LANDING_COLOR = PLAYER_A_COLOR
+export const RETURN_COLOR = PLAYER_A_COLOR
 export const BEST_RETURN_COLOR = '#ffffff'
 export const UNREACHABLE_COLOR = '#ff5252'
 
@@ -11,6 +15,7 @@ export const STROKE_PIXELS = {
   net: 3,
   netDashArray: '6 4',
   trajectory: 2.5,
+  returnDashArray: '8 5',
   bestReturn: 2,
   unreachable: 2,
   unreachableDashArray: '3 4',
@@ -18,13 +23,6 @@ export const STROKE_PIXELS = {
   forehandArc: 3,
   ghost: 1.5,
   ghostDashArray: '4 3',
-}
-
-const DASH_ARRAYS: Record<Speed, string> = {
-  'very-fast': '',
-  'fast': '12 3',
-  'medium': '6 6',
-  'slow': '2 8',
 }
 
 const CURVATURES: Record<Arc, number> = {
@@ -46,13 +44,12 @@ function rounded(value: number): number {
   return Number(value.toFixed(3))
 }
 
-export function trajectoryStyle(shot: ShotId): {dashArray: string; curvature: number} {
-  const {speed, arc} = SHOTS[shot]
-  return {dashArray: DASH_ARRAYS[speed], curvature: CURVATURES[arc]}
+export function trajectoryCurvature(shot: ShotId): number {
+  return CURVATURES[SHOTS[shot].arc]
 }
 
 function controlPoint(from: Point, to: Point, shot: ShotId): Point {
-  const {curvature} = trajectoryStyle(shot)
+  const curvature = trajectoryCurvature(shot)
   return {
     x: rounded((from.x + to.x) / 2 + (to.y - from.y) * curvature),
     y: rounded((from.y + to.y) / 2 - (to.x - from.x) * curvature),

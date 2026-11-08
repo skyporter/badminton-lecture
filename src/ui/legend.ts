@@ -1,13 +1,10 @@
 import {MAP_BRIGHT_GREEN, MAP_LIGHT_GREEN, MAP_RED} from '../engine/rules'
-import {SHOTS} from '../engine/shots'
-import type {ShotId} from '../engine/shots'
-import {PLAYER_A_COLOR, PLAYER_B_COLOR, SHOT_B_COLOR, SVG_NAMESPACE, forehandArc, svgElement} from './courtView'
-import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
+import {SVG_NAMESPACE, forehandArc, svgElement} from './courtView'
+import {BEST_RETURN_COLOR, LANDING_COLOR, PLAYER_A_COLOR, PLAYER_B_COLOR, RETURN_COLOR, SHOT_B_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke} from './trajectory'
 
 const STORAGE_KEY = 'badminton-lecture:legend-visible'
 const SWATCH_WIDTH = 1.6
 const SWATCH_HEIGHT = 0.5
-const TRAJECTORY_CODE_SHOTS: ShotId[] = ['smash', 'drive', 'clear-attack', 'drop-slow', 'clear-high', 'net']
 
 type Phase = 'question' | 'reveal'
 
@@ -73,9 +70,9 @@ function questionRows(): HTMLElement[] {
     row(shapeSwatch('disc', PLAYER_A_COLOR), 'A : toi (droitier)'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), "B : l'adversaire (droitier)"),
     row(forehandArcSwatch(), 'arc blanc = côté coup droit'),
-    row(straightLine(SHOT_B_COLOR, trajectoryStyle('clear-attack').dashArray), 'coup de B'),
-    row(shapeSwatch('disc', SHOT_B_COLOR), 'point de chute du volant'),
-    row(straightLine(RETURN_COLOR, ''), 'ton retour au survol (✕ = point visé)'),
+    row(straightLine(SHOT_B_COLOR, ''), 'coup de B'),
+    row(shapeSwatch('disc', LANDING_COLOR), 'point de chute du volant'),
+    row(straightLine(RETURN_COLOR, STROKE_PIXELS.returnDashArray), 'ton retour au survol (✕ = point visé)'),
   ]
 }
 
@@ -84,8 +81,8 @@ function revealRows(): HTMLElement[] {
   return [
     row(ghost, 'B au moment de sa frappe'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), 'B replacé quand tu frappes'),
-    row(straightLine(RETURN_COLOR, ''), 'ton retour (✕ = point visé)'),
-    row(straightLine(BEST_RETURN_COLOR, '', STROKE_PIXELS.bestReturn), 'meilleur retour (✕ = point idéal)'),
+    row(straightLine(RETURN_COLOR, STROKE_PIXELS.returnDashArray), 'ton retour (✕ = point visé)'),
+    row(straightLine(BEST_RETURN_COLOR, STROKE_PIXELS.returnDashArray, STROKE_PIXELS.bestReturn), 'meilleur retour (✕ = point idéal)'),
     row(straightLine(UNREACHABLE_COLOR, STROKE_PIXELS.unreachableDashArray, STROKE_PIXELS.unreachable), 'au-delà de la portée de ton coup'),
     row(shapeSwatch('square', MAP_BRIGHT_GREEN), 'meilleur spot'),
     row(shapeSwatch('square', MAP_LIGHT_GREEN), 'bon retour'),
@@ -93,26 +90,6 @@ function revealRows(): HTMLElement[] {
   ]
 }
 
-function trajectoryCode(wasOpen: boolean): HTMLDetailsElement {
-  const details = document.createElement('details')
-  details.className = 'legend-code'
-  details.open = wasOpen
-  const summary = document.createElement('summary')
-  summary.textContent = 'Code des trajectoires'
-  const explanation = document.createElement('p')
-  explanation.textContent = 'Le pointillé dit la vitesse, la courbe dit la hauteur.'
-  const middle = SWATCH_HEIGHT / 2
-  const from = {x: 0.1, y: middle + 0.1}
-  const to = {x: SWATCH_WIDTH - 0.1, y: middle + 0.1}
-  details.append(
-    summary,
-    explanation,
-    ...TRAJECTORY_CODE_SHOTS.map((shot) => row(lineSwatch(trajectoryPath(from, to, shot), RETURN_COLOR, trajectoryStyle(shot).dashArray), SHOTS[shot].label)),
-  )
-  return details
-}
-
 export function renderLegend(container: HTMLElement, phase: Phase): void {
-  const wasOpen = container.querySelector('details')?.open ?? true
-  container.replaceChildren(...(phase === 'question' ? questionRows() : revealRows()), trajectoryCode(wasOpen))
+  container.replaceChildren(...(phase === 'question' ? questionRows() : revealRows()))
 }

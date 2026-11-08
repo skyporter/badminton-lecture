@@ -11,13 +11,10 @@ import {
 } from '../engine/court'
 import type {Situation} from '../engine/generator'
 import type {Point} from '../engine/types'
-import {STROKE_PIXELS, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
+import {LANDING_COLOR, PLAYER_A_COLOR, PLAYER_B_COLOR, SHOT_B_COLOR, STROKE_PIXELS, constantStroke, trajectoryPath} from './trajectory'
 
 export const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const PLAYER_RADIUS = 0.35
-export const PLAYER_A_COLOR = '#3b82f6'
-export const PLAYER_B_COLOR = '#e05252'
-export const SHOT_B_COLOR = '#ff8a65'
 export const BANNER_RESERVED_METRES = 0.75
 const COURT_MARGIN = 0.6
 const FOREHAND_ARC_COLOR = '#ffffff'
@@ -137,13 +134,12 @@ export function renderPlayers(layer: SVGGElement, situation: Situation, phase: '
 }
 
 export function renderShotB(layer: SVGGElement, situation: Situation): void {
-  const {dashArray} = trajectoryStyle(situation.shotB)
   const path = svgElement('path', {
     d: trajectoryPath(situation.playerBHit, situation.landing, situation.shotB),
     stroke: SHOT_B_COLOR,
     fill: 'none',
-    ...constantStroke(STROKE_PIXELS.trajectory, dashArray),
+    ...constantStroke(STROKE_PIXELS.trajectory),
   })
-  const landingDot = svgElement('circle', {cx: situation.landing.x, cy: situation.landing.y, r: 0.18, fill: SHOT_B_COLOR})
+  const landingDot = svgElement('circle', {cx: situation.landing.x, cy: situation.landing.y, r: 0.18, fill: LANDING_COLOR})
   layer.replaceChildren(path, landingDot)
 }

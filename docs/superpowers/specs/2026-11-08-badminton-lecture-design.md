@@ -54,9 +54,9 @@ Le pourquoi : on apprend à lire le jeu en devinant **avant** de voir la répon
 Tout se passe sur le terrain, sans panneau à côté.
 - Une **barre du haut**, fine : sélecteur de niveau et bouton « Nouvelle situation ».
 - Un **bandeau** au-dessus du terrain décrit le coup de B en mots : type, direction (ligne ou croisé), zone d'arrivée, hauteur à laquelle A prend le volant (par ex. « volant pris haut, en tour de tête »). Il commence par « Situation : B fait … » (par ex. « Situation : B fait un amorti rapide en ligne, vers le milieu côté revers de A. Volant pris bas, en revers. »). La consigne « Clique sur le terrain de B pour choisir ton retour. » est en bas à droite du terrain, en petit texte clair, sans fond, pendant la question seulement. *(décision de Vincent)* Le bandeau occupe une **bande réservée** au-dessus du terrain : il ne cache jamais la ligne de fond de B ni la zone « dehors » derrière elle, qui restent visibles et cliquables. La bande est ajustée aux deux lignes du texte, et 0,4 m de zone « dehors » reste visible au-dessus de la ligne de fond de B. *(décision de Vincent)*
-- Trajectoire du coup de B **en orange** jusqu'au point de chute (point orange).
+- Trajectoire du coup de B en **trait continu rouge** (couleur de B) jusqu'au point de chute, un **rond bleu** (couleur de A).
 - A est affiché à sa position de départ. Son retour part du **point d'impact** (là où il rejoint le volant), pas de sa position de départ.
-- **Au survol** du terrain de B (ordinateur), un aperçu **jaune** part du point d'impact vers le curseur, terminé par une petite croix jaune.
+- **Au survol** du terrain de B (ordinateur), un aperçu en **pointillé bleu** part du point d'impact vers le curseur, terminé par une petite croix bleue.
 - **Un clic sur le demi-terrain de B** place la croix et ouvre une **fenêtre de choix du coup** à côté de la croix. Elle contient trois groupes de boutons, « Vers l'avant », « Vers le fond » et « Rapides », un bouton « ✕ » pour la fermer et le bouton « Valider », inactif tant qu'aucun coup n'est choisi. Échap ou « ✕ » ferme la fenêtre en gardant la croix ; un nouveau clic sur le terrain déplace la croix et rouvre la fenêtre.
 - **Sur tactile**, l'aperçu apparaît au contact, suit le glisser, et le relâchement place la croix et ouvre la fenêtre. La croix reste déplaçable jusqu'à la validation.
 
@@ -64,32 +64,25 @@ Tout se passe sur le terrain, sans panneau à côté.
 La révélation se fait sur le terrain.
 - Carte de couleurs sur le terrain de B : **vert vif** = meilleur spot, **vert clair** = bon retour, **rouge** = à éviter. Dégradé continu, pas de zones à bords nets.
 - B affiché à **sa position replacée** (rond plein) au moment où A frappe, et à sa position de frappe en **rond pointillé**. **Pas de flèche** entre les deux.
-- Retour de l'élève **en jaune** avec une petite croix au point visé, avec le même style qu'à l'étape 1.
-- Meilleur retour en **blanc**, avec le même code des trajectoires que le coup de B et ton retour.
+- Retour de l'élève **en pointillé bleu** (couleur de A) avec une petite croix bleue au point visé, avec le même style qu'à l'étape 1. *(décision de Vincent, il était d'abord jaune)*
+- Meilleur retour en **pointillé blanc**, comme tout retour de A.
 - Si le coup choisi ne peut pas atterrir à la profondeur de la croix, la ligne repliée du tiroir devient « Score : 0 / 100 — <coup> impossible jusque-là — Meilleur : <coup> » (score en tête pour rester visible sur mobile), le trajet jaune s'arrête au vrai point de chute (sur la même ligne, à la profondeur la plus proche que le coup peut atteindre) et la suite jusqu'à la croix est en pointillé rouge. *(décision de Vincent)*
 - Un **tiroir repliable** en bas du terrain, **déplié dès la validation** (décision de Vincent, il était d'abord replié) : une ligne « Score : NN / 100 — Meilleur : <coup> » avec un chevron. Déplié, il donne le détail : ton choix, score sur 100, meilleur retour (coup + zone), « Pourquoi » en **liste à puces** (une raison par ligne : position/statut, ce que fait B, la zone, le coup, la direction), et une ligne « Alternative : <coup et zone> » sans référence à une couleur.
 - Un changement de niveau après la révélation recalcule la révélation pour la même situation et garde l'état du tiroir.
 
 ### 4.4 Légendes
 - Une **légende en surimpression** sur le terrain, qui décrit tout ce qui est dessiné (joueurs, arc côté coup droit, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
-- Chaque bouton de coup a une **infobulle** qui explique le coup, et le coup sélectionné est décrit sous les boutons (pour le mobile, sans survol). Dans la légende, le bloc « Code des trajectoires » est **ouvert par défaut**. *(décision de Vincent)*
+- Chaque bouton de coup a une **infobulle** qui explique le coup, et le coup sélectionné est décrit sous les boutons (pour le mobile, sans survol). *(décision de Vincent)*
 - Sur le terrain, le **nom du coup** est écrit au milieu de chaque tracé, dans une petite étiquette au même design que le bouton « Légende » (fond sombre translucide, texte blanc). Le **meilleur retour** se termine par une **croix blanche**. La consigne en bas à droite est un texte blanc simple, sans ombre. *(décision de Vincent)*
 - Dans le tiroir, « Ton choix » (coup, zone, score et ses raisons) est dans un **encadré à contour blanc**, et « Meilleur retour » (coup, zone et ses raisons) dans un **encadré distinct** (fond légèrement éclairci, sans bordure, titre en vert vif). Il n'y a plus de section « Pourquoi » séparée. *(décision de Vincent)*
 - Un petit bouton « Légende », en bas à gauche, **affiche ou masque la légende**. Il se place au-dessus du tiroir quand celui-ci est là. Le terrain ne change jamais de taille, que la légende soit affichée ou masquée.
 
-### 4.5 Code des trajectoires (vue de dessus)
-Deux règles, valables pour le coup de B (orange), l'aperçu et le retour de l'élève (jaune) et le meilleur retour (blanc) :
-- **Le pointillé dit la vitesse** : plus c'est espacé, plus le volant est lent.
-- **La courbe dit la hauteur** : droit = à plat ou descendant, légère courbe = juste assez haut pour passer, forte courbe = très haut. C'est un symbole : vu réellement de dessus, la trajectoire serait droite.
-
-| Coup | Pointillé | Courbe |
-|---|---|---|
-| Smash | trait plein | droit |
-| Drive, amorti rapide | longs tirets serrés | droit |
-| Dégagement d'attaque, lob d'attaque | longs tirets serrés | légère |
-| Amorti lent | tirets moyens | droit |
-| Dégagement haut, lob défensif | points espacés | forte |
-| Filet, contre-amorti | points espacés | droit, court |
+### 4.5 Tracés (vue de dessus)
+*(décision de Vincent : le code « le pointillé dit la vitesse » est abandonné)*
+- **Coup de B** : trait **continu**, couleur de B (rouge). Son point d'arrivée est un rond **bleu** (couleur de A, qui va le jouer).
+- **Retours de A** : trait **pointillé**, toujours le même pointillé. Bleu (couleur de A) pour le retour de l'élève, blanc pour le meilleur retour.
+- **La courbe dit la hauteur** : droit = à plat ou descendant, légère courbe = juste assez haut pour passer, forte courbe = très haut. C'est un symbole : vu réellement de dessus, la trajectoire serait droite.
+- La partie d'un retour que le coup ne peut pas atteindre est en pointillé rouge.
 
 ### 4.6 Mobile et traits
 - Même écran que sur ordinateur : le terrain en pleine largeur, la barre du haut au-dessus, le bandeau, la fenêtre de choix et le tiroir par-dessus le terrain.
@@ -183,11 +176,11 @@ Plus tard, une IA pourra reformuler la justification calculée par le moteur ou 
 ## 8. Choix faits par Claude (à vérifier par Vincent)
 - Les trois niveaux nommés débutant, intermédiaire et avancé.
 - Un arc fixe côté coup droit, sans posture de frappe.
-- Le coup de B en orange, pour réserver le jaune au choix de l'élève.
+- Le coup de B à la couleur de B, et les retours de A à la couleur de A.
 - Le retour qui part du point d'impact.
 - Le comportement tactile : glisser, relâcher, croix déplaçable.
 - La légende masquée par défaut sur mobile, état mémorisé.
-- L'abandon de la vue de côté, remplacée par le code des trajectoires.
+- L'abandon de la vue de côté, remplacée par la courbe des tracés.
 - La page web statique (Vincent laisse le choix de la techno libre).
 - La carte composite et le score par couple (point, coup), voir §5.2 bis.
 - La justification du choix de l'élève par comparaison de critères, sans IA.

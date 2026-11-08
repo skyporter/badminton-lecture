@@ -6,7 +6,7 @@ import {RETURN_SHOTS, SHOTS} from '../../src/engine/shots'
 import {generateSituation} from '../../src/engine/generator'
 import {startApp} from '../../src/ui/app'
 import {BANNER_RESERVED_METRES, renderCourt} from '../../src/ui/courtView'
-import {BEST_RETURN_COLOR, RETURN_COLOR, UNREACHABLE_COLOR, trajectoryMiddle, trajectoryPath, trajectoryStyle} from '../../src/ui/trajectory'
+import {BEST_RETURN_COLOR, PLAYER_A_COLOR, PLAYER_B_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, trajectoryMiddle, trajectoryPath} from '../../src/ui/trajectory'
 import {reachableLanding} from '../../src/engine/evaluate'
 
 const SEED = 5
@@ -248,14 +248,26 @@ describe('alternative wording', () => {
   })
 })
 
-describe('best return trajectory', () => {
-  it('follows the trajectory code of the best shot', () => {
+describe('trajectory colours and dashes', () => {
+  it('draws B shot as a solid line in B colour, landing on a blue dot', () => {
+    const root = startedApp()
+    const situation = generateSituation(SEED)
+    const path = root.querySelector<SVGPathElement>(`svg.court path[stroke="${PLAYER_B_COLOR}"]`)!
+    expect(path.getAttribute('d')).toBe(trajectoryPath(situation.playerBHit, situation.landing, situation.shotB))
+    expect(path.getAttribute('stroke-dasharray')).toBeNull()
+    const landingDot = [...root.querySelectorAll('svg.court circle')].find((circle) => Number(circle.getAttribute('cx')) === situation.landing.x)!
+    expect(landingDot.getAttribute('fill')).toBe(PLAYER_A_COLOR)
+  })
+
+  it('draws the student return dashed in A colour, and the best return dashed in white', () => {
     const root = revealed(startedApp())
     const {best} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'clear-attack').analysis
-    const path = root.querySelector<SVGPathElement>('svg.court path[stroke="#ffffff"]')!
     const situation = generateSituation(SEED)
-    expect(path.getAttribute('d')).toBe(trajectoryPath(situation.impact, best.point, best.shot))
-    expect(path.getAttribute('stroke-dasharray') ?? '').toBe(trajectoryStyle(best.shot).dashArray)
+    const studentPath = root.querySelector<SVGPathElement>(`svg.court path[stroke="${PLAYER_A_COLOR}"]`)!
+    const bestPath = root.querySelector<SVGPathElement>(`svg.court path[stroke="${BEST_RETURN_COLOR}"]`)!
+    expect(studentPath.getAttribute('stroke-dasharray')).toBe(STROKE_PIXELS.returnDashArray)
+    expect(bestPath.getAttribute('d')).toBe(trajectoryPath(situation.impact, best.point, best.shot))
+    expect(bestPath.getAttribute('stroke-dasharray')).toBe(STROKE_PIXELS.returnDashArray)
   })
 })
 
