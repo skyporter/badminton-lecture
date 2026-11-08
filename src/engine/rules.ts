@@ -76,6 +76,9 @@ export const PLAYER_SPEED = 4.0
 export const REACTION_TIME = 0.25
 export const STATUS_MARGIN: Record<Status, number> = {attaque: 0.3, neutre: 0.2, defense: 0.4}
 export const LINE_RISK_DISTANCE = 0.5
+export const RECOVERY_FULL_TIME = 1.2
+export const RECOVERY_MIN_FRACTION = 0.3
+export const RECOVERY_CROSS_PENALTY = 0.2
 
 export const B_BASE: Record<'back' | 'neutral' | 'front', Point> = {
   back: {x: 3.05, y: 3.4},
