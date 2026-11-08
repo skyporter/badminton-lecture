@@ -120,16 +120,26 @@ function familyOf(shot: ShotId): ShotFamily {
 function findAlternative(situation: Situation, level: Level, map: ValueMap, best: PairEvaluation): PairEvaluation {
   const bestFamily = familyOf(best.shot)
   const shots = candidateShots(situation)
-  let alternative: PairEvaluation | undefined
+  const otherFamilyShots = shots.filter((shot) => familyOf(shot) !== bestFamily)
+  const otherFamily = bestFeasiblePair(situation, level, map, otherFamilyShots, () => true)
+  if (otherFamily !== undefined) {
+    return otherFamily
+  } else {
+    const farFromBest = (point: Point) => distance(point, best.point) >= ALTERNATIVE_MINIMUM_DISTANCE
+    return bestFeasiblePair(situation, level, map, shots, farFromBest) ?? best
+  }
+}
+
+function bestFeasiblePair(situation: Situation, level: Level, map: ValueMap, shots: ShotId[], accepts: (point: Point) => boolean): PairEvaluation | undefined {
+  let leader: PairEvaluation | undefined
   for (let index = 0; index < map.values.length; index++) {
     const point = cellCentre(map, index)
-    const farFromBest = distance(point, best.point) >= ALTERNATIVE_MINIMUM_DISTANCE
-    for (const shot of shots) {
-      if (farFromBest || familyOf(shot) !== bestFamily) {
+    if (accepts(point)) {
+      for (const shot of shots) {
         const evaluation = evaluatePair(situation, level, point, shot)
-        if (alternative === undefined || evaluation.value > alternative.value) alternative = evaluation
+        if (evaluation.feasible && (leader === undefined || evaluation.value > leader.value)) leader = evaluation
       }
     }
   }
-  return alternative ?? best
+  return leader
 }

@@ -1,12 +1,13 @@
 import {describe, expect, it} from 'vitest'
 import {analyse, scoreChoice} from '../../src/engine/analysis'
 import {AGAINST_BULLETS, FOR_BULLETS, REAR_FOR_BULLET, describeReturn, describeShotB, explainBest, explainChoice, predictNextShotB} from '../../src/engine/explain'
-import {evaluatePair} from '../../src/engine/evaluate'
+import {allowedShots, evaluatePair} from '../../src/engine/evaluate'
 import {generateSituation} from '../../src/engine/generator'
-import {EXPLAIN_FOR_MINIMUM_RAW} from '../../src/engine/rules'
+import {EXPLAIN_FOR_MINIMUM_RAW, SHOT_FAMILIES} from '../../src/engine/rules'
 import type {CriterionId} from '../../src/engine/rules'
 import {createRng, randomBetween} from '../../src/engine/rng'
 import {RETURN_SHOTS} from '../../src/engine/shots'
+import type {ShotId} from '../../src/engine/shots'
 import type {Level} from '../../src/engine/types'
 import {F1, F2, F3, F4, F7} from '../calibration/reference-situations'
 
@@ -14,6 +15,10 @@ const STATUS_BULLETS = {
   attaque: 'Tu es en attaque : volant pris haut et tôt, tu peux accélérer.',
   neutre: 'Situation neutre : tu as le temps, sans pouvoir attaquer.',
   defense: "Tu es en défense : volant pris bas, tard ou loin, joue d'abord pour te replacer.",
+}
+
+function familyOf(shot: ShotId): string {
+  return Object.entries(SHOT_FAMILIES).find(([, shots]) => shots.includes(shot))![0]
 }
 
 const PLAIN_SPACE_BEFORE_PUNCTUATION = / [?!:;]/
@@ -39,6 +44,22 @@ describe('describeReturn', () => {
 
   it('says when the return leaves the singles court of B', () => {
     expect(describeReturn(evaluatePair(F1, 'intermediaire', {x: 3, y: 7.5}, 'smash'))).toBe('Smash, hors du terrain de simple de B.')
+  })
+})
+
+describe('alternative wording', () => {
+  it('never describes the alternative like the best return when another family is allowed', () => {
+    const levels: Level[] = ['debutant', 'intermediaire', 'avance']
+    for (let seed = 1; seed <= 40; seed++) {
+      const situation = generateSituation(seed)
+      for (const level of levels) {
+        const {best, alternative} = analyse(situation, level)
+        const otherFamilyAllowed = allowedShots(situation).some((shot) => familyOf(shot) !== familyOf(best.shot))
+        if (otherFamilyAllowed) {
+          expect(describeReturn(alternative)).not.toBe(describeReturn(best))
+        }
+      }
+    }
   })
 })
 

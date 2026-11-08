@@ -34,12 +34,19 @@ describe('analyse', () => {
     expect(analyse(situation, level)).toEqual(analysis)
   })
 
-  it('proposes an alternative distinct from the best', () => {
+  it('proposes a feasible alternative from another shot family when one is allowed', () => {
     const {best, alternative} = analysis
-    const farAway = distance(alternative.point, best.point) >= 2.0
-    const otherFamily = familyOf(alternative.shot) !== familyOf(best.shot)
-    expect(farAway || otherFamily).toBe(true)
+    expect(allowedShots(situation).some((shot) => familyOf(shot) !== familyOf(best.shot))).toBe(true)
+    expect(familyOf(alternative.shot)).not.toBe(familyOf(best.shot))
+    expect(alternative.feasible).toBe(true)
     expect(alternative.value).toBeLessThanOrEqual(best.value)
+  })
+
+  it('falls back to a pair far from the best when only one family is allowed', () => {
+    const defensiveLobOnly = {...situation, impact: {x: 3.05, y: 8.0}, arrival: 'mid' as const, status: 'defense' as const}
+    expect(allowedShots(defensiveLobOnly)).toEqual(['lob-defensive'])
+    const {best, alternative} = analyse(defensiveLobOnly, level)
+    expect(distance(alternative.point, best.point)).toBeGreaterThanOrEqual(2.0)
   })
 
   it('analyses a situation in under 50 ms', () => {

@@ -98,7 +98,7 @@ export function startApp(root: HTMLElement): void {
   const previewLayer = layer()
   previewLayer.setAttribute('opacity', String(PREVIEW_OPACITY))
   renderCourt(svg)
-  svg.append(shotLayer, playerLayer, returnLayer, previewLayer)
+  svg.append(shotLayer, returnLayer, previewLayer, playerLayer)
 
   const heatmap = document.createElement('canvas')
   heatmap.className = 'heatmap'
@@ -131,7 +131,7 @@ export function startApp(root: HTMLElement): void {
     } else {
       const {map, best} = result.analysis
       shotLayer.replaceChildren()
-      renderPlayers(playerLayer, situation, 'reveal')
+      renderPlayers(playerLayer, {...situation, playerA: situation.impact}, 'reveal')
       renderHeatmap(heatmap, map, best.value)
       returnLayer.replaceChildren(
         ...(best.value === 0 ? [] : [bestReturn(situation.impact, best)]),
