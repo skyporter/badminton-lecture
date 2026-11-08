@@ -11,6 +11,10 @@ Tout tourne dans le navigateur : pas de serveur, pas d'API externe, pas d'IA. L
 - `npm test` : lance les tests (moteur, interface, situations de référence).
 - `npm run build` : vérifie les types et produit le site statique dans `dist/`.
 
+## Mise en ligne
+
+Le site est publié sur GitHub Pages, à l'adresse https://skyporter.github.io/badminton-lecture/. Chaque fusion dans `main` lance `.github/workflows/deploy.yml`, qui fait passer les tests, construit le site et le publie. Les chemins du site sont relatifs (`base: './'` dans `vite.config.ts`), donc il fonctionne sous n'importe quel sous-chemin.
+
 ## Ajuster les règles
 
 Toutes les règles, poids, seuils et sources sont dans `src/engine/rules.ts`, et nulle part ailleurs. Le catalogue des coups de `src/engine/shots.ts` (temps de vol, profondeurs d'arrivée, zones d'où chaque coup est jouable) fait aussi partie des règles : pour changer le comportement du moteur, modifie les valeurs de ces deux fichiers.

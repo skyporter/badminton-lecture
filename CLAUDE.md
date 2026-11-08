@@ -9,6 +9,8 @@ Static TypeScript web quiz (Vite, Vitest) to learn reading badminton singles pla
 - `npm run build`: `tsc` then `vite build` into `dist/`.
 - `npm run dev`: dev server.
 
+Deployment: GitHub Pages at https://skyporter.github.io/badminton-lecture/. `.github/workflows/deploy.yml` runs the tests, builds and publishes `dist/` on every push to `main`. `vite.config.ts` sets `base: './'` so the built site works under any sub-path.
+
 ## Architecture
 
 - `src/engine/`: pure, deterministic logic. Same situation and same level give the same result, bit for bit. `rules.ts` holds every rule, weight, threshold and colour of the heat map: all values live in `rules.ts` and nowhere else, except the shot catalogue in `shots.ts` (flight times, landing depths, playable zones), which is also part of the rules and must be reviewed together with `rules.ts` when tuning. Other files: `court.ts` (geometry), `shots.ts` (shot catalogue), `generator.ts` (seeded situations), `evaluate.ts` and `analysis.ts` (value map, best return, alternative, score), `recovery.ts`, `status.ts`, `explain.ts` (French explanations), `rng.ts`, `types.ts`.
