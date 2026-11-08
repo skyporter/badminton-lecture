@@ -31,7 +31,8 @@ describe('shot catalogue', () => {
     expect(hitZoneOf({x: 3, y: NET_Y + 3})).toBe('mid')
     expect(hitZoneOf({x: 3, y: NET_Y + 1})).toBe('front')
     expect(hitZoneOf({x: 3, y: NET_Y + 4.5})).toBe('mid')
-    expect(hitZoneOf({x: 3, y: NET_Y + 2.2})).toBe('mid')
+    expect(hitZoneOf({x: 3, y: NET_Y + 2.2})).toBe('front')
+    expect(hitZoneOf({x: 3, y: NET_Y + 2.4})).toBe('mid')
   })
 })
 

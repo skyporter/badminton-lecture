@@ -1,4 +1,5 @@
 import {depthFromNet} from './court'
+import {FRONT_MAXIMUM_DEPTH} from './rules'
 import type {Point} from './types'
 
 export type ShotId =
@@ -33,7 +34,6 @@ export interface Shot {
 }
 
 const REAR_MINIMUM_DEPTH = 4.7
-const FRONT_MAXIMUM_DEPTH = 1.98
 
 export const SHOTS: Record<ShotId, Shot> = {
   'serve-short': {id: 'serve-short', label: 'Service court', speed: 'slow', arc: 'low', arrival: 'low', flightTime: 1.0, landingDepth: [1.98, 2.6], playableFrom: [], serve: true},
