@@ -97,11 +97,7 @@ function revealSection(situation: Situation, result: ChoiceResult): HTMLElement[
 function drawerSummary(result: ChoiceResult): string {
   const {best} = result.analysis
   const bestReturn = best.value > 0 ? `Meilleur : ${SHOTS[best.shot].label}` : 'Aucun coup jouable'
-  if (result.choice.infeasibility === 'zone') {
-    return `Score : ${result.score} / 100 — ${SHOTS[result.choice.shot].label} impossible jusque-là — ${bestReturn}`
-  } else {
-    return `Score : ${result.score} / 100 — ${bestReturn}`
-  }
+  return `Score : ${result.score} / 100 — ${bestReturn}`
 }
 
 export function renderDrawer(container: HTMLElement, state: QuizState, dispatch: Dispatch): void {

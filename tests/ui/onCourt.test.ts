@@ -295,9 +295,10 @@ describe('unreachable choice', () => {
     expect(red.getAttribute('d')).toBe(`M ${landing.x} ${landing.y} L ${backLine.x} ${backLine.y}`)
   })
 
-  it('says the shot cannot go that far on the collapsed drawer line', () => {
-    const text = drawer(revealedNetToBackLine()).textContent!
-    expect(text).toContain('Score\u00a0: 0 / 100 — Filet impossible jusque-là — Meilleur')
+  it('keeps the summary line to the score and the best shot, the reason staying in « Ton choix »', () => {
+    const root = revealedNetToBackLine()
+    expect(drawer(root).querySelector('.drawer-summary')!.textContent).toMatch(/^Score\u00a0: 0 \/ 100 — Meilleur\u00a0: /)
+    expect(drawer(root).querySelector('.choice-box')!.textContent).toContain('Coup impossible jusque-là.')
   })
 
   it('draws no red segment for a reachable choice', () => {
