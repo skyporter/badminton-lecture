@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {analyse, compositeValueAt, mapColor, scoreChoice} from '../../src/engine/analysis'
+import {analyse, compositeValueAt, scoreChoice} from '../../src/engine/analysis'
 import {distance, isInSinglesHalf} from '../../src/engine/court'
 import {allowedShots, evaluatePair} from '../../src/engine/evaluate'
 import {buildSituation} from '../../src/engine/generator'
@@ -102,23 +102,44 @@ describe('map and score consistency', () => {
   })
 })
 
-describe('mapColor', () => {
-  it('is bright green from 0.9', () => {
-    expect(mapColor(1)).toBe('#00e676')
-    expect(mapColor(0.9)).toBe('#00e676')
+describe('zones of the two best returns', () => {
+  const insideEllipse = (point: {x: number; y: number}, zone: NonNullable<typeof analysis.alternativeZone>) =>
+    ((point.x - zone.center.x) / zone.radiusX) ** 2 + ((point.y - zone.center.y) / zone.radiusY) ** 2 <= 1 + 1e-9
+
+  it('centres zone 1 on the best return and names its shot', () => {
+    expect(analysis.bestZone).toMatchObject({center: analysis.best.point, shot: analysis.best.shot})
   })
 
-  it('is light green from 0.7', () => {
-    expect(mapColor(0.89)).toBe('#b2ff59')
-    expect(mapColor(0.7)).toBe('#b2ff59')
+  it('centres zone 2 on the second choice, a shot of another family', () => {
+    expect(analysis.alternativeZone).toMatchObject({center: analysis.alternative.point, shot: analysis.alternative.shot})
+    expect(familyOf(analysis.alternativeZone!.shot)).not.toBe(familyOf(analysis.bestZone!.shot))
   })
 
-  it('is red at 0.4 and below', () => {
-    expect(mapColor(0.4)).toBe('#ff5252')
-    expect(mapColor(0)).toBe('#ff5252')
+  it('covers every cell within 1.5 m where the same shot keeps 90 % of its value, and stays within 1.5 m', () => {
+    const zone = analysis.bestZone!
+    expect(zone.radiusX).toBeGreaterThanOrEqual(0.3)
+    expect(zone.radiusY).toBeGreaterThanOrEqual(0.3)
+    expect(zone.radiusX).toBeLessThanOrEqual(1.55)
+    expect(zone.radiusY).toBeLessThanOrEqual(1.55)
+    const {map} = analysis
+    for (let index = 0; index < map.values.length; index++) {
+      const point = {x: map.originX + (index % map.columns + 0.5) * map.step, y: map.originY + (Math.floor(index / map.columns) + 0.5) * map.step}
+      const value = evaluatePair(situation, level, point, zone.shot).value
+      if (distance(point, zone.center) <= 1.5 && value >= 0.9 * analysis.best.value) {
+        expect(Math.abs(point.x - zone.center.x)).toBeLessThanOrEqual(zone.radiusX)
+        expect(Math.abs(point.y - zone.center.y)).toBeLessThanOrEqual(zone.radiusY)
+      }
+    }
+    expect(insideEllipse(analysis.best.point, zone)).toBe(true)
   })
 
-  it('blends between light green and red', () => {
-    expect(mapColor(0.55)).toBe('#d9a956')
+  it('has no zones when no return is playable', () => {
+    const hopeless = buildSituation({playerA: {x: 0.6, y: 13.2}, playerBHit: {x: 3.05, y: 6.0}, shotB: 'net', landing: {x: 5.5, y: 6.9}})
+    const hopelessAnalysis = analyse(hopeless, level)
+    if (hopelessAnalysis.best.value === 0) {
+      expect(hopelessAnalysis.bestZone).toBeNull()
+      expect(hopelessAnalysis.alternativeZone).toBeNull()
+    }
   })
 })
+

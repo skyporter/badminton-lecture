@@ -219,9 +219,6 @@ export const SHOT_FAMILIES: Record<ShotFamily, ShotId[]> = {
 
 export const ALTERNATIVE_MINIMUM_DISTANCE = 2.0
 export const MAP_CELL_STEP = 0.1
-export const MAP_BRIGHT_GREEN_RATIO = 0.9
-export const MAP_LIGHT_GREEN_RATIO = 0.7
-export const MAP_RED_RATIO = 0.4
-export const MAP_BRIGHT_GREEN = '#00e676'
-export const MAP_LIGHT_GREEN = '#b2ff59'
-export const MAP_RED = '#ff5252'
+export const ZONE_VALUE_RATIO = 0.9
+export const ZONE_MAXIMUM_DISTANCE = 1.5
+export const ZONE_MINIMUM_RADIUS = 0.3

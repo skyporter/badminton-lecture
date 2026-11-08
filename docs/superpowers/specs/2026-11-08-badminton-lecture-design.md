@@ -62,7 +62,7 @@ Tout se passe sur le terrain, sans panneau à côté.
 
 ### 4.3 Étape 2 : la révélation
 La révélation se fait sur le terrain.
-- Carte de couleurs sur le terrain de B : **vert vif** = meilleur spot, **vert clair** = bon retour, **rouge** = à éviter. Dégradé continu, pas de zones à bords nets.
+- **Plus de carte de couleurs** *(décision de Vincent)* : deux **ovales** sur le terrain de B, coupés aux limites du demi-terrain de simple. **Zone 1** (vert vif) autour du meilleur retour, **zone 2** (vert clair) autour du deuxième choix, c'est-à-dire le meilleur coup d'une autre famille. Chaque ovale est centré sur le point du retour et couvre les points à moins de 1,5 m où le même coup garde 90 % de sa valeur. Une étiquette « 1 · <coup> » / « 2 · <coup> » nomme le coup. La ligne du tiroir « Alternative » devient « Deuxième choix ».
 - B affiché à **sa position replacée** (rond plein) au moment où A frappe, et à sa position de frappe en **rond pointillé**. **Pas de flèche** entre les deux.
 - Retour de l'élève **en pointillé bleu** (couleur de A) avec une petite croix bleue au point visé, avec le même style qu'à l'étape 1. *(décision de Vincent, il était d'abord jaune)*
 - Meilleur retour en **pointillé blanc**, comme tout retour de A.
@@ -71,7 +71,7 @@ La révélation se fait sur le terrain.
 - Un changement de niveau après la révélation recalcule la révélation pour la même situation et garde l'état du tiroir.
 
 ### 4.4 Légendes
-- Une **légende en surimpression** sur le terrain, qui décrit tout ce qui est dessiné (joueurs, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
+- Une **légende en surimpression** sur le terrain, qui décrit tout ce qui est dessiné et **nomme les coups de la situation affichée** (coup de B, ton retour, meilleur retour, zones 1 et 2) *(décision de Vincent)* (joueurs, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
 - Chaque bouton de coup a une **infobulle** qui explique le coup, et le coup sélectionné est décrit sous les boutons (pour le mobile, sans survol). *(décision de Vincent)*
 - Sur le terrain, le **nom du coup** est écrit au milieu de chaque tracé, dans une petite étiquette au même design que le bouton « Légende » (fond sombre translucide, texte blanc). Le **meilleur retour** se termine par une **croix blanche**. La consigne en bas à droite est un texte blanc simple, sans ombre. *(décision de Vincent)*
 - Dans le tiroir, « Ton choix » (coup, zone, score et ses raisons) est dans un **encadré à contour blanc**, et « Meilleur retour » (coup, zone et ses raisons) dans un **encadré distinct** (fond légèrement éclairci, sans bordure, titre en vert vif). Il n'y a plus de section « Pourquoi » séparée. *(décision de Vincent)*

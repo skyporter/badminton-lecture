@@ -254,10 +254,11 @@ body {
   box-sizing: border-box;
 }
 
-.legend-swatch.square {
-  width: 14px;
-  height: 14px;
-  border-radius: 3px;
+.legend-swatch.zone {
+  width: 20px;
+  height: 12px;
+  border-radius: 50%;
+  opacity: 0.6;
 }
 
 .court-frame .court {
@@ -265,13 +266,6 @@ body {
   background: transparent;
   touch-action: none;
   cursor: crosshair;
-}
-
-.heatmap {
-  position: absolute;
-  opacity: 0.75;
-  filter: blur(4px);
-  clip-path: inset(0);
 }
 
 .controls {

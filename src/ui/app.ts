@@ -1,5 +1,6 @@
 import {scoreChoice} from '../engine/analysis'
-import type {ChoiceResult} from '../engine/analysis'
+import type {ChoiceResult, Zone} from '../engine/analysis'
+import {NET_Y, SINGLES_LEFT, SINGLES_RIGHT} from '../engine/court'
 import {reachableLanding} from '../engine/evaluate'
 import type {PairEvaluation} from '../engine/evaluate'
 import {generateSituation} from '../engine/generator'
@@ -8,13 +9,12 @@ import {SHOTS} from '../engine/shots'
 import type {ShotId} from '../engine/shots'
 import type {Level, Point} from '../engine/types'
 import {BANNER_RESERVED_METRES, SVG_NAMESPACE, renderCourt, renderPlayers, renderShotB, svgElement} from './courtView'
-import {placeOverHalfOfB, renderHeatmap} from './heatmap'
 import {listenToCourt} from './input'
 import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
 import {renderBanner, renderControls, renderDrawer, renderShotPopover} from './panel'
 import {readSituationParams, situationSearch} from './situationUrl'
 import type {Choice} from './situationUrl'
-import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke, trajectoryMiddle, trajectoryPath} from './trajectory'
+import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, ZONE_BEST_COLOR, ZONE_OPACITY, ZONE_SECOND_COLOR, constantStroke, trajectoryMiddle, trajectoryPath} from './trajectory'
 
 export type QuizState = {
   situation: Situation
@@ -38,6 +38,8 @@ export type QuizAction =
 
 const CROSS_HALF_SIZE = 0.15
 const PREVIEW_OPACITY = 0.7
+const HALF_OF_B_CLIP_ID = 'half-of-b'
+const ZONE_TAG_NET_GAP = 0.35
 const DEFAULT_LEVEL: Level = 'intermediaire'
 const MOBILE_MEDIA_QUERY = '(max-width: 767px)'
 
@@ -121,21 +123,51 @@ function bestReturn(from: Point, best: PairEvaluation): SVGElement[] {
   return [trajectory, ...cross(best.point, BEST_RETURN_COLOR)]
 }
 
-type TrajectoryTag = {from: Point; to: Point; shot: ShotId; kind: 'shot-b' | 'return' | 'best'}
+type CourtTag = {point: Point; text: string; kind: 'shot-b' | 'return' | 'zone-1' | 'zone-2'}
 
-function trajectoryTags(state: QuizState): TrajectoryTag[] {
+function trajectoryTag(from: Point, to: Point, shot: ShotId, kind: 'shot-b' | 'return'): CourtTag {
+  return {point: trajectoryMiddle(from, to, shot), text: SHOTS[shot].label, kind}
+}
+
+function zoneTag(zone: Zone, rank: 1 | 2): CourtTag {
+  const point = {x: zone.center.x, y: Math.min(zone.center.y, NET_Y - ZONE_TAG_NET_GAP)}
+  return {point, text: `${rank} · ${SHOTS[zone.shot].label}`, kind: rank === 1 ? 'zone-1' : 'zone-2'}
+}
+
+function courtTags(state: QuizState): CourtTag[] {
   const {situation, result} = state
   if (result === null) {
-    const shotB: TrajectoryTag = {from: situation.playerBHit, to: situation.landing, shot: situation.shotB, kind: 'shot-b'}
-    const studentReturn: TrajectoryTag[] = state.target === null || state.shot === null ? [] : [{from: situation.impact, to: state.target, shot: state.shot, kind: 'return'}]
+    const shotB = trajectoryTag(situation.playerBHit, situation.landing, situation.shotB, 'shot-b')
+    const studentReturn = state.target === null || state.shot === null ? [] : [trajectoryTag(situation.impact, state.target, state.shot, 'return')]
     return [shotB, ...studentReturn]
   } else {
     const {choice, analysis} = result
     const landing = choice.infeasibility === 'zone' ? reachableLanding(situation.impact, choice.point, choice.shot) : choice.point
-    const studentReturn: TrajectoryTag = {from: situation.impact, to: landing, shot: choice.shot, kind: 'return'}
-    const bestReturn: TrajectoryTag[] = analysis.best.value === 0 ? [] : [{from: situation.impact, to: analysis.best.point, shot: analysis.best.shot, kind: 'best'}]
-    return [studentReturn, ...bestReturn]
+    const zones = [
+      ...(analysis.bestZone === null ? [] : [zoneTag(analysis.bestZone, 1)]),
+      ...(analysis.alternativeZone === null ? [] : [zoneTag(analysis.alternativeZone, 2)]),
+    ]
+    return [trajectoryTag(situation.impact, landing, choice.shot, 'return'), ...zones]
   }
+}
+
+function halfOfBClip(): SVGElement {
+  const clip = svgElement('clipPath', {id: HALF_OF_B_CLIP_ID})
+  clip.append(svgElement('rect', {x: SINGLES_LEFT, y: 0, width: Number((SINGLES_RIGHT - SINGLES_LEFT).toFixed(2)), height: NET_Y}))
+  return clip
+}
+
+function zoneEllipse(zone: Zone, rank: 1 | 2): SVGElement {
+  return svgElement('ellipse', {
+    class: 'zone',
+    'data-rank': rank,
+    cx: zone.center.x,
+    cy: zone.center.y,
+    rx: zone.radiusX,
+    ry: zone.radiusY,
+    fill: rank === 1 ? ZONE_BEST_COLOR : ZONE_SECOND_COLOR,
+    'fill-opacity': ZONE_OPACITY,
+  })
 }
 
 function percentOfViewBox(point: Point, svg: SVGSVGElement): {left: string; top: string} {
@@ -143,13 +175,13 @@ function percentOfViewBox(point: Point, svg: SVGSVGElement): {left: string; top:
   return {left: `${(100 * (point.x - viewBox.x)) / viewBox.width}%`, top: `${(100 * (point.y - viewBox.y)) / viewBox.height}%`}
 }
 
-function renderTrajectoryTags(container: HTMLElement, state: QuizState, svg: SVGSVGElement): void {
-  container.replaceChildren(...trajectoryTags(state).map((tag) => {
+function renderCourtTags(container: HTMLElement, state: QuizState, svg: SVGSVGElement): void {
+  container.replaceChildren(...courtTags(state).map((tag) => {
     const element = document.createElement('div')
     element.className = 'trajectory-tag'
     element.dataset.kind = tag.kind
-    element.textContent = SHOTS[tag.shot].label
-    const {left, top} = percentOfViewBox(trajectoryMiddle(tag.from, tag.to, tag.shot), svg)
+    element.textContent = tag.text
+    const {left, top} = percentOfViewBox(tag.point, svg)
     element.style.left = left
     element.style.top = top
     return element
@@ -201,17 +233,16 @@ export function startApp(root: HTMLElement): void {
   let preview: Point | null = null
 
   const svg = document.createElementNS(SVG_NAMESPACE, 'svg')
+  const zoneLayer = layer()
+  zoneLayer.setAttribute('clip-path', `url(#${HALF_OF_B_CLIP_ID})`)
   const shotLayer = layer()
   const playerLayer = layer()
   const returnLayer = layer()
   const previewLayer = layer()
   previewLayer.setAttribute('opacity', String(PREVIEW_OPACITY))
   renderCourt(svg)
-  svg.append(shotLayer, returnLayer, previewLayer, playerLayer)
+  svg.append(halfOfBClip(), zoneLayer, shotLayer, returnLayer, previewLayer, playerLayer)
 
-  const heatmap = document.createElement('canvas')
-  heatmap.className = 'heatmap'
-  placeOverHalfOfB(heatmap, svg)
   const courtFrame = document.createElement('div')
   courtFrame.className = 'court-frame'
   const viewBox = svg.viewBox.baseVal
@@ -240,7 +271,7 @@ export function startApp(root: HTMLElement): void {
   const bottomStack = document.createElement('div')
   bottomStack.className = 'bottom-stack'
   bottomStack.append(legendOverlay, drawer)
-  courtFrame.append(heatmap, svg, tagLayer, banner, hint, popover, bottomStack)
+  courtFrame.append(svg, tagLayer, banner, hint, popover, bottomStack)
   const controlsBar = document.createElement('div')
   controlsBar.className = 'controls'
   const layout = document.createElement('div')
@@ -272,17 +303,20 @@ export function startApp(root: HTMLElement): void {
 
   function renderBoard(): void {
     const {situation, result} = state
-    renderTrajectoryTags(tagLayer, state, svg)
-    heatmap.hidden = result === null
+    renderCourtTags(tagLayer, state, svg)
     if (result === null) {
+      zoneLayer.replaceChildren()
       renderShotB(shotLayer, situation)
       renderPlayers(playerLayer, situation, 'question')
       returnLayer.replaceChildren(...(state.target === null ? [] : studentReturn(situation.impact, state.target, state.shot)))
     } else {
-      const {map, best} = result.analysis
+      const {best, bestZone, alternativeZone} = result.analysis
       shotLayer.replaceChildren()
       renderPlayers(playerLayer, {...situation, playerA: situation.impact}, 'reveal')
-      renderHeatmap(heatmap, map, best.value)
+      zoneLayer.replaceChildren(
+        ...(bestZone === null ? [] : [zoneEllipse(bestZone, 1)]),
+        ...(alternativeZone === null ? [] : [zoneEllipse(alternativeZone, 2)]),
+      )
       returnLayer.replaceChildren(
         ...(best.value === 0 ? [] : bestReturn(situation.impact, best)),
         ...revealedStudentReturn(situation.impact, result.choice),
@@ -306,7 +340,7 @@ export function startApp(root: HTMLElement): void {
 
   function renderChrome(): void {
     renderControls(controlsBar, state, dispatch)
-    renderLegend(legend, state.result === null ? 'question' : 'reveal')
+    renderLegend(legend, state)
     renderBanner(banner, state)
     hint.hidden = state.result !== null
     renderPopover()

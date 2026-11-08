@@ -87,7 +87,7 @@ function revealSection(situation: Situation, result: ChoiceResult): HTMLElement[
   const bestBox = element('div', 'best-box')
   if (hasPlayableReturn) {
     bestBox.append(element('div', 'label', 'Meilleur retour'), element('p', '', describeReturn(best)), bulletList(explainBest(situation, result.analysis)))
-    return [choiceBox, bestBox, element('p', 'alternative', `Alternative : ${describeReturn(alternative)}`)]
+    return [choiceBox, bestBox, element('p', 'alternative', `Deuxième choix : ${describeReturn(alternative)}`)]
   } else {
     bestBox.append(element('div', 'label', 'Meilleur retour'), element('p', '', NO_PLAYABLE_RETURN))
     return [choiceBox, bestBox]

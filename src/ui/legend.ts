@@ -1,12 +1,12 @@
-import {MAP_BRIGHT_GREEN, MAP_LIGHT_GREEN, MAP_RED} from '../engine/rules'
+import type {ChoiceResult} from '../engine/analysis'
+import {SHOTS} from '../engine/shots'
+import type {QuizState} from './app'
 import {SVG_NAMESPACE, handednessBadge, svgElement} from './courtView'
-import {BEST_RETURN_COLOR, LANDING_COLOR, PLAYER_A_COLOR, PLAYER_B_COLOR, RETURN_COLOR, SHOT_B_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke} from './trajectory'
+import {BEST_RETURN_COLOR, LANDING_COLOR, PLAYER_A_COLOR, PLAYER_B_COLOR, RETURN_COLOR, SHOT_B_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, ZONE_BEST_COLOR, ZONE_SECOND_COLOR, constantStroke} from './trajectory'
 
 const STORAGE_KEY = 'badminton-lecture:legend-visible'
 const SWATCH_WIDTH = 1.6
 const SWATCH_HEIGHT = 0.5
-
-type Phase = 'question' | 'reveal'
 
 export function loadLegendVisible(isMobile: boolean): boolean {
   try {
@@ -65,31 +65,32 @@ function badgeSwatch(): SVGSVGElement {
   return svg
 }
 
-function questionRows(): HTMLElement[] {
+function questionRows(state: QuizState): HTMLElement[] {
+  const studentReturn = state.shot === null ? 'ton retour au survol (✕ = point visé)' : `ton retour\u00a0: ${SHOTS[state.shot].label} (✕ = point visé)`
   return [
     row(shapeSwatch('disc', PLAYER_A_COLOR), 'A : toi (droitier)'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), "B : l'adversaire (droitier)"),
     row(badgeSwatch(), 'D = droitier, G = gaucher (côté coup droit)'),
-    row(straightLine(SHOT_B_COLOR, ''), 'coup de B'),
+    row(straightLine(SHOT_B_COLOR, ''), `coup de B\u00a0: ${SHOTS[state.situation.shotB].label}`),
     row(shapeSwatch('disc', LANDING_COLOR), 'point de chute du volant'),
-    row(straightLine(RETURN_COLOR, STROKE_PIXELS.returnDashArray), 'ton retour au survol (✕ = point visé)'),
+    row(straightLine(RETURN_COLOR, STROKE_PIXELS.returnDashArray), studentReturn),
   ]
 }
 
-function revealRows(): HTMLElement[] {
-  const ghost = shapeSwatch('disc ghost', 'transparent')
+function revealRows(result: ChoiceResult): HTMLElement[] {
+  const {choice, analysis} = result
+  const {best, bestZone, alternativeZone} = analysis
   return [
-    row(ghost, 'B au moment de sa frappe'),
+    row(shapeSwatch('disc ghost', 'transparent'), 'B au moment de sa frappe'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), 'B replacé quand tu frappes'),
-    row(straightLine(RETURN_COLOR, STROKE_PIXELS.returnDashArray), 'ton retour (✕ = point visé)'),
-    row(straightLine(BEST_RETURN_COLOR, STROKE_PIXELS.returnDashArray, STROKE_PIXELS.bestReturn), 'meilleur retour (✕ = point idéal)'),
-    row(straightLine(UNREACHABLE_COLOR, STROKE_PIXELS.unreachableDashArray, STROKE_PIXELS.unreachable), 'au-delà de la portée de ton coup'),
-    row(shapeSwatch('square', MAP_BRIGHT_GREEN), 'meilleur spot'),
-    row(shapeSwatch('square', MAP_LIGHT_GREEN), 'bon retour'),
-    row(shapeSwatch('square', MAP_RED), 'à éviter'),
+    row(straightLine(RETURN_COLOR, STROKE_PIXELS.returnDashArray), `ton retour\u00a0: ${SHOTS[choice.shot].label} (✕ = point visé)`),
+    ...(choice.infeasibility === 'zone' ? [row(straightLine(UNREACHABLE_COLOR, STROKE_PIXELS.unreachableDashArray, STROKE_PIXELS.unreachable), 'au-delà de la portée de ton coup')] : []),
+    ...(best.value === 0 ? [] : [row(straightLine(BEST_RETURN_COLOR, STROKE_PIXELS.returnDashArray, STROKE_PIXELS.bestReturn), `meilleur retour\u00a0: ${SHOTS[best.shot].label} (✕ = point idéal)`)]),
+    ...(bestZone === null ? [] : [row(shapeSwatch('zone', ZONE_BEST_COLOR), `zone 1 · meilleur coup\u00a0: ${SHOTS[bestZone.shot].label}`)]),
+    ...(alternativeZone === null ? [] : [row(shapeSwatch('zone', ZONE_SECOND_COLOR), `zone 2 · deuxième choix\u00a0: ${SHOTS[alternativeZone.shot].label}`)]),
   ]
 }
 
-export function renderLegend(container: HTMLElement, phase: Phase): void {
-  container.replaceChildren(...(phase === 'question' ? questionRows() : revealRows()))
+export function renderLegend(container: HTMLElement, state: QuizState): void {
+  container.replaceChildren(...(state.result === null ? questionRows(state) : revealRows(state.result)))
 }

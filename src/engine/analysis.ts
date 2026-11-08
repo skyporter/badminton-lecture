@@ -4,14 +4,11 @@ import type {PairEvaluation} from './evaluate'
 import type {Situation} from './generator'
 import {
   ALTERNATIVE_MINIMUM_DISTANCE,
-  MAP_BRIGHT_GREEN,
-  MAP_BRIGHT_GREEN_RATIO,
   MAP_CELL_STEP,
-  MAP_LIGHT_GREEN,
-  MAP_LIGHT_GREEN_RATIO,
-  MAP_RED,
-  MAP_RED_RATIO,
   SHOT_FAMILIES,
+  ZONE_MAXIMUM_DISTANCE,
+  ZONE_MINIMUM_RADIUS,
+  ZONE_VALUE_RATIO,
 } from './rules'
 import type {ShotFamily} from './rules'
 import {RETURN_SHOTS} from './shots'
@@ -28,10 +25,19 @@ export interface ValueMap {
   bestShots: ShotId[]
 }
 
+export interface Zone {
+  center: Point
+  radiusX: number
+  radiusY: number
+  shot: ShotId
+}
+
 export interface Analysis {
   map: ValueMap
   best: PairEvaluation
   alternative: PairEvaluation
+  bestZone: Zone | null
+  alternativeZone: Zone | null
 }
 
 export interface ChoiceResult {
@@ -49,7 +55,15 @@ export function analyse(situation: Situation, level: Level): Analysis {
   const bestIndex = map.values.indexOf(Math.max(...map.values))
   const best = evaluatePair(situation, level, cellCentre(map, bestIndex), map.bestShots[bestIndex])
   const alternative = findAlternative(situation, level, map, best)
-  return {map, best, alternative}
+  const hasPlayableReturn = best.value > 0
+  const hasSecondChoice = hasPlayableReturn && alternative !== best
+  return {
+    map,
+    best,
+    alternative,
+    bestZone: hasPlayableReturn ? zoneAround(situation, level, map, best) : null,
+    alternativeZone: hasSecondChoice ? zoneAround(situation, level, map, alternative) : null,
+  }
 }
 
 export function scoreChoice(situation: Situation, level: Level, point: Point, shot: ShotId): ChoiceResult {
@@ -59,25 +73,18 @@ export function scoreChoice(situation: Situation, level: Level, point: Point, sh
   return {score, choice, analysis}
 }
 
-export function mapColor(ratio: number): string {
-  if (ratio >= MAP_BRIGHT_GREEN_RATIO) {
-    return MAP_BRIGHT_GREEN
-  } else if (ratio >= MAP_LIGHT_GREEN_RATIO) {
-    return MAP_LIGHT_GREEN
-  } else if (ratio <= MAP_RED_RATIO) {
-    return MAP_RED
-  } else {
-    return mixColors(MAP_LIGHT_GREEN, MAP_RED, (MAP_LIGHT_GREEN_RATIO - ratio) / (MAP_LIGHT_GREEN_RATIO - MAP_RED_RATIO))
+function zoneAround(situation: Situation, level: Level, map: ValueMap, pair: PairEvaluation): Zone {
+  let radiusX = ZONE_MINIMUM_RADIUS
+  let radiusY = ZONE_MINIMUM_RADIUS
+  for (let index = 0; index < map.values.length; index++) {
+    const point = cellCentre(map, index)
+    const isNear = distance(point, pair.point) <= ZONE_MAXIMUM_DISTANCE
+    if (isNear && evaluatePair(situation, level, point, pair.shot).value >= ZONE_VALUE_RATIO * pair.value) {
+      radiusX = Math.max(radiusX, Math.abs(point.x - pair.point.x) + map.step / 2)
+      radiusY = Math.max(radiusY, Math.abs(point.y - pair.point.y) + map.step / 2)
+    }
   }
-}
-
-function mixColors(from: string, to: string, fraction: number): string {
-  const channels = [1, 3, 5].map((offset) => {
-    const start = parseInt(from.slice(offset, offset + 2), 16)
-    const end = parseInt(to.slice(offset, offset + 2), 16)
-    return Math.round(start + (end - start) * fraction).toString(16).padStart(2, '0')
-  })
-  return `#${channels.join('')}`
+  return {center: pair.point, radiusX, radiusY, shot: pair.shot}
 }
 
 function candidateShots(situation: Situation): ShotId[] {

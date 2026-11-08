@@ -7,7 +7,6 @@ import {startApp} from '../../src/ui/app'
 beforeEach(() => {
   vi.stubGlobal('localStorage', {getItem: () => null, setItem: () => undefined})
   vi.stubGlobal('matchMedia', () => ({matches: false}))
-  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({fillRect: () => undefined} as unknown as CanvasRenderingContext2D)
 })
 
 afterEach(() => {

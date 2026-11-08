@@ -14,7 +14,6 @@ const SEED = 5
 beforeEach(() => {
   vi.stubGlobal('localStorage', {getItem: () => null, setItem: () => undefined})
   vi.stubGlobal('matchMedia', () => ({matches: false}))
-  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({fillRect: () => undefined} as unknown as CanvasRenderingContext2D)
 })
 
 afterEach(() => {
@@ -241,12 +240,11 @@ describe('players', () => {
   })
 })
 
-describe('alternative wording', () => {
-  it('starts the alternative line with « Alternative : » and never mentions light green', () => {
+describe('second choice wording', () => {
+  it('starts the second choice line with « Deuxième choix : » to match zone 2', () => {
     const root = revealed(startedApp())
     const text = drawer(root).querySelector('.alternative')!.textContent!
-    expect(text.startsWith('Alternative : ')).toBe(true)
-    expect(text).not.toContain('vert clair')
+    expect(text.startsWith('Deuxième choix\u00a0: ')).toBe(true)
   })
 })
 
@@ -338,12 +336,16 @@ describe('shot tags on the court', () => {
     expect(described(root)).toContainEqual({text: chosen, kind: 'return'})
   })
 
-  it('names the student return and the best return after validation, not B shot', () => {
+  it('names the student return and the two zones after validation, not B shot', () => {
     const root = answered(startedApp())
     const chosen = popover(root).querySelector('.shot.selected')!.textContent!
     popover(root).querySelector<HTMLButtonElement>('.validate')!.click()
-    const {best} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
-    expect(described(root)).toEqual([{text: chosen, kind: 'return'}, {text: SHOTS[best.shot].label, kind: 'best'}])
+    const {bestZone, alternativeZone} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
+    expect(described(root)).toEqual([
+      {text: chosen, kind: 'return'},
+      {text: `1 · ${SHOTS[bestZone!.shot].label}`, kind: 'zone-1'},
+      ...(alternativeZone === null ? [] : [{text: `2 · ${SHOTS[alternativeZone.shot].label}`, kind: 'zone-2'}]),
+    ])
   })
 })
 
@@ -382,5 +384,35 @@ describe('reveal boxes', () => {
     expect(bulletsOf(drawer(root).querySelector('.best-box')!)).toEqual(explainBest(situation, result.analysis))
     expect(drawer(root).textContent).not.toContain('Pourquoi')
     expect(drawer(root).querySelector('.drawer-body > :last-child')!.className).toBe('alternative')
+  })
+})
+
+describe('best return zones', () => {
+  it('draws an oval around the best return and the second choice instead of a heat map', () => {
+    const root = startedApp()
+    expect(root.querySelector('svg.court .zone')).toBeNull()
+    revealed(root)
+    const {bestZone, alternativeZone} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
+    const zoneOne = root.querySelector('svg.court ellipse.zone[data-rank="1"]')!
+    expect(Number(zoneOne.getAttribute('cx'))).toBeCloseTo(bestZone!.center.x)
+    expect(Number(zoneOne.getAttribute('rx'))).toBeCloseTo(bestZone!.radiusX)
+    expect(Number(zoneOne.getAttribute('ry'))).toBeCloseTo(bestZone!.radiusY)
+    expect(root.querySelectorAll('svg.court ellipse.zone')).toHaveLength(alternativeZone === null ? 1 : 2)
+    expect(root.querySelector('canvas')).toBeNull()
+  })
+
+  it('keeps the zone tags on the side of B, above the net', () => {
+    const root = revealed(startedApp())
+    const viewBox = root.querySelector<SVGSVGElement>('svg.court')!.viewBox.baseVal
+    const netTop = (100 * (6.7 - 0.35 - viewBox.y)) / viewBox.height
+    root.querySelectorAll<HTMLElement>('.trajectory-tag[data-kind^="zone"]').forEach((tag) => expect(parseFloat(tag.style.top)).toBeLessThanOrEqual(netTop + 0.001))
+  })
+
+  it('clips the zones to the singles half of B', () => {
+    const root = revealed(startedApp())
+    const zoneLayer = root.querySelector('svg.court ellipse.zone')!.parentElement!
+    const clipId = zoneLayer.getAttribute('clip-path')!.match(/url\(#(.+)\)/)![1]
+    const clipRect = root.querySelector(`svg.court clipPath#${clipId} rect`)!
+    expect([clipRect.getAttribute('x'), clipRect.getAttribute('y'), clipRect.getAttribute('width'), clipRect.getAttribute('height')].map(Number)).toEqual([0.46, 0, 5.18, 6.7])
   })
 })

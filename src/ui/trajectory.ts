@@ -9,6 +9,9 @@ export const LANDING_COLOR = PLAYER_A_COLOR
 export const RETURN_COLOR = PLAYER_A_COLOR
 export const BEST_RETURN_COLOR = '#ffffff'
 export const UNREACHABLE_COLOR = '#ff5252'
+export const ZONE_BEST_COLOR = '#00e676'
+export const ZONE_SECOND_COLOR = '#b2ff59'
+export const ZONE_OPACITY = 0.35
 
 export const STROKE_PIXELS = {
   courtLine: 1.5,
