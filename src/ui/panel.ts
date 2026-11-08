@@ -77,17 +77,18 @@ export function renderShotPopover(container: HTMLElement, state: QuizState, disp
 function revealSection(situation: Situation, result: ChoiceResult): HTMLElement[] {
   const {best, alternative} = result.analysis
   const hasPlayableReturn = best.value > 0
-  const choiceSection = [
+  const choiceBox = element('div', 'choice-box')
+  choiceBox.append(
     element('div', 'label', 'Ton choix'),
     element('p', '', `✕ ${describeReturn(result.choice)}`),
-    element('div', 'label', 'Score'),
     element('p', 'score', `${result.score} / 100`),
-    element('div', 'label', 'Meilleur retour'),
-  ]
+  )
+  const bestBox = element('div', 'best-box')
+  bestBox.append(element('div', 'label', 'Meilleur retour'), element('p', '', hasPlayableReturn ? describeReturn(best) : NO_PLAYABLE_RETURN))
   if (hasPlayableReturn) {
     return [
-      ...choiceSection,
-      element('p', '', describeReturn(best)),
+      choiceBox,
+      bestBox,
       element('div', 'label', 'Pourquoi'),
       element('div', 'sublabel', 'Meilleur retour'),
       bulletList(explainBest(situation, result.analysis)),
@@ -97,8 +98,8 @@ function revealSection(situation: Situation, result: ChoiceResult): HTMLElement[
     ]
   } else {
     return [
-      ...choiceSection,
-      element('p', '', NO_PLAYABLE_RETURN),
+      choiceBox,
+      bestBox,
       element('div', 'label', 'Pourquoi'),
       bulletList(explainChoice(situation, result)),
     ]

@@ -1,7 +1,7 @@
 // @vitest-environment jsdom
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {scoreChoice} from '../../src/engine/analysis'
-import {SHOT_DESCRIPTIONS, describeShotB} from '../../src/engine/explain'
+import {SHOT_DESCRIPTIONS, describeReturn, describeShotB} from '../../src/engine/explain'
 import {RETURN_SHOTS, SHOTS} from '../../src/engine/shots'
 import {generateSituation} from '../../src/engine/generator'
 import {startApp} from '../../src/ui/app'
@@ -342,5 +342,19 @@ describe('best return cross', () => {
     const centerY = whiteLines.map((line) => (Number(line.getAttribute('y1')) + Number(line.getAttribute('y2'))) / 2)
     centerX.forEach((x) => expect(x).toBeCloseTo(best.point.x))
     centerY.forEach((y) => expect(y).toBeCloseTo(best.point.y))
+  })
+})
+
+describe('reveal boxes', () => {
+  it('frames the student choice with its score, and sets the best return apart', () => {
+    const root = revealed(startedApp())
+    const result = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow')
+    const choiceBox = drawer(root).querySelector('.choice-box')!
+    const bestBox = drawer(root).querySelector('.best-box')!
+    expect(choiceBox.textContent).toContain('Ton choix')
+    expect(choiceBox.textContent).toContain(`${result.score} / 100`)
+    expect(bestBox.textContent).toContain('Meilleur retour')
+    expect(bestBox.textContent).toContain(describeReturn(result.analysis.best))
+    expect(choiceBox.compareDocumentPosition(bestBox) & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
   })
 })
