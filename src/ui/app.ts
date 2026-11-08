@@ -283,7 +283,7 @@ export function startApp(root: HTMLElement): void {
   tagLayer.className = 'trajectory-tags'
   const hint = document.createElement('div')
   hint.className = 'court-hint'
-  hint.textContent = 'Clique sur le terrain de B pour répondre.'
+  hint.textContent = 'Clique sur le terrain de B pour choisir ton retour'
   const drawer = document.createElement('div')
   drawer.className = 'reveal-drawer'
   const bottomStack = document.createElement('div')
