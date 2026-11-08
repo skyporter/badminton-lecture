@@ -132,6 +132,7 @@ export const LIKELY_REPLIES: Record<ShotId, ShotId[]> = {
 
 export const EXPLAIN_CRITERIA_MAXIMUM = 3
 export const EXPLAIN_GAP_THRESHOLD = 0.05
+export const EXPLAIN_FOR_MINIMUM_RAW = 0.5
 export const EXCELLENT_SCORE = 90
 
 export const SOURCES: Record<string, {label: string; url: string}> = {

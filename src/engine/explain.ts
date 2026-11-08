@@ -2,7 +2,7 @@ import type {Analysis, ChoiceResult} from './analysis'
 import {CENTER_X, depthFromNet, forehandIsPositiveX} from './court'
 import type {CriterionScore, PairEvaluation} from './evaluate'
 import type {Situation} from './generator'
-import {EXCELLENT_SCORE, EXPLAIN_CRITERIA_MAXIMUM, EXPLAIN_GAP_THRESHOLD, LIKELY_REPLIES, WEAK_SIDE_BACKHAND_VALUE} from './rules'
+import {EXCELLENT_SCORE, EXPLAIN_CRITERIA_MAXIMUM, EXPLAIN_FOR_MINIMUM_RAW, EXPLAIN_GAP_THRESHOLD, LIKELY_REPLIES, WEAK_SIDE_BACKHAND_VALUE} from './rules'
 import type {CriterionId} from './rules'
 import {SHOTS, hitZoneOf} from './shots'
 import type {Arrival, HitZone, ShotId} from './shots'
@@ -14,7 +14,7 @@ const STATUS_BULLETS: Record<Status, string> = {
   defense: "Tu es en défense : volant pris bas, tard ou loin, joue d'abord pour te replacer.",
 }
 
-const FOR_BULLETS: Record<CriterionId, string> = {
+export const FOR_BULLETS: Record<CriterionId, string> = {
   reachTime: 'Le point est loin de B replacé : il a du mal à arriver avant le volant.',
   weakSide: 'Tu vises le fond côté revers de B, son côté faible.',
   risk: 'Coup sûr : loin des lignes, sans croisé hors équilibre.',
@@ -22,7 +22,7 @@ const FOR_BULLETS: Record<CriterionId, string> = {
   pressure: 'Ce coup met B sous pression.',
 }
 
-const REAR_FOR_BULLET = 'Tu vises le fond du terrain de B.'
+export const REAR_FOR_BULLET = 'Tu vises le fond du terrain de B.'
 
 export const AGAINST_BULLETS: Record<CriterionId, string> = {
   reachTime: 'B atteindra ce point à temps : trop près de lui, ou coup trop lent.',
@@ -79,7 +79,7 @@ export function describeShotB(situation: Situation): string {
 export function explainBest(situation: Situation, analysis: Analysis): string[] {
   const {best} = analysis
   const strongestCriteria = best.criteria
-    .filter((criterion) => criterion.contribution > 0)
+    .filter((criterion) => criterion.raw >= EXPLAIN_FOR_MINIMUM_RAW)
     .sort((first, second) => second.contribution - first.contribution)
     .slice(0, EXPLAIN_CRITERIA_MAXIMUM)
   return [

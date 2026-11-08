@@ -1,8 +1,9 @@
 import {describe, expect, it} from 'vitest'
 import {analyse, scoreChoice} from '../../src/engine/analysis'
-import {AGAINST_BULLETS, describeShotB, explainBest, explainChoice, predictNextShotB} from '../../src/engine/explain'
+import {AGAINST_BULLETS, FOR_BULLETS, REAR_FOR_BULLET, describeShotB, explainBest, explainChoice, predictNextShotB} from '../../src/engine/explain'
 import {evaluatePair} from '../../src/engine/evaluate'
 import {generateSituation} from '../../src/engine/generator'
+import {EXPLAIN_FOR_MINIMUM_RAW} from '../../src/engine/rules'
 import type {CriterionId} from '../../src/engine/rules'
 import {createRng, randomBetween} from '../../src/engine/rng'
 import {RETURN_SHOTS} from '../../src/engine/shots'
@@ -41,6 +42,28 @@ describe('explainBest', () => {
     expect(bullets.length).toBeLessThanOrEqual(6)
     expect(['En ligne : le plus sûr, sans traverser ton propre terrain.', 'Croisé : B doit traverser le terrain en diagonale.']).toContain(bullets[bullets.length - 2])
     expect(bullets[bullets.length - 1]).toBe(predictNextShotB(analysis.best))
+  })
+})
+
+describe('explainBest reasons', () => {
+  it('only lists a criterion as a reason when its raw value reaches the threshold', () => {
+    const levels: Level[] = ['debutant', 'intermediaire', 'avance']
+    let listedReasons = 0
+    for (let seed = 1; seed <= 40; seed++) {
+      const situation = generateSituation(seed)
+      for (const level of levels) {
+        const analysis = analyse(situation, level)
+        const bullets = explainBest(situation, analysis)
+        for (const criterion of analysis.best.criteria) {
+          const listed = bullets.includes(FOR_BULLETS[criterion.id]) || (criterion.id === 'weakSide' && bullets.includes(REAR_FOR_BULLET))
+          if (listed) {
+            listedReasons++
+            expect(criterion.raw).toBeGreaterThanOrEqual(EXPLAIN_FOR_MINIMUM_RAW)
+          }
+        }
+      }
+    }
+    expect(listedReasons).toBeGreaterThan(0)
   })
 })
 
