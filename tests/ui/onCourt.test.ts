@@ -186,3 +186,24 @@ describe('banner reservation', () => {
     expect(root.querySelector('.shot-banner .banner-hint')).toBeNull()
   })
 })
+
+describe('racket orientation', () => {
+  it('draws B racket on the -x side of B and A racket on the +x side of A', () => {
+    const root = startedApp()
+    const situation = generateSituation(SEED)
+    const [playerBGroup, playerAGroup] = [...root.querySelectorAll('svg.court > g')].pop()!.children
+    const handleX = (group: Element) => Number(group.querySelector('g line')!.getAttribute('x1'))
+    expect(handleX(playerBGroup)).toBeLessThan(situation.playerBHit.x)
+    expect(handleX(playerAGroup)).toBeGreaterThan(situation.playerA.x)
+  })
+})
+
+describe('alternative wording', () => {
+  it('starts the alternative line with « Alternative : » and never mentions light green', () => {
+    const root = revealed(startedApp())
+    drawer(root).querySelector<HTMLButtonElement>('.drawer-toggle')!.click()
+    const text = drawer(root).querySelector('.alternative')!.textContent!
+    expect(text.startsWith('Alternative : ')).toBe(true)
+    expect(text).not.toContain('vert clair')
+  })
+})

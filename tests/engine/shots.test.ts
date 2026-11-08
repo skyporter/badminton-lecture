@@ -44,13 +44,17 @@ describe('rules', () => {
 
   it('never allows a smash on a low arrival', () => {
     for (const status of ['attaque', 'neutre', 'defense'] as const)
-      expect(ALLOWED_BY_STATUS[status].low).not.toContain('smash')
+      expect(ALLOWED_BY_STATUS[status].low ?? []).not.toContain('smash')
+  })
+
+  it('only defines the arrival reachable under attack', () => {
+    expect(Object.keys(ALLOWED_BY_STATUS.attaque)).toEqual(['high'])
   })
 
   it('only allows catalogue shots', () => {
     for (const status of ['attaque', 'neutre', 'defense'] as const)
       for (const arrival of ['high', 'mid', 'low'] as const)
-        for (const shotId of ALLOWED_BY_STATUS[status][arrival]) expect(shotIds).toContain(shotId)
+        for (const shotId of ALLOWED_BY_STATUS[status][arrival] ?? []) expect(shotIds).toContain(shotId)
   })
 
   it('keeps shot risk, recovery and pressure within [0, 1] for every shot', () => {

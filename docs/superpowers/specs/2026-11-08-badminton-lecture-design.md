@@ -51,24 +51,27 @@ Le pourquoi : on apprend à lire le jeu en devinant **avant** de voir la répon
 - **Une raquette fixe** dessinée du côté de la main droite, pour repérer le coup droit : à droite de l'écran pour A (il regarde vers le haut), à gauche de l'écran pour B (il regarde vers le bas). Elle ne montre pas la posture de frappe.
 
 ### 4.2 Étape 1 : la question
-- Sélecteur de niveau, bouton « Nouvelle situation ».
-- Description du coup de B en mots : type, direction (ligne ou croisé), hauteur à laquelle A prend le volant (par ex. « volant pris haut, en tour de tête »).
+Tout se passe sur le terrain, sans panneau à côté.
+- Une **barre du haut**, fine : sélecteur de niveau et bouton « Nouvelle situation ».
+- Un **bandeau** au-dessus du terrain décrit le coup de B en mots : type, direction (ligne ou croisé), zone d'arrivée, hauteur à laquelle A prend le volant (par ex. « volant pris haut, en tour de tête »). Il porte aussi la consigne « Clique sur le terrain de B pour choisir ton retour. ». Le bandeau occupe une **bande réservée** au-dessus du terrain : il ne cache jamais la ligne de fond de B ni la zone « dehors » derrière elle, qui restent visibles et cliquables.
 - Trajectoire du coup de B **en orange** jusqu'au point de chute (point orange).
 - A est affiché à sa position de départ. Son retour part du **point d'impact** (là où il rejoint le volant), pas de sa position de départ.
-- **Au survol** du terrain de B (ordinateur), un aperçu **jaune** part du point d'impact vers le curseur, terminé par une petite croix jaune. Le clic fige la cible.
-- **Sur tactile**, l'aperçu apparaît au contact, suit le glisser, et le relâchement place la croix. La croix reste déplaçable jusqu'à la validation.
-- Choix du coup parmi des boutons, puis « Valider ».
+- **Au survol** du terrain de B (ordinateur), un aperçu **jaune** part du point d'impact vers le curseur, terminé par une petite croix jaune.
+- **Un clic sur le demi-terrain de B** place la croix et ouvre une **fenêtre de choix du coup** à côté de la croix. Elle contient trois groupes de boutons, « Vers l'avant », « Vers le fond » et « Rapides », un bouton « ✕ » pour la fermer et le bouton « Valider », inactif tant qu'aucun coup n'est choisi. Échap ou « ✕ » ferme la fenêtre en gardant la croix ; un nouveau clic sur le terrain déplace la croix et rouvre la fenêtre.
+- **Sur tactile**, l'aperçu apparaît au contact, suit le glisser, et le relâchement place la croix et ouvre la fenêtre. La croix reste déplaçable jusqu'à la validation.
 
 ### 4.3 Étape 2 : la révélation
-- Carte de couleurs sur le terrain de B : **vert vif** = meilleur spot, **vert clair** = bonne alternative, **rouge** = à éviter. Dégradé continu, pas de zones à bords nets.
+La révélation se fait sur le terrain.
+- Carte de couleurs sur le terrain de B : **vert vif** = meilleur spot, **vert clair** = bon retour, **rouge** = à éviter. Dégradé continu, pas de zones à bords nets.
 - B affiché à **sa position replacée** (rond plein) au moment où A frappe, et à sa position de frappe en **rond pointillé**. **Pas de flèche** entre les deux.
 - Retour de l'élève **en jaune** avec une petite croix au point visé, avec le même style qu'à l'étape 1.
 - Meilleur retour en **pointillé blanc**.
-- Panneau : ton choix, score sur 100, meilleur retour (coup + zone), « Pourquoi » en **liste à puces** (une raison par ligne : position/statut, ce que fait B, la zone, le coup, la direction), et une alternative.
+- Un **tiroir repliable** en bas du terrain, **replié au départ** : une ligne « Score : NN / 100 — Meilleur : <coup> » avec un chevron. Déplié, il donne le détail : ton choix, score sur 100, meilleur retour (coup + zone), « Pourquoi » en **liste à puces** (une raison par ligne : position/statut, ce que fait B, la zone, le coup, la direction), et une ligne « Alternative : <coup et zone> » sans référence à une couleur.
+- Un changement de niveau après la révélation recalcule la révélation pour la même situation et garde l'état du tiroir.
 
 ### 4.4 Légendes
-- Une légende sous chaque terrain, qui décrit tout ce qui est dessiné (joueurs, raquette, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
-- Un bouton **affiche ou masque la légende**. Masquée, elle laisse le terrain occuper tout l'écran.
+- Une **légende en surimpression** sur le terrain, qui décrit tout ce qui est dessiné (joueurs, raquette, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
+- Un petit bouton « Légende », en bas à gauche, **affiche ou masque la légende**. Il se place au-dessus du tiroir quand celui-ci est là. Le terrain ne change jamais de taille, que la légende soit affichée ou masquée.
 
 ### 4.5 Code des trajectoires (vue de dessus)
 Deux règles, valables pour le coup de B (orange), l'aperçu et le retour de l'élève (jaune) et le meilleur retour (blanc) :
@@ -84,9 +87,11 @@ Deux règles, valables pour le coup de B (orange), l'aperçu et le retour de l'�
 | Dégagement haut, lob défensif | points espacés | forte |
 | Filet, contre-amorti | points espacés | droit, court |
 
-### 4.6 Mobile
-- Une colonne : le terrain en pleine largeur en haut, le panneau en dessous.
+### 4.6 Mobile et traits
+- Même écran que sur ordinateur : le terrain en pleine largeur, la barre du haut au-dessus, le bandeau, la fenêtre de choix et le tiroir par-dessus le terrain.
 - Légende masquée par défaut sur mobile, état mémorisé (par appareil).
+- Les **épaisseurs de trait et les longueurs de pointillé sont constantes en pixels**, quelle que soit la taille de la fenêtre ; seules les formes (ronds, point de chute, croix, tête de raquette) suivent la taille du terrain.
+- Chaque situation est **partageable** : l'adresse contient `?seed=&level=`, mise à jour avec `replaceState`, et la même adresse rechargée affiche la même situation.
 
 ## 5. Le moteur de décision
 
@@ -181,3 +186,11 @@ Plus tard, une IA pourra reformuler la justification calculée par le moteur ou 
 - La carte composite et le score par couple (point, coup), voir §5.2 bis.
 - La justification du choix de l'élève par comparaison de critères, sans IA.
 - Le calibrage des poids et la série de situations types (§5.2 quater).
+- Tout sur le terrain, sans panneau latéral : barre du haut, bandeau, fenêtre de choix du coup et tiroir de révélation. *(décision de Vincent)*
+- Le bandeau dans une bande réservée au-dessus du terrain, pour que la ligne de fond de B et la zone « dehors » restent visibles. *(décision de Vincent)*
+- Le clic sur le demi-terrain de B place la croix et ouvre la fenêtre de choix du coup, en trois groupes « Vers l'avant », « Vers le fond », « Rapides ». *(décision de Vincent)*
+- Le tiroir de révélation, replié au départ. *(décision de Vincent)*
+- La légende en surimpression avec un petit bouton « Légende » en bas à gauche, au-dessus du tiroir, sans que le terrain change de taille. *(décision de Vincent)*
+- Des épaisseurs de trait et des pointillés constants en pixels. *(décision de Vincent)*
+- L'adresse partageable `?seed=&level=` mise à jour avec `replaceState`. *(décision de Vincent)*
+- La ligne « Alternative : » sans référence de couleur, et l'étiquette « bon retour » pour le vert clair de la carte. *(décision de Vincent)*

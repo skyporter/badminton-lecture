@@ -78,11 +78,13 @@ export function describeShotB(situation: Situation): string {
 
 export function describeReturn(evaluation: PairEvaluation): string {
   const {label} = SHOTS[evaluation.shot]
-  if (!isInSinglesHalf(evaluation.point, 'B')) return `${label}, hors du terrain de simple de B.`
-
-  const landsOnForehand = (evaluation.point.x > CENTER_X) === forehandIsPositiveX('B')
-  const side = landsOnForehand ? 'coup droit' : 'revers'
-  return `${label} ${DIRECTION_LABELS[evaluation.direction]}, vers ${ZONE_LABELS[hitZoneOf(evaluation.point)]} côté ${side} de B.`
+  if (isInSinglesHalf(evaluation.point, 'B')) {
+    const landsOnForehand = (evaluation.point.x > CENTER_X) === forehandIsPositiveX('B')
+    const side = landsOnForehand ? 'coup droit' : 'revers'
+    return `${label} ${DIRECTION_LABELS[evaluation.direction]}, vers ${ZONE_LABELS[hitZoneOf(evaluation.point)]} côté ${side} de B.`
+  } else {
+    return `${label}, hors du terrain de simple de B.`
+  }
 }
 
 export function explainBest(situation: Situation, analysis: Analysis): string[] {
@@ -100,9 +102,15 @@ export function explainBest(situation: Situation, analysis: Analysis): string[] 
 }
 
 export function explainChoice(situation: Situation, result: ChoiceResult): string[] {
-  const {choice, analysis} = result
-  if (!choice.feasible) return [infeasibilityBullet(situation, choice)]
+  if (result.choice.feasible) {
+    return explainFeasibleChoice(result)
+  } else {
+    return [infeasibilityBullet(situation, result.choice)]
+  }
+}
 
+function explainFeasibleChoice(result: ChoiceResult): string[] {
+  const {choice, analysis} = result
   const gaps = analysis.best.criteria.map((bestCriterion) => ({
     id: bestCriterion.id,
     gap: bestCriterion.contribution - choice.criteria.find((criterion) => criterion.id === bestCriterion.id)!.contribution,

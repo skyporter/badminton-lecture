@@ -92,7 +92,7 @@ function revealSection(situation: Situation, result: ChoiceResult): HTMLElement[
       bulletList(explainBest(situation, result.analysis)),
       element('div', 'sublabel', 'Ton choix'),
       bulletList(explainChoice(situation, result)),
-      element('p', 'alternative', `Alternative (vert clair) : ${describeReturn(alternative)}`),
+      element('p', 'alternative', `Alternative : ${describeReturn(alternative)}`),
     ]
   } else {
     return [

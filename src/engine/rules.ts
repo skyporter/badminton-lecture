@@ -54,11 +54,9 @@ export const SHOT_PRESSURE: Record<ShotId, number> = {
   'block': 0.5,
 }
 
-export const ALLOWED_BY_STATUS: Record<Status, Record<Arrival, ShotId[]>> = {
+export const ALLOWED_BY_STATUS: Record<Status, Partial<Record<Arrival, ShotId[]>>> = {
   attaque: {
     high: ['clear-high', 'clear-attack', 'smash', 'drop-slow', 'drop-fast'],
-    mid: ['drive', 'smash', 'drop-fast', 'block'],
-    low: ['net', 'lob-attack'],
   },
   neutre: {
     high: ['clear-high', 'clear-attack', 'drop-slow', 'drop-fast'],
@@ -73,6 +71,7 @@ export const ALLOWED_BY_STATUS: Record<Status, Record<Arrival, ShotId[]>> = {
 }
 
 export const FRONT_MAXIMUM_DEPTH = 2.3
+export const REAR_MINIMUM_DEPTH = 4.7
 export const PLAYER_SPEED = 4.0
 export const REACTION_TIME = 0.25
 export const ATTACK_MARGIN = 0.3
@@ -85,7 +84,6 @@ export const BEHIND_PENALTY_PER_METER = 0.3
 export const CROSS_FLIGHT_TIME_FACTOR = 1.1
 export const REACH_REFERENCE_TIME = 1.0
 export const CROSS_RISK: Record<'neutral' | 'defense', number> = {neutral: 0.1, defense: 0.4}
-export const WEAK_SIDE_REAR_DEPTH = 4.7
 export const WEAK_SIDE_BACKHAND_VALUE = 1
 export const WEAK_SIDE_FOREHAND_REAR_VALUE = 0.5
 export const PRESSURE_MULTIPLIER_BY_STATUS: Record<Status, number> = {attaque: 1, neutre: 0.6, defense: 0.3}
@@ -194,6 +192,7 @@ export const RULE_SOURCES: Record<string, string[]> = {
   WEAK_SIDE: ['badmintonCoach', 'wikibooksStrategy'],
   PRESSURE_MULTIPLIER_BY_STATUS: ['mobilesport', 'epsGrenoble'],
   FRONT_MAXIMUM_DEPTH: ['badmintonBibleCrossNet', 'epsGrenoble'],
+  REAR_MINIMUM_DEPTH: ['badmintonBibleCrossNet', 'epsGrenoble'],
   LIKELY_REPLIES: ['mobilesport', 'wikibooksStrategy', 'badmintonBibleDrops'],
 }
 

@@ -60,10 +60,15 @@ export function scoreChoice(situation: Situation, level: Level, point: Point, sh
 }
 
 export function mapColor(ratio: number): string {
-  if (ratio >= MAP_BRIGHT_GREEN_RATIO) return MAP_BRIGHT_GREEN
-  if (ratio >= MAP_LIGHT_GREEN_RATIO) return MAP_LIGHT_GREEN
-  if (ratio <= MAP_RED_RATIO) return MAP_RED
-  return mixColors(MAP_LIGHT_GREEN, MAP_RED, (MAP_LIGHT_GREEN_RATIO - ratio) / (MAP_LIGHT_GREEN_RATIO - MAP_RED_RATIO))
+  if (ratio >= MAP_BRIGHT_GREEN_RATIO) {
+    return MAP_BRIGHT_GREEN
+  } else if (ratio >= MAP_LIGHT_GREEN_RATIO) {
+    return MAP_LIGHT_GREEN
+  } else if (ratio <= MAP_RED_RATIO) {
+    return MAP_RED
+  } else {
+    return mixColors(MAP_LIGHT_GREEN, MAP_RED, (MAP_LIGHT_GREEN_RATIO - ratio) / (MAP_LIGHT_GREEN_RATIO - MAP_RED_RATIO))
+  }
 }
 
 function mixColors(from: string, to: string, fraction: number): string {

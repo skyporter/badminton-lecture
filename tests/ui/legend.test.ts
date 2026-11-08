@@ -59,7 +59,7 @@ describe('renderLegend', () => {
 
   it('lists the reveal entries', () => {
     const text = legendText('reveal')
-    ;['B au moment de sa frappe', 'B replacé', 'ton retour', 'meilleur retour', 'meilleur spot', 'bonne alternative', 'à éviter'].forEach((entry) => expect(text).toContain(entry))
+    ;['B au moment de sa frappe', 'B replacé', 'ton retour', 'meilleur retour', 'meilleur spot', 'bon retour', 'à éviter'].forEach((entry) => expect(text).toContain(entry))
     expect(text).not.toContain('point de chute')
   })
 

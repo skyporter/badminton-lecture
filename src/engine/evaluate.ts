@@ -1,4 +1,4 @@
-import {CENTER_X, SINGLES_LEFT, SINGLES_RIGHT, depthFromNet, directionBetween, distance, isInSinglesHalf} from './court'
+import {CENTER_X, SINGLES_LEFT, SINGLES_RIGHT, depthFromNet, directionBetween, distance, forehandIsPositiveX, isInSinglesHalf} from './court'
 import type {CriterionId} from './rules'
 import {
   ALLOWED_BY_STATUS,
@@ -12,12 +12,12 @@ import {
   LINE_RISK_DISTANCE,
   PRESSURE_MULTIPLIER_BY_STATUS,
   REACH_REFERENCE_TIME,
+  REAR_MINIMUM_DEPTH,
   SHOT_PRESSURE,
   SHOT_RECOVERY,
   SHOT_RISK,
   WEAK_SIDE_BACKHAND_VALUE,
   WEAK_SIDE_FOREHAND_REAR_VALUE,
-  WEAK_SIDE_REAR_DEPTH,
   WEIGHTS,
 } from './rules'
 import type {Situation} from './generator'
@@ -46,7 +46,7 @@ export interface PairEvaluation {
 
 export function allowedShots(situation: Situation): ShotId[] {
   const hitZone = hitZoneOf(situation.impact)
-  return ALLOWED_BY_STATUS[situation.status][situation.arrival].filter((shotId) => SHOTS[shotId].playableFrom.includes(hitZone))
+  return (ALLOWED_BY_STATUS[situation.status][situation.arrival] ?? []).filter((shotId) => SHOTS[shotId].playableFrom.includes(hitZone))
 }
 
 export function evaluatePair(situation: Situation, level: Level, point: Point, shot: ShotId): PairEvaluation {
@@ -71,10 +71,15 @@ export function evaluatePair(situation: Situation, level: Level, point: Point, s
 function infeasibilityOf(situation: Situation, point: Point, shot: ShotId): Infeasibility | undefined {
   const [minimumDepth, maximumDepth] = SHOTS[shot].landingDepth
   const depth = depthFromNet(point)
-  if (!isInSinglesHalf(point, 'B')) return 'dehors'
-  if (!allowedShots(situation).includes(shot)) return 'statut'
-  if (depth < minimumDepth - LANDING_DEPTH_TOLERANCE || depth > maximumDepth + LANDING_DEPTH_TOLERANCE) return 'zone'
-  return undefined
+  if (!isInSinglesHalf(point, 'B')) {
+    return 'dehors'
+  } else if (!allowedShots(situation).includes(shot)) {
+    return 'statut'
+  } else if (depth < minimumDepth - LANDING_DEPTH_TOLERANCE || depth > maximumDepth + LANDING_DEPTH_TOLERANCE) {
+    return 'zone'
+  } else {
+    return undefined
+  }
 }
 
 function reachTimeScore(situation: Situation, point: Point, shot: ShotId, direction: Direction): number {
@@ -87,8 +92,13 @@ function reachTimeScore(situation: Situation, point: Point, shot: ShotId, direct
 }
 
 function weakSideScore(point: Point): number {
-  if (depthFromNet(point) <= WEAK_SIDE_REAR_DEPTH) return 0
-  return point.x > CENTER_X ? WEAK_SIDE_BACKHAND_VALUE : WEAK_SIDE_FOREHAND_REAR_VALUE
+  if (depthFromNet(point) <= REAR_MINIMUM_DEPTH) {
+    return 0
+  } else if ((point.x > CENTER_X) === forehandIsPositiveX('B')) {
+    return WEAK_SIDE_FOREHAND_REAR_VALUE
+  } else {
+    return WEAK_SIDE_BACKHAND_VALUE
+  }
 }
 
 function riskScore(situation: Situation, point: Point, shot: ShotId, direction: Direction): number {

@@ -5,7 +5,7 @@ import {generateSituation} from '../engine/generator'
 import type {Situation} from '../engine/generator'
 import type {ShotId} from '../engine/shots'
 import type {Level, Point} from '../engine/types'
-import {BANNER_RESERVED_METRES, renderCourt, renderPlayers, renderShotB} from './courtView'
+import {BANNER_RESERVED_METRES, SVG_NAMESPACE, renderCourt, renderPlayers, renderShotB, svgElement} from './courtView'
 import {placeOverHalfOfB, renderHeatmap} from './heatmap'
 import {listenToCourt} from './input'
 import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
@@ -32,7 +32,6 @@ export type QuizAction =
   | {type: 'close-popover'}
   | {type: 'toggle-drawer'}
 
-const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const CROSS_HALF_SIZE = 0.15
 const PREVIEW_OPACITY = 0.7
 const DEFAULT_LEVEL: Level = 'intermediaire'
@@ -70,12 +69,6 @@ export function nextState(state: QuizState, action: QuizAction): QuizState {
   }
 }
 
-function svgElement(name: string, attributes: Record<string, string | number>): SVGElement {
-  const created = document.createElementNS(SVG_NAMESPACE, name)
-  Object.entries(attributes).forEach(([attribute, value]) => created.setAttribute(attribute, String(value)))
-  return created
-}
-
 function layer(): SVGGElement {
   return document.createElementNS(SVG_NAMESPACE, 'g')
 }
@@ -111,6 +104,8 @@ function placeNextTo(popover: HTMLElement, point: Point, svg: SVGSVGElement): vo
   popover.classList.toggle('to-left', point.x - viewBox.x > viewBox.width / 2)
   popover.classList.toggle('upward', point.y - viewBox.y > viewBox.height / 2)
 }
+
+let removeEscapeListener = (): void => undefined
 
 export function startApp(root: HTMLElement): void {
   const params = readSituationParams(window.location.search)
@@ -243,11 +238,14 @@ export function startApp(root: HTMLElement): void {
     },
     onTarget: (point) => dispatch({type: 'set-target', point}),
   })
-  document.addEventListener('keydown', (event) => {
+  removeEscapeListener()
+  const closePopoverOnEscape = (event: KeyboardEvent): void => {
     if (event.key === 'Escape' && state.popoverOpen) {
       dispatch({type: 'close-popover'})
     }
-  })
+  }
+  document.addEventListener('keydown', closePopoverOnEscape)
+  removeEscapeListener = () => document.removeEventListener('keydown', closePopoverOnEscape)
   renderLegendVisibility()
   renderBoard()
   renderChrome()

@@ -1,10 +1,9 @@
 import {MAP_BRIGHT_GREEN, MAP_LIGHT_GREEN, MAP_RED} from '../engine/rules'
 import {SHOTS} from '../engine/shots'
 import type {ShotId} from '../engine/shots'
-import {PLAYER_A_COLOR, PLAYER_B_COLOR, SHOT_B_COLOR, racket} from './courtView'
+import {PLAYER_A_COLOR, PLAYER_B_COLOR, SHOT_B_COLOR, SVG_NAMESPACE, racket, svgElement} from './courtView'
 import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
 
-const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const STORAGE_KEY = 'badminton-lecture:legend-visible'
 const SWATCH_WIDTH = 1.6
 const SWATCH_HEIGHT = 0.5
@@ -33,12 +32,7 @@ function lineSwatch(path: string, color: string, dashArray: string, strokeWidth 
   const svg = document.createElementNS(SVG_NAMESPACE, 'svg')
   svg.setAttribute('viewBox', `0 0 ${SWATCH_WIDTH} ${SWATCH_HEIGHT}`)
   svg.classList.add('legend-line')
-  const stroke = document.createElementNS(SVG_NAMESPACE, 'path')
-  stroke.setAttribute('d', path)
-  stroke.setAttribute('stroke', color)
-  stroke.setAttribute('fill', 'none')
-  Object.entries(constantStroke(strokeWidth, dashArray)).forEach(([attribute, value]) => stroke.setAttribute(attribute, String(value)))
-  svg.append(stroke)
+  svg.append(svgElement('path', {d: path, stroke: color, fill: 'none', ...constantStroke(strokeWidth, dashArray)}))
   return svg
 }
 
@@ -93,7 +87,7 @@ function revealRows(): HTMLElement[] {
     row(straightLine(RETURN_COLOR, ''), 'ton retour (✕ = point visé)'),
     row(straightLine(BEST_RETURN_COLOR, STROKE_PIXELS.bestReturnDashArray, STROKE_PIXELS.bestReturn), 'meilleur retour'),
     row(shapeSwatch('square', MAP_BRIGHT_GREEN), 'meilleur spot'),
-    row(shapeSwatch('square', MAP_LIGHT_GREEN), 'bonne alternative'),
+    row(shapeSwatch('square', MAP_LIGHT_GREEN), 'bon retour'),
     row(shapeSwatch('square', MAP_RED), 'à éviter'),
   ]
 }

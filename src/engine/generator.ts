@@ -1,4 +1,4 @@
-import {CENTER_X, NET_Y, SHORT_SERVICE_DISTANCE, SINGLES_LEFT, SINGLES_RIGHT, directionBetween, pointAtDepth} from './court'
+import {CENTER_X, NET_Y, SHORT_SERVICE_DISTANCE, SINGLES_LEFT, SINGLES_RIGHT, directionBetween, forehandIsPositiveX, pointAtDepth} from './court'
 import {
   HIGH_ARRIVAL_IMPACT_ADVANCE,
   LANDING_X_RANGE_BY_SIDE,
@@ -84,8 +84,11 @@ export function generateSituation(seed: number): Situation {
 }
 
 function contactFor(playerA: Point, impact: Point, arrival: Arrival): Situation['contact'] {
-  if (impact.x > playerA.x) return 'coup-droit'
-  return arrival === 'high' ? 'tour-de-tete' : 'revers'
+  if ((impact.x > playerA.x) === forehandIsPositiveX('A')) {
+    return 'coup-droit'
+  } else {
+    return arrival === 'high' ? 'tour-de-tete' : 'revers'
+  }
 }
 
 function serveInput(rng: () => number): SituationInput {

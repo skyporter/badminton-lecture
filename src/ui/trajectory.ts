@@ -33,8 +33,11 @@ const CURVATURES: Record<Arc, number> = {
 
 export function constantStroke(width: number, dashArray = ''): Record<string, string | number> {
   const attributes: Record<string, string | number> = {'stroke-width': width, 'vector-effect': 'non-scaling-stroke'}
-  if (dashArray !== '') attributes['stroke-dasharray'] = dashArray
-  return attributes
+  if (dashArray === '') {
+    return attributes
+  } else {
+    return {...attributes, 'stroke-dasharray': dashArray}
+  }
 }
 
 function rounded(value: number): number {

@@ -13,7 +13,7 @@ import type {Situation} from '../engine/generator'
 import type {Point} from '../engine/types'
 import {STROKE_PIXELS, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
 
-const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
+export const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const PLAYER_RADIUS = 0.35
 export const PLAYER_A_COLOR = '#3b82f6'
 export const PLAYER_B_COLOR = '#e05252'
@@ -21,7 +21,7 @@ export const SHOT_B_COLOR = '#ff8a65'
 export const BANNER_RESERVED_METRES = 1.1
 const COURT_MARGIN = 0.6
 
-function svgElement(name: string, attributes: Record<string, string | number>): SVGElement {
+export function svgElement(name: string, attributes: Record<string, string | number>): SVGElement {
   const element = document.createElementNS(SVG_NAMESPACE, name)
   Object.entries(attributes).forEach(([attribute, value]) => element.setAttribute(attribute, String(value)))
   return element
@@ -54,7 +54,6 @@ export function renderCourt(svg: SVGSVGElement): void {
     courtLine(CENTER_X, 0, CENTER_X, shortServiceFar),
     courtLine(CENTER_X, shortServiceNear, CENTER_X, COURT_LENGTH),
   )
-
 
   const net = line(-0.4, NET_Y, COURT_WIDTH + 0.4, NET_Y, {stroke: '#ddd', ...constantStroke(STROKE_PIXELS.net, STROKE_PIXELS.netDashArray)})
 
