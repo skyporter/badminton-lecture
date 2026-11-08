@@ -70,11 +70,19 @@ describe('renderLegend', () => {
     expect(details.querySelectorAll('.legend-row')).toHaveLength(6)
   })
 
-  it('keeps the collapsible block open across phases', () => {
+  it('opens the collapsible block by default', () => {
     const container = document.createElement('div')
     renderLegend(container, 'question')
-    container.querySelector('details')!.open = true
+    expect(container.querySelector('details')!.open).toBe(true)
+  })
+
+  it('keeps the collapsible block as the player left it across phases', () => {
+    const container = document.createElement('div')
+    renderLegend(container, 'question')
     renderLegend(container, 'reveal')
     expect(container.querySelector('details')!.open).toBe(true)
+    container.querySelector('details')!.open = false
+    renderLegend(container, 'question')
+    expect(container.querySelector('details')!.open).toBe(false)
   })
 })

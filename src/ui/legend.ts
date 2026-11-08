@@ -113,6 +113,6 @@ function trajectoryCode(wasOpen: boolean): HTMLDetailsElement {
 }
 
 export function renderLegend(container: HTMLElement, phase: Phase): void {
-  const wasOpen = container.querySelector('details')?.open ?? false
+  const wasOpen = container.querySelector('details')?.open ?? true
   container.replaceChildren(...(phase === 'question' ? questionRows() : revealRows()), trajectoryCode(wasOpen))
 }

@@ -343,6 +343,13 @@ body {
   color: #ffd54a;
 }
 
+.shot-description {
+  margin: 2px 0 6px;
+  color: #c8d0d8;
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .score {
   font-size: 22px;
   font-weight: bold;

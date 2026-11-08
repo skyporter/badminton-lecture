@@ -1,7 +1,8 @@
 // @vitest-environment jsdom
 import {afterEach, beforeEach, describe, expect, it, vi} from 'vitest'
 import {scoreChoice} from '../../src/engine/analysis'
-import {describeShotB} from '../../src/engine/explain'
+import {SHOT_DESCRIPTIONS, describeShotB} from '../../src/engine/explain'
+import {RETURN_SHOTS, SHOTS} from '../../src/engine/shots'
 import {generateSituation} from '../../src/engine/generator'
 import {startApp} from '../../src/ui/app'
 import {BANNER_RESERVED_METRES, renderCourt} from '../../src/ui/courtView'
@@ -76,6 +77,26 @@ describe('on-court layout', () => {
 })
 
 describe('shot popover', () => {
+  it('explains each shot in a tooltip', () => {
+    const root = startedApp()
+    press(root.querySelector('svg.court')!, 3, 3)
+    const buttons = [...popover(root).querySelectorAll<HTMLButtonElement>('.shot')]
+    expect(buttons).toHaveLength(RETURN_SHOTS.length)
+    buttons.forEach((button) => {
+      const shot = RETURN_SHOTS.find((candidate) => SHOTS[candidate].label === button.textContent)!
+      expect(button.title).toBe(SHOT_DESCRIPTIONS[shot])
+    })
+  })
+
+  it('shows the description of the selected shot under the buttons, for touch screens', () => {
+    const root = startedApp()
+    press(root.querySelector('svg.court')!, 3, 3)
+    expect(popover(root).querySelector('.shot-description')).toBeNull()
+    const netButton = [...popover(root).querySelectorAll<HTMLButtonElement>('.shot')].find((button) => button.textContent === 'Filet')!
+    netButton.click()
+    expect(popover(root).querySelector('.shot-description')!.textContent).toBe(`Filet\u00a0: ${SHOT_DESCRIPTIONS.net}`)
+  })
+
   it('is closed before a target is placed', () => {
     expect(popover(startedApp()).hidden).toBe(true)
   })

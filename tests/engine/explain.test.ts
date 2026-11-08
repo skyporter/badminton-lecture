@@ -1,6 +1,6 @@
 import {describe, expect, it} from 'vitest'
 import {analyse, scoreChoice} from '../../src/engine/analysis'
-import {AGAINST_BULLETS, FOR_BULLETS, REAR_FOR_BULLET, describeReturn, describeShotB, explainBest, explainChoice, predictNextShotB} from '../../src/engine/explain'
+import {AGAINST_BULLETS, FOR_BULLETS, REAR_FOR_BULLET, SHOT_DESCRIPTIONS, describeReturn, describeShotB, explainBest, explainChoice, predictNextShotB} from '../../src/engine/explain'
 import {allowedShots, evaluatePair} from '../../src/engine/evaluate'
 import {generateSituation} from '../../src/engine/generator'
 import {EXPLAIN_FOR_MINIMUM_RAW, SHOT_FAMILIES} from '../../src/engine/rules'
@@ -30,6 +30,16 @@ describe('describeShotB', () => {
 
   it('describes the fast drop of F2', () => {
     expect(describeShotB(F2)).toBe("Situation\u00a0: B fait un amorti rapide en ligne, vers l'avant côté coup droit de A. Volant pris bas, en coup droit.")
+  })
+})
+
+describe('SHOT_DESCRIPTIONS', () => {
+  it('describes every return shot in one French sentence, with a non-breaking space before ? ! : ;', () => {
+    RETURN_SHOTS.forEach((shot) => {
+      expect(SHOT_DESCRIPTIONS[shot].length).toBeGreaterThan(20)
+      expect(SHOT_DESCRIPTIONS[shot]).toMatch(/\.$/)
+      expect(SHOT_DESCRIPTIONS[shot]).not.toMatch(PLAIN_SPACE_BEFORE_PUNCTUATION)
+    })
   })
 })
 

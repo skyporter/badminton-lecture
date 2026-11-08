@@ -1,5 +1,5 @@
 import type {ChoiceResult} from '../engine/analysis'
-import {describeReturn, describeShotB, explainBest, explainChoice} from '../engine/explain'
+import {SHOT_DESCRIPTIONS, describeReturn, describeShotB, explainBest, explainChoice} from '../engine/explain'
 import type {Situation} from '../engine/generator'
 import {SHOT_FAMILIES} from '../engine/rules'
 import type {ShotFamily} from '../engine/rules'
@@ -54,6 +54,7 @@ export function renderShotPopover(container: HTMLElement, state: QuizState, disp
     const buttons = element('div', 'shot-buttons')
     buttons.append(...SHOT_FAMILIES[family].map((shot) => {
       const button = element('button', shot === state.shot ? 'button shot selected' : 'button shot', SHOTS[shot].label)
+      button.title = SHOT_DESCRIPTIONS[shot]
       button.addEventListener('click', () => dispatch({type: 'set-shot', shot}))
       return button
     }))
@@ -65,7 +66,12 @@ export function renderShotPopover(container: HTMLElement, state: QuizState, disp
   validateButton.disabled = !canValidate(state)
   validateButton.addEventListener('click', () => dispatch({type: 'validate'}))
 
-  container.replaceChildren(closeButton, shotButtons, validateButton)
+  if (state.shot === null) {
+    container.replaceChildren(closeButton, shotButtons, validateButton)
+  } else {
+    const description = element('p', 'shot-description', `${SHOTS[state.shot].label}\u00a0: ${SHOT_DESCRIPTIONS[state.shot]}`)
+    container.replaceChildren(closeButton, shotButtons, description, validateButton)
+  }
 }
 
 function revealSection(situation: Situation, result: ChoiceResult): HTMLElement[] {

@@ -73,6 +73,21 @@ const SHOT_NAMES: Record<ShotId, string> = {
   'block': 'un contre-amorti',
 }
 
+export const SHOT_DESCRIPTIONS: Record<ShotId, string> = {
+  'serve-short': 'Service frappé doucement, qui passe juste au-dessus du filet et tombe près de la ligne de service avant.',
+  'serve-long': "Service envoyé très haut, qui retombe tout au fond du terrain de l'adversaire.",
+  'clear-high': 'Frappe haute et lente qui renvoie le volant très haut, tout au fond\u00a0: elle te laisse le temps de te replacer.',
+  'clear-attack': "Dégagement plus tendu et plus rapide, juste au-dessus de l'adversaire, vers le fond\u00a0: il le presse vers l'arrière.",
+  'smash': 'Frappe puissante vers le bas, sur un volant pris haut\u00a0: le coup d\'attaque le plus rapide.',
+  'drop-slow': 'Depuis le fond, volant frappé en douceur qui retombe juste derrière le filet.',
+  'drop-fast': 'Amorti tranché et rapide qui plonge vers le milieu du terrain, avant la ligne de service.',
+  'net': 'Près du filet, petit coup qui fait passer le volant juste au-dessus et le fait retomber tout près.',
+  'lob-defensive': "Depuis l'avant ou le milieu, volant renvoyé très haut vers le fond\u00a0: il te laisse le temps de te replacer.",
+  'lob-attack': "Lob plus bas et plus rapide vers le fond, juste hors de portée de l'adversaire monté au filet.",
+  'drive': "Frappe à plat, à hauteur d'épaule, rapide et tendue, qui file parallèle au sol.",
+  'block': 'Sur un coup rapide, raquette présentée sans élan\u00a0: le volant retombe juste derrière le filet.',
+}
+
 const DROP_SHOTS: ShotId[] = ['drop-slow', 'drop-fast']
 
 export function describeShotB(situation: Situation): string {
