@@ -1,4 +1,4 @@
-import {CENTER_X, SINGLES_LEFT, SINGLES_RIGHT, depthFromNet, directionBetween, distance, forehandIsPositiveX, isInSinglesHalf} from './court'
+import {CENTER_X, NET_Y, SINGLES_LEFT, SINGLES_RIGHT, depthFromNet, directionBetween, distance, forehandIsPositiveX, isInSinglesHalf} from './court'
 import type {CriterionId} from './rules'
 import {
   ALLOWED_BY_STATUS,
@@ -66,6 +66,19 @@ export function evaluatePair(situation: Situation, level: Level, point: Point, s
   const value = infeasibility ? 0 : criteria.reduce((total, criterion) => total + criterion.contribution, 0)
 
   return {point, shot, direction, feasible: infeasibility === undefined, infeasibility, value, criteria}
+}
+
+export function reachableLanding(from: Point, target: Point, shot: ShotId): Point {
+  const [minimumDepth, maximumDepth] = SHOTS[shot].landingDepth
+  const depth = depthFromNet(target)
+  const reachableDepth = Math.min(Math.max(depth, minimumDepth - LANDING_DEPTH_TOLERANCE), maximumDepth + LANDING_DEPTH_TOLERANCE)
+  if (reachableDepth === depth) {
+    return target
+  } else {
+    const landingY = NET_Y - reachableDepth
+    const fraction = (from.y - landingY) / (from.y - target.y)
+    return {x: from.x + (target.x - from.x) * fraction, y: landingY}
+  }
 }
 
 function infeasibilityOf(situation: Situation, point: Point, shot: ShotId): Infeasibility | undefined {

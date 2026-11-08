@@ -1,5 +1,6 @@
 import {scoreChoice} from '../engine/analysis'
 import type {ChoiceResult} from '../engine/analysis'
+import {reachableLanding} from '../engine/evaluate'
 import type {PairEvaluation} from '../engine/evaluate'
 import {generateSituation} from '../engine/generator'
 import type {Situation} from '../engine/generator'
@@ -11,7 +12,7 @@ import {listenToCourt} from './input'
 import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
 import {renderBanner, renderControls, renderDrawer, renderShotPopover} from './panel'
 import {readSituationParams, situationSearch} from './situationUrl'
-import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
+import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
 
 export type QuizState = {
   situation: Situation
@@ -81,11 +82,29 @@ function cross(point: Point): SVGElement[] {
   ]
 }
 
-function studentReturn(from: Point, target: Point, shot: ShotId | null): SVGElement[] {
+function studentTrajectory(from: Point, target: Point, shot: ShotId | null): SVGElement {
   const path = shot === null ? `M ${from.x} ${from.y} L ${target.x} ${target.y}` : trajectoryPath(from, target, shot)
   const dashArray = shot === null ? '' : trajectoryStyle(shot).dashArray
-  const trajectory = svgElement('path', {d: path, stroke: RETURN_COLOR, fill: 'none', ...constantStroke(STROKE_PIXELS.trajectory, dashArray)})
-  return [trajectory, ...cross(target)]
+  return svgElement('path', {d: path, stroke: RETURN_COLOR, fill: 'none', ...constantStroke(STROKE_PIXELS.trajectory, dashArray)})
+}
+
+function studentReturn(from: Point, target: Point, shot: ShotId | null): SVGElement[] {
+  return [studentTrajectory(from, target, shot), ...cross(target)]
+}
+
+function revealedStudentReturn(from: Point, choice: PairEvaluation): SVGElement[] {
+  if (choice.infeasibility === 'zone') {
+    const landing = reachableLanding(from, choice.point, choice.shot)
+    const unreachable = svgElement('path', {
+      d: `M ${landing.x} ${landing.y} L ${choice.point.x} ${choice.point.y}`,
+      stroke: UNREACHABLE_COLOR,
+      fill: 'none',
+      ...constantStroke(STROKE_PIXELS.unreachable, STROKE_PIXELS.unreachableDashArray),
+    })
+    return [studentTrajectory(from, landing, choice.shot), unreachable, ...cross(choice.point)]
+  } else {
+    return studentReturn(from, choice.point, choice.shot)
+  }
 }
 
 function bestReturn(from: Point, best: PairEvaluation): SVGElement {
@@ -200,7 +219,7 @@ export function startApp(root: HTMLElement): void {
       renderHeatmap(heatmap, map, best.value)
       returnLayer.replaceChildren(
         ...(best.value === 0 ? [] : [bestReturn(situation.impact, best)]),
-        ...studentReturn(situation.impact, result.choice.point, result.choice.shot),
+        ...revealedStudentReturn(situation.impact, result.choice),
       )
     }
   }

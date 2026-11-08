@@ -5,7 +5,8 @@ import {describeShotB} from '../../src/engine/explain'
 import {generateSituation} from '../../src/engine/generator'
 import {startApp} from '../../src/ui/app'
 import {BANNER_RESERVED_METRES, renderCourt} from '../../src/ui/courtView'
-import {trajectoryPath, trajectoryStyle} from '../../src/ui/trajectory'
+import {RETURN_COLOR, UNREACHABLE_COLOR, trajectoryPath, trajectoryStyle} from '../../src/ui/trajectory'
+import {reachableLanding} from '../../src/engine/evaluate'
 
 const SEED = 5
 
@@ -217,5 +218,38 @@ describe('best return trajectory', () => {
     const situation = generateSituation(SEED)
     expect(path.getAttribute('d')).toBe(trajectoryPath(situation.impact, best.point, best.shot))
     expect(path.getAttribute('stroke-dasharray') ?? '').toBe(trajectoryStyle(best.shot).dashArray)
+  })
+})
+
+describe('unreachable choice', () => {
+  const backLine = {x: 3, y: 0.3}
+
+  function revealedNetToBackLine(): HTMLElement {
+    const root = startedApp()
+    press(root.querySelector('svg.court')!, backLine.x, backLine.y)
+    const netButton = [...popover(root).querySelectorAll<HTMLButtonElement>('.shot')].find((button) => button.textContent === 'Filet')!
+    netButton.click()
+    popover(root).querySelector<HTMLButtonElement>('.validate')!.click()
+    return root
+  }
+
+  it('stops the yellow trajectory where the shot really lands and draws the rest in red', () => {
+    const root = revealedNetToBackLine()
+    const {impact} = generateSituation(SEED)
+    const landing = reachableLanding(impact, backLine, 'net')
+    const yellow = root.querySelector<SVGPathElement>(`svg.court path[stroke="${RETURN_COLOR}"]`)!
+    const red = root.querySelector<SVGPathElement>(`svg.court path[stroke="${UNREACHABLE_COLOR}"]`)!
+    expect(yellow.getAttribute('d')).toBe(trajectoryPath(impact, landing, 'net'))
+    expect(red.getAttribute('d')).toBe(`M ${landing.x} ${landing.y} L ${backLine.x} ${backLine.y}`)
+  })
+
+  it('says the shot cannot go that far on the collapsed drawer line', () => {
+    const text = drawer(revealedNetToBackLine()).textContent!
+    expect(text).toContain('Filet impossible jusque-là — 0 / 100')
+  })
+
+  it('draws no red segment for a reachable choice', () => {
+    const root = revealed(startedApp())
+    expect(root.querySelector(`svg.court path[stroke="${UNREACHABLE_COLOR}"]`)).toBeNull()
   })
 })

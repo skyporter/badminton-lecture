@@ -1,5 +1,5 @@
 import {describe, expect, it} from 'vitest'
-import {allowedShots, evaluatePair} from '../../src/engine/evaluate'
+import {allowedShots, evaluatePair, reachableLanding} from '../../src/engine/evaluate'
 import {buildSituation} from '../../src/engine/generator'
 
 const situation = buildSituation({playerA: {x: 3.05, y: 10.6}, playerBHit: {x: 3.05, y: 1.5}, shotB: 'clear-high', landing: {x: 3.05, y: 12.7}})
@@ -75,5 +75,23 @@ describe('evaluatePair', () => {
   it('is deterministic', () => {
     const point = {x: 4, y: 1}
     expect(evaluatePair(situation, 'avance', point, 'clear-high')).toEqual(evaluatePair(situation, 'avance', point, 'clear-high'))
+  })
+})
+
+describe('reachableLanding', () => {
+  const from = {x: 3, y: 11}
+
+  it('keeps a target the shot can reach', () => {
+    expect(reachableLanding(from, {x: 4, y: 3}, 'smash')).toEqual({x: 4, y: 3})
+  })
+
+  it('stops a smash aimed at the back line at its deepest landing, on the same line', () => {
+    const landing = reachableLanding(from, {x: 5.3, y: 0.5}, 'smash')
+    expect(landing.y).toBeCloseTo(1.4)
+    expect(landing.x).toBeCloseTo(3 + 2.3 * (9.6 / 10.5))
+  })
+
+  it('carries a smash aimed too short to its shortest landing', () => {
+    expect(reachableLanding(from, {x: 3, y: 5.7}, 'smash').y).toBeCloseTo(5.0)
   })
 })

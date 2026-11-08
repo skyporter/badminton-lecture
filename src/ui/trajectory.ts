@@ -4,6 +4,7 @@ import type {Arc, ShotId, Speed} from '../engine/shots'
 
 export const RETURN_COLOR = '#ffd54a'
 export const BEST_RETURN_COLOR = '#ffffff'
+export const UNREACHABLE_COLOR = '#ff5252'
 
 export const STROKE_PIXELS = {
   courtLine: 1.5,
@@ -11,6 +12,8 @@ export const STROKE_PIXELS = {
   netDashArray: '6 4',
   trajectory: 2.5,
   bestReturn: 2,
+  unreachable: 2,
+  unreachableDashArray: '3 4',
   cross: 2.5,
   racket: 1.5,
   ghost: 1.5,

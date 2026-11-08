@@ -23,7 +23,7 @@ Both players are right-handed (`handedness: 'droitier'` is a parameter, only tha
 
 ## Colours and trajectory code
 
-A `#3b82f6`, B `#e05252`, B's shot `#ff8a65`, the student's return `#ffd54a`, best return `#ffffff`. Map: bright green `#00e676`, light green `#b2ff59`, red `#ff5252` (constants in `rules.ts`).
+A `#3b82f6`, B `#e05252`, B's shot `#ff8a65`, the student's return `#ffd54a`, best return `#ffffff`, unreachable part of the student's return `#ff5252` dotted (when the chosen shot cannot land at the cross depth, the yellow trajectory stops at `reachableLanding` from `evaluate.ts` and the drawer line reads « <shot> impossible jusque-là »). Map: bright green `#00e676`, light green `#b2ff59`, red `#ff5252` (constants in `rules.ts`).
 
 Trajectories (top view, `trajectory.ts`): the dash pattern says the speed (solid = very fast, long tight dashes = fast, medium dashes = medium, spaced dots = slow), the curvature says the height (straight = flat, slight curve = low arc, strong curve = high arc). The same code is used for B's shot, the student's return and the best return. The legend reuses these constants and `trajectoryPath` for its swatches.
 

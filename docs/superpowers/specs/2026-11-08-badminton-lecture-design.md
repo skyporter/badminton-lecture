@@ -66,6 +66,7 @@ La révélation se fait sur le terrain.
 - B affiché à **sa position replacée** (rond plein) au moment où A frappe, et à sa position de frappe en **rond pointillé**. **Pas de flèche** entre les deux.
 - Retour de l'élève **en jaune** avec une petite croix au point visé, avec le même style qu'à l'étape 1.
 - Meilleur retour en **blanc**, avec le même code des trajectoires que le coup de B et ton retour.
+- Si le coup choisi ne peut pas atterrir à la profondeur de la croix, la ligne repliée du tiroir devient « <coup> impossible jusque-là — 0 / 100 — Meilleur : <coup> », le trajet jaune s'arrête au vrai point de chute (sur la même ligne, à la profondeur la plus proche que le coup peut atteindre) et la suite jusqu'à la croix est en pointillé rouge. *(décision de Vincent)*
 - Un **tiroir repliable** en bas du terrain, **replié au départ** : une ligne « Score : NN / 100 — Meilleur : <coup> » avec un chevron. Déplié, il donne le détail : ton choix, score sur 100, meilleur retour (coup + zone), « Pourquoi » en **liste à puces** (une raison par ligne : position/statut, ce que fait B, la zone, le coup, la direction), et une ligne « Alternative : <coup et zone> » sans référence à une couleur.
 - Un changement de niveau après la révélation recalcule la révélation pour la même situation et garde l'état du tiroir.
 

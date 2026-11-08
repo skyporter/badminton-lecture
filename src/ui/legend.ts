@@ -2,7 +2,7 @@ import {MAP_BRIGHT_GREEN, MAP_LIGHT_GREEN, MAP_RED} from '../engine/rules'
 import {SHOTS} from '../engine/shots'
 import type {ShotId} from '../engine/shots'
 import {PLAYER_A_COLOR, PLAYER_B_COLOR, SHOT_B_COLOR, SVG_NAMESPACE, racket, svgElement} from './courtView'
-import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
+import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
 
 const STORAGE_KEY = 'badminton-lecture:legend-visible'
 const SWATCH_WIDTH = 1.6
@@ -86,6 +86,7 @@ function revealRows(): HTMLElement[] {
     row(shapeSwatch('disc', PLAYER_B_COLOR), 'B replacé quand tu frappes'),
     row(straightLine(RETURN_COLOR, ''), 'ton retour (✕ = point visé)'),
     row(straightLine(BEST_RETURN_COLOR, '', STROKE_PIXELS.bestReturn), 'meilleur retour'),
+    row(straightLine(UNREACHABLE_COLOR, STROKE_PIXELS.unreachableDashArray, STROKE_PIXELS.unreachable), 'au-delà de la portée de ton coup'),
     row(shapeSwatch('square', MAP_BRIGHT_GREEN), 'meilleur spot'),
     row(shapeSwatch('square', MAP_LIGHT_GREEN), 'bon retour'),
     row(shapeSwatch('square', MAP_RED), 'à éviter'),
