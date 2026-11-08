@@ -381,6 +381,7 @@ describe('reveal boxes', () => {
     const choiceBox = drawer(root).querySelector('.choice-box')!
     const bestBox = drawer(root).querySelector('.best-box')!
     expect(choiceBox.textContent).toContain('Ton choix')
+    expect(choiceBox.querySelector('p')!.textContent).toBe(describeReturn(result.choice))
     expect(choiceBox.textContent).toContain(`${result.score} / 100`)
     expect(bestBox.textContent).toContain('Meilleur retour')
     expect(bestBox.textContent).toContain(describeReturn(result.analysis.best))

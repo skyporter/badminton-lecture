@@ -80,7 +80,7 @@ function revealSection(situation: Situation, result: ChoiceResult): HTMLElement[
   const choiceBox = element('div', 'choice-box')
   choiceBox.append(
     element('div', 'label', 'Ton choix'),
-    element('p', '', `✕ ${describeReturn(result.choice)}`),
+    element('p', '', describeReturn(result.choice)),
     element('p', 'score', `${result.score} / 100`),
     bulletList(explainChoice(situation, result)),
   )
