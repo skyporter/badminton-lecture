@@ -186,3 +186,20 @@ export const LANDING_X_RANGE_BY_SIDE: Record<'low' | 'high', [number, number]> =
 export const RECEIVER_BASE: Point = {x: 3.05, y: 10.6}
 export const RECEIVER_BASE_SPREAD = 1
 export const HIGH_ARRIVAL_IMPACT_ADVANCE = 0.3
+
+export type ShotFamily = 'front' | 'rear' | 'flat'
+
+export const SHOT_FAMILIES: Record<ShotFamily, ShotId[]> = {
+  front: ['drop-slow', 'drop-fast', 'net', 'block'],
+  rear: ['clear-high', 'clear-attack', 'lob-defensive', 'lob-attack'],
+  flat: ['smash', 'drive'],
+}
+
+export const ALTERNATIVE_MINIMUM_DISTANCE = 2.0
+export const MAP_CELL_STEP = 0.1
+export const MAP_BRIGHT_GREEN_RATIO = 0.9
+export const MAP_LIGHT_GREEN_RATIO = 0.7
+export const MAP_RED_RATIO = 0.4
+export const MAP_BRIGHT_GREEN = '#00e676'
+export const MAP_LIGHT_GREEN = '#b2ff59'
+export const MAP_RED = '#ff5252'
