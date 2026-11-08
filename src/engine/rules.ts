@@ -74,7 +74,8 @@ export const ALLOWED_BY_STATUS: Record<Status, Record<Arrival, ShotId[]>> = {
 
 export const PLAYER_SPEED = 4.0
 export const REACTION_TIME = 0.25
-export const STATUS_MARGIN: Record<Status, number> = {attaque: 0.3, neutre: 0.2, defense: 0.4}
+export const ATTACK_MARGIN = 0.3
+export const NEUTRAL_MARGIN_BY_ARRIVAL: Record<Arrival, number> = {high: 0, mid: 0.2, low: 0.4}
 export const LINE_RISK_DISTANCE = 0.5
 export const RECOVERY_FULL_TIME = 1.2
 export const RECOVERY_MIN_FRACTION = 0.3
@@ -84,6 +85,21 @@ export const B_BASE: Record<'back' | 'neutral' | 'front', Point> = {
   back: {x: 3.05, y: 3.4},
   neutral: {x: 3.05, y: 3.9},
   front: {x: 3.05, y: 4.6},
+}
+
+export const RECOVERY_BASE_BY_SHOT: Record<ShotId, 'back' | 'neutral' | 'front'> = {
+  'serve-short': 'front',
+  'serve-long': 'back',
+  'clear-high': 'back',
+  'clear-attack': 'back',
+  'smash': 'neutral',
+  'drop-slow': 'neutral',
+  'drop-fast': 'back',
+  'net': 'front',
+  'lob-defensive': 'back',
+  'lob-attack': 'back',
+  'drive': 'neutral',
+  'block': 'front',
 }
 
 export const SOURCES: Record<string, {label: string; url: string}> = {
@@ -132,5 +148,7 @@ export const RULE_SOURCES: Record<string, string[]> = {
   SHOT_PRESSURE: ['badmintonBibleDrops', 'dearBadminton'],
   ALLOWED_BY_STATUS: ['mobilesport', 'wikibooksStrategy', 'epsGrenoble'],
   B_BASE: ['badmintonBibleCentralBase', 'dearBadminton'],
-  STATUS_MARGIN: ['epsGrenoble', 'badmintonCoach'],
+  ATTACK_MARGIN: ['epsGrenoble', 'badmintonCoach'],
+  NEUTRAL_MARGIN_BY_ARRIVAL: ['epsGrenoble', 'badmintonCoach'],
+  RECOVERY_BASE_BY_SHOT: ['badmintonBibleCentralBase', 'dearBadminton'],
 }

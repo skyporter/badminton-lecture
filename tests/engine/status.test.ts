@@ -19,4 +19,6 @@ describe('statusFor', () => {
   it('gives defence when a mid shuttle is reached with little margin', () => expect(statusFor('mid', 0.1)).toBe('defense'))
   it('gives defence when a low shuttle is reached late', () => expect(statusFor('low', 0.1)).toBe('defense'))
   it('gives neutral when a low shuttle is reached with enough margin', () => expect(statusFor('low', 0.4)).toBe('neutre'))
+  it('gives attack exactly at the attack margin', () => expect(statusFor('high', 0.3)).toBe('attaque'))
+  it('gives neutral exactly at zero margin on a high shuttle', () => expect(statusFor('high', 0)).toBe('neutre'))
 })

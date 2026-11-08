@@ -61,7 +61,7 @@ describe('rules', () => {
   })
 
   it('links every rule table to a known source', () => {
-    const tableNames = ['WEIGHTS', 'SHOT_RISK', 'SHOT_RECOVERY', 'SHOT_PRESSURE', 'ALLOWED_BY_STATUS', 'B_BASE', 'STATUS_MARGIN']
+    const tableNames = ['WEIGHTS', 'SHOT_RISK', 'SHOT_RECOVERY', 'SHOT_PRESSURE', 'ALLOWED_BY_STATUS', 'B_BASE', 'ATTACK_MARGIN', 'NEUTRAL_MARGIN_BY_ARRIVAL', 'RECOVERY_BASE_BY_SHOT']
     for (const tableName of tableNames) {
       expect(RULE_SOURCES[tableName].length).toBeGreaterThan(0)
       for (const sourceKey of RULE_SOURCES[tableName]) expect(SOURCES).toHaveProperty(sourceKey)

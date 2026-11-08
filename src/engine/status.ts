@@ -1,5 +1,5 @@
 import {distance} from './court'
-import {PLAYER_SPEED, REACTION_TIME, STATUS_MARGIN} from './rules'
+import {PLAYER_SPEED, REACTION_TIME, ATTACK_MARGIN, NEUTRAL_MARGIN_BY_ARRIVAL} from './rules'
 import {SHOTS} from './shots'
 import type {Arrival, ShotId} from './shots'
 import type {Point, Status} from './types'
@@ -9,13 +9,6 @@ export function timeMargin(playerA: Point, impact: Point, shot: ShotId): number 
 }
 
 export function statusFor(arrival: Arrival, margin: number): Status {
-  switch (arrival) {
-    case 'high':
-      if (margin >= STATUS_MARGIN.attaque) return 'attaque'
-      return margin >= 0 ? 'neutre' : 'defense'
-    case 'mid':
-      return margin >= STATUS_MARGIN.neutre ? 'neutre' : 'defense'
-    case 'low':
-      return margin >= STATUS_MARGIN.defense ? 'neutre' : 'defense'
-  }
+  if (arrival === 'high' && margin >= ATTACK_MARGIN) return 'attaque'
+  return margin >= NEUTRAL_MARGIN_BY_ARRIVAL[arrival] ? 'neutre' : 'defense'
 }
