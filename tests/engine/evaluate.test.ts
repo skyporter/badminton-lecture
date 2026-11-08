@@ -65,6 +65,13 @@ describe('evaluatePair', () => {
     expect(criterionRaw(inDefense, 'risk')).toBeLessThan(criterionRaw(inAttack, 'risk'))
   })
 
+  it('scores the weak side of B on the backhand rear quarter', () => {
+    const weakSideOf = (point: {x: number; y: number}) => criterionRaw(evaluatePair(situation, 'avance', point, 'clear-high'), 'weakSide')
+    expect(weakSideOf({x: 4.5, y: 1})).toBe(1)
+    expect(weakSideOf({x: 1.5, y: 1})).toBe(0.5)
+    expect(weakSideOf({x: 4.5, y: 4})).toBe(0)
+  })
+
   it('is deterministic', () => {
     const point = {x: 4, y: 1}
     expect(evaluatePair(situation, 'avance', point, 'clear-high')).toEqual(evaluatePair(situation, 'avance', point, 'clear-high'))
