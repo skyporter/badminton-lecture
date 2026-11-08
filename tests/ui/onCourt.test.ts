@@ -181,11 +181,14 @@ describe('banner reservation', () => {
     expect(parseFloat(root.querySelector<HTMLElement>('.shot-banner')!.style.height)).toBeCloseTo((100 * BANNER_RESERVED_METRES) / viewBox.height, 4)
   })
 
-  it('adds the instruction line only in the question phase', () => {
+  it('shows the instruction at the bottom right of the court only in the question phase', () => {
     const root = startedApp()
-    expect(root.querySelector('.shot-banner .banner-hint')!.textContent).toBe('Clique sur le terrain de B pour choisir ton retour.')
-    revealed(root)
+    const hint = root.querySelector<HTMLElement>('.court-frame > .court-hint')!
+    expect(hint.textContent).toBe('Clique sur le terrain de B pour choisir ton retour.')
+    expect(hint.hidden).toBe(false)
     expect(root.querySelector('.shot-banner .banner-hint')).toBeNull()
+    revealed(root)
+    expect(hint.hidden).toBe(true)
   })
 })
 

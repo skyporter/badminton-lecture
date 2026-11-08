@@ -69,11 +69,11 @@ const SHOT_NAMES: Record<ShotId, string> = {
 const DROP_SHOTS: ShotId[] = ['drop-slow', 'drop-fast']
 
 export function describeShotB(situation: Situation): string {
-  const shot = SHOTS[situation.shotB]
-  const shotWithDirection = situation.isServe ? shot.label : `${shot.label} ${DIRECTION_LABELS[situation.directionB]}`
+  const shotName = SHOT_NAMES[situation.shotB]
+  const shotWithDirection = situation.isServe ? shotName : `${shotName} ${DIRECTION_LABELS[situation.directionB]}`
   const landsOnForehand = (situation.landing.x > CENTER_X) === forehandIsPositiveX('A')
   const side = landsOnForehand ? 'coup droit' : 'revers'
-  return `${shotWithDirection}, vers ${ZONE_LABELS[hitZoneOf(situation.landing)]} côté ${side} de A. Volant pris ${ARRIVAL_LABELS[situation.arrival]}, ${CONTACT_LABELS[situation.contact]}.`
+  return `Situation : B fait ${shotWithDirection}, vers ${ZONE_LABELS[hitZoneOf(situation.landing)]} côté ${side} de A. Volant pris ${ARRIVAL_LABELS[situation.arrival]}, ${CONTACT_LABELS[situation.contact]}.`
 }
 
 export function describeReturn(evaluation: PairEvaluation): string {

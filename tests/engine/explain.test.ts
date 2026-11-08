@@ -25,11 +25,11 @@ const PLAIN_SPACE_BEFORE_PUNCTUATION = / [?!:;]/
 
 describe('describeShotB', () => {
   it('describes the attacking clear of F1', () => {
-    expect(describeShotB(F1)).toBe("Dégagement d'attaque en ligne, vers le fond côté revers de A. Volant pris haut, en tour de tête.")
+    expect(describeShotB(F1)).toBe("Situation\u00a0: B fait un dégagement d'attaque en ligne, vers le fond côté revers de A. Volant pris haut, en tour de tête.")
   })
 
   it('describes the fast drop of F2', () => {
-    expect(describeShotB(F2)).toBe("Amorti rapide en ligne, vers l'avant côté coup droit de A. Volant pris bas, en coup droit.")
+    expect(describeShotB(F2)).toBe("Situation\u00a0: B fait un amorti rapide en ligne, vers l'avant côté coup droit de A. Volant pris bas, en coup droit.")
   })
 })
 

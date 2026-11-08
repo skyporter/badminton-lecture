@@ -164,6 +164,9 @@ export function startApp(root: HTMLElement): void {
   banner.style.height = `${(100 * BANNER_RESERVED_METRES) / viewBox.height}%`
   const popover = document.createElement('div')
   popover.className = 'shot-popover'
+  const hint = document.createElement('div')
+  hint.className = 'court-hint'
+  hint.textContent = 'Clique sur le terrain de B pour choisir ton retour.'
   const legend = document.createElement('div')
   legend.className = 'legend'
   const legendOverlay = document.createElement('div')
@@ -178,7 +181,7 @@ export function startApp(root: HTMLElement): void {
   const bottomStack = document.createElement('div')
   bottomStack.className = 'bottom-stack'
   bottomStack.append(legendOverlay, drawer)
-  courtFrame.append(heatmap, svg, banner, popover, bottomStack)
+  courtFrame.append(heatmap, svg, banner, hint, popover, bottomStack)
   const controlsBar = document.createElement('div')
   controlsBar.className = 'controls'
   const layout = document.createElement('div')
@@ -244,6 +247,7 @@ export function startApp(root: HTMLElement): void {
     renderControls(controlsBar, state, dispatch)
     renderLegend(legend, state.result === null ? 'question' : 'reveal')
     renderBanner(banner, state)
+    hint.hidden = state.result !== null
     renderPopover()
     renderDrawer(drawer, state, dispatch)
   }
