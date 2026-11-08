@@ -214,7 +214,7 @@ describe('banner reservation', () => {
   it('shows the instruction at the bottom right of the court only in the question phase', () => {
     const root = startedApp()
     const hint = root.querySelector<HTMLElement>('.court-frame > .court-hint')!
-    expect(hint.textContent).toBe('Clique sur le terrain de B pour choisir ton retour.')
+    expect(hint.textContent).toBe('Clique sur le terrain de B pour répondre.')
     expect(hint.hidden).toBe(false)
     expect(root.querySelector('.shot-banner .banner-hint')).toBeNull()
     revealed(root)

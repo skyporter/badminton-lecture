@@ -271,7 +271,7 @@ export function startApp(root: HTMLElement): void {
   tagLayer.className = 'trajectory-tags'
   const hint = document.createElement('div')
   hint.className = 'court-hint'
-  hint.textContent = 'Clique sur le terrain de B pour choisir ton retour.'
+  hint.textContent = 'Clique sur le terrain de B pour répondre.'
   const legend = document.createElement('div')
   legend.className = 'legend'
   const legendOverlay = document.createElement('div')

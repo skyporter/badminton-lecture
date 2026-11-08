@@ -47,11 +47,11 @@ body {
   position: absolute;
   right: 4px;
   bottom: 4px;
-  max-width: calc(100% - 90px);
   box-sizing: border-box;
   padding: 4px 4px;
   color: #fff;
-  font-size: 11px;
+  font-size: min(11px, 3.2cqw);
+  white-space: nowrap;
   line-height: 1.4;
   text-align: right;
   pointer-events: none;
