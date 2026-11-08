@@ -202,3 +202,6 @@ Code lu : `index.html` du dépôt (v0.2), module `BadmintonEngine`, fonctions `
 
 ### Conclusion
 Pour **calculer** les meilleurs coups, Mofan apporte une structure qui marche et quatre formules reprenables : temps d'atteinte avec allonge et balle dans le dos, position de l'adversaire déduite du coup, surcoût du croisé, note normalisée avec justification tirée des contributions. Il ne peut pas servir de **vérité** : ses constantes sont arbitraires, et il manque les trois mécanismes au cœur de notre spec (temps de vol du coup, décalage latéral de B, risque des lignes). Licence MIT : reprendre le code impose de garder la mention de copyright.
+
+### Décision (2026-11-08)
+On ne reprend **aucune ligne du code** de Mofan. On reprend seulement les **logiques** cohérentes avec nos principes (tableau « Ce qui rejoint nos principes »), réécrites dans notre moteur et rattachées à nos sources du §5.4 de la spec. Les écarts listés plus haut ne sont pas repris. Mofan est cité comme source d'inspiration ; reprendre une idée sans le code ne crée pas d'obligation de licence.

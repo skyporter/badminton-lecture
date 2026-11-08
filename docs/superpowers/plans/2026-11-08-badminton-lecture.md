@@ -249,9 +249,15 @@ it('never lets a net shot come from the rear court', () => { /* buildSituation l
 
 Règles de `evaluatePair` :
 - hors du demi-terrain de simple de B → `dehors`, value 0 ; coup absent de `allowedShots` → `statut`, value 0 ; profondeur du point hors de `landingDepth` du coup (tolérance 0,3 m) → `zone`, value 0. Les critères sont calculés quand même, pour pouvoir les expliquer.
-- `distance` = distance(point, `playerBRecovered`) / 6,0, plafonnée à 1.
+- `reachTime` (renomme le critère `distance` de `CriterionId` et de `WEIGHTS`, spec §5.2 « Temps d'atteinte », « Balle dans le dos », « Temps de vol ») :
+  - temps d'atteinte de B = max(0, distance(`playerBRecovered`, point) − `B_REACH`) / `B_SPEED` + pénalité « balle dans le dos » ;
+  - pénalité « balle dans le dos » = 0 si le point est moins de `BEHIND_THRESHOLD` derrière B (derrière = plus près de la ligne de fond de B, donc y plus petit), puis `BEHIND_PENALTY_PER_METER` × (écart − seuil) ;
+  - temps de vol du retour = `SHOTS[shot].flightTime` × `CROSS_FLIGHT_TIME_FACTOR` si `croise`, sinon × 1 ;
+  - raw = clamp(0,5 + (temps d'atteinte − temps de vol) / (2 × `REACH_REFERENCE_TIME`), 0, 1).
+  - Valeurs de départ dans `rules.ts` : `B_REACH = 0.8`, `B_SPEED = 4.0`, `BEHIND_THRESHOLD = 0.35`, `BEHIND_PENALTY_PER_METER = 0.3`, `CROSS_FLIGHT_TIME_FACTOR = 1.1`, `REACH_REFERENCE_TIME = 1.0`.
 - `weakSide` = 1 dans le quart arrière côté revers de B (x > 3,05 et profondeur > 4,7), 0,5 au fond côté coup droit, 0 ailleurs.
-- `risk` = 1 − max(risque de ligne, `SHOT_RISK[shot]`, pénalité de croisé). Risque de ligne : 1 à 0 m d'une ligne de simple, 0 au-delà de `LINE_RISK_DISTANCE`. Pénalité de croisé : 0,4 si `croise` et statut `defense`.
+- `risk` = 1 − max(risque de ligne, `SHOT_RISK[shot]` + pénalité de croisé). Risque de ligne : 1 à 0 m d'une ligne de simple, 0 au-delà de `LINE_RISK_DISTANCE`. Pénalité de croisé (`CROSS_RISK`, dans `rules.ts`) : 0,1 si `croise`, 0,4 si `croise` et statut `defense` (spec : surcoût du croisé, majoré en défense).
+- Chaque `Infeasibility` porte sa raison lisible par l'explication (tâche 7) : `dehors`, `statut` (hauteur de prise insuffisante pour ce coup), `zone` (le coup ne va pas à cette profondeur).
 - `recoveryTime` = `SHOT_RECOVERY[shot]`.
 - `pressure` = `SHOT_PRESSURE[shot]` × (1 en attaque, 0,6 en neutre, 0,3 en défense).
 - `value` = Σ contributions.
@@ -266,6 +272,8 @@ it('scores out-of-court points as zero (Review Focus 1)', () => {
 it('rejects a drop aimed at the back line', () => expect(evaluatePair(situation, 'intermediaire', {x: 3, y: 0.3}, 'drop-slow').infeasibility).toBe('zone'))
 it('rejects a smash on a low arrival', () => expect(evaluatePair(lowSituation, 'avance', {x: 3, y: 3}, 'smash').infeasibility).toBe('statut'))
 it('values points far from recovered B more', () => { /* même coup, point éloigné de B > point près de B */ })
+it('adds a behind-the-back penalty only beyond the threshold', () => { /* point 0,2 m derrière B : même reachTime qu'à côté ; 1,5 m derrière : reachTime plus élevé que 1,5 m devant à distance égale */ })
+it('penalises cross-court more in defence than in attack', () => { /* même point croisé : risk(défense) < risk(attaque) */ })
 it('is deterministic', () => expect(evaluatePair(...same)).toEqual(evaluatePair(...same)))
 ```
 
@@ -321,6 +329,8 @@ it('analyses a situation in under 50 ms', () => { /* performance : 5 runs, médi
   - `describeShotB(situation: Situation): string` (par ex. « Dégagement d'attaque en ligne, vers le fond côté revers de A. Volant pris haut, en tour de tête. »).
   - `explainBest(situation: Situation, analysis: Analysis): string[]` : une puce sur le statut, puis une puce par critère parmi les trois plus fortes contributions, puis une puce sur la direction.
   - `explainChoice(situation: Situation, result: ChoiceResult): string[]` : si le couple est infaisable, une seule puce (« Le volant sort du terrain. », « Pris aussi bas, tu ne peux pas smasher. », « Un amorti ne va pas jusqu'au fond. »). Sinon, une puce par critère dont l'écart de contribution avec le meilleur couple dépasse 0,05, du plus grand au plus petit (3 au maximum). Si le score est ≥ 90 : « Excellent choix. »
+  - `explainBest` liste les contributions les plus fortes **pour** ; `explainChoice` liste les écarts **contre** (spec §5.2 « Note et justification … pour et contre »).
+  - `predictNextShotB(situation: Situation, evaluation: PairEvaluation): string` : une phrase « B va probablement jouer … » ajoutée en dernière puce de `explainBest` (spec §5.2 « Ce que B va probablement jouer ensuite »). La table coup de A → réponses probables de B vit dans `rules.ts` (`LIKELY_REPLIES: Record<ShotId, ShotId[]>`) : amorti, filet, contre-amorti → filet ou lob ; dégagement, lob → dégagement, amorti ou smash ; smash, drive → contre-amorti ou lob défensif.
   - Toutes les phrases sont des gabarits fixes dans `explain.ts`, avec des clés littérales (aucune construction dynamique de clé).
 
 Situations de référence (`reference-situations.ts`, construites avec `buildSituation`) et propriétés attendues :

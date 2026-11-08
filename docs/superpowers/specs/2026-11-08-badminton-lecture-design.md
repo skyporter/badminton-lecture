@@ -1,79 +1,79 @@
 # Badminton Lecture — document de conception
 
-Date : 2026-11-08 · Auteur : Vincent (avec Claude)
+Date : 2026-11-08 · Auteur : Vincent (avec Claude)
 
-Maquettes validées : `mockups/flow-v10.html` (déroulé d'une situation) et `mockups/trajectoires-v3.html` (code des trajectoires). Ouvrir dans un navigateur (le style de cadre du compagnon visuel n'est pas inclus, la mise en page reste lisible).
+Maquettes validées : `mockups/flow-v10.html` (déroulé d'une situation) et `mockups/trajectoires-v3.html` (code des trajectoires). Ouvrir dans un navigateur (le style de cadre du compagnon visuel n'est pas inclus, la mise en page reste lisible).
 
 ## 1. Intention
 
 Un outil d'entraînement à la **lecture du jeu en simple**. Il sert à Vincent pour lui-même, et à un coach à l'entraînement avec ses élèves.
 
-L'appli génère une situation : deux joueurs placés sur un terrain vu de dessus, et un coup que B vient de jouer. Le joueur A reçoit ce coup. L'élève doit décider **où** renvoyer le volant chez B et **avec quel coup**. L'appli révèle ensuite la meilleure réponse sous forme de carte vert/rouge, avec un score et une justification.
+L'appli génère une situation : deux joueurs placés sur un terrain vu de dessus, et un coup que B vient de jouer. Le joueur A reçoit ce coup. L'élève doit décider **où** renvoyer le volant chez B et **avec quel coup**. L'appli révèle ensuite la meilleure réponse sous forme de carte vert/rouge, avec un score et une justification.
 
-Le pourquoi : on apprend à lire le jeu en devinant **avant** de voir la réponse, puis en comprenant pourquoi. Tout doit être justifiable, pour qu'un élève ou un coach puisse faire confiance au score et discuter chaque règle.
+Le pourquoi : on apprend à lire le jeu en devinant **avant** de voir la réponse, puis en comprenant pourquoi. Tout doit être justifiable, pour qu'un élève ou un coach puisse faire confiance au score et discuter chaque règle.
 
 ## 2. Objectifs, non-objectifs, anti-objectifs
 
 **Objectifs**
-- Générer au clic une situation aléatoire réaliste : positions de A et B, coup de B cohérent avec la position de B.
-- Mode quiz : l'élève clique sa cible sur le terrain de B, choisit son coup, valide, puis voit la révélation.
-- Révélation : carte vert vif / vert clair / rouge sur le terrain de B, meilleur coup, alternative, score sur 100, justification en liste à puces.
+- Générer au clic une situation aléatoire réaliste : positions de A et B, coup de B cohérent avec la position de B.
+- Mode quiz : l'élève clique sa cible sur le terrain de B, choisit son coup, valide, puis voit la révélation.
+- Révélation : carte vert vif / vert clair / rouge sur le terrain de B, meilleur coup, alternative, score sur 100, justification en liste à puces.
 - Trois niveaux (débutant, intermédiaire, avancé) qui changent la bonne réponse et les justifications.
 - Couvrir l'ensemble des coups de simple et des situations possibles, en s'appuyant sur des principes de coaching sourcés.
 - Fonctionner sur ordinateur et sur mobile.
 
 **Non-objectifs (pour cette version)**
 - Le double.
-- Les gauchers : les deux joueurs sont droitiers. Le modèle doit toutefois prévoir la latéralité comme paramètre, pour l'ajouter plus tard sans tout réécrire.
+- Les gauchers : les deux joueurs sont droitiers. Le modèle doit toutefois prévoir la latéralité comme paramètre, pour l'ajouter plus tard sans tout réécrire.
 - L'IA dans la boucle (voir §6). Elle pourra venir plus tard, pour enrichir les explications.
 - Les comptes utilisateurs, l'historique des scores, le multijoueur.
 - La simulation physique fine du volant (aérodynamique).
 
 **Anti-objectifs (ce qui ferait de l'appli un échec même si elle « marche »)**
-- Des réponses incohérentes : deux situations identiques avec deux réponses différentes, ou un score qui contredit la carte.
-- Des situations irréalistes : smash depuis le filet, filet depuis le fond, volant pris « haut » alors qu'il arrive sous le filet.
+- Des réponses incohérentes : deux situations identiques avec deux réponses différentes, ou un score qui contredit la carte.
+- Des situations irréalistes : smash depuis le filet, filet depuis le fond, volant pris « haut » alors qu'il arrive sous le filet.
 - Une justification qui ne correspond pas à ce qui a réellement décidé de la note.
-- Des erreurs d'orientation : coup droit et revers inversés.
+- Des erreurs d'orientation : coup droit et revers inversés.
 
 ## 3. Contraintes
 
-- **Développement local, page web statique** : HTML, CSS et JavaScript, sans serveur ni backend. Une version web mobile sera mise en ligne plus tard telle quelle, l'architecture ne doit donc dépendre de rien de local.
-- **Pas d'IA ni d'API externe** pour générer ou évaluer une situation. Décision de Vincent, sur recommandation : cohérence, géométrie précise, règles vérifiables, instantané, gratuit, hors ligne.
-- **Responsive** : ordinateur et mobile (tactile).
-- **Dimensions officielles BWF** du terrain : 13,40 m × 6,10 m. Couloirs latéraux de simple à 0,46 m du bord (largeur de simple 5,18 m). Ligne de service court à 1,98 m du filet. Ligne de service long du double à 0,76 m du fond (en simple, la limite arrière est la ligne de fond). Filet à 1,55 m aux poteaux et 1,524 m au centre.
-- **Langue de l'interface** : français.
+- **Développement local, page web statique** : HTML, CSS et JavaScript, sans serveur ni backend. Une version web mobile sera mise en ligne plus tard telle quelle, l'architecture ne doit donc dépendre de rien de local.
+- **Pas d'IA ni d'API externe** pour générer ou évaluer une situation. Décision de Vincent, sur recommandation : cohérence, géométrie précise, règles vérifiables, instantané, gratuit, hors ligne.
+- **Responsive** : ordinateur et mobile (tactile).
+- **Dimensions officielles BWF** du terrain : 13,40 m × 6,10 m. Couloirs latéraux de simple à 0,46 m du bord (largeur de simple 5,18 m). Ligne de service court à 1,98 m du filet. Ligne de service long du double à 0,76 m du fond (en simple, la limite arrière est la ligne de fond). Filet à 1,55 m aux poteaux et 1,524 m au centre.
+- **Langue de l'interface** : français.
 
 ## 4. L'écran (décidé, voir maquettes)
 
 ### 4.1 Orientation et joueurs
 - Terrain vertical, vu de dessus. **A en bas** (il reçoit, c'est le point de vue de l'élève), **B en haut**.
 - A en bleu, B en rouge, chacun dans un rond avec sa lettre.
-- **Une raquette fixe** dessinée du côté de la main droite, pour repérer le coup droit : à droite de l'écran pour A (il regarde vers le haut), à gauche de l'écran pour B (il regarde vers le bas). Elle ne montre pas la posture de frappe.
+- **Une raquette fixe** dessinée du côté de la main droite, pour repérer le coup droit : à droite de l'écran pour A (il regarde vers le haut), à gauche de l'écran pour B (il regarde vers le bas). Elle ne montre pas la posture de frappe.
 
-### 4.2 Étape 1 : la question
+### 4.2 Étape 1 : la question
 - Sélecteur de niveau, bouton « Nouvelle situation ».
-- Description du coup de B en mots : type, direction (ligne ou croisé), hauteur à laquelle A prend le volant (par ex. « volant pris haut, en tour de tête »).
+- Description du coup de B en mots : type, direction (ligne ou croisé), hauteur à laquelle A prend le volant (par ex. « volant pris haut, en tour de tête »).
 - Trajectoire du coup de B **en orange** jusqu'au point de chute (point orange).
 - A est affiché à sa position de départ. Son retour part du **point d'impact** (là où il rejoint le volant), pas de sa position de départ.
 - **Au survol** du terrain de B (ordinateur), un aperçu **jaune** part du point d'impact vers le curseur, terminé par une petite croix jaune. Le clic fige la cible.
 - **Sur tactile**, l'aperçu apparaît au contact, suit le glisser, et le relâchement place la croix. La croix reste déplaçable jusqu'à la validation.
 - Choix du coup parmi des boutons, puis « Valider ».
 
-### 4.3 Étape 2 : la révélation
-- Carte de couleurs sur le terrain de B : **vert vif** = meilleur spot, **vert clair** = bonne alternative, **rouge** = à éviter. Dégradé continu, pas de zones à bords nets.
+### 4.3 Étape 2 : la révélation
+- Carte de couleurs sur le terrain de B : **vert vif** = meilleur spot, **vert clair** = bonne alternative, **rouge** = à éviter. Dégradé continu, pas de zones à bords nets.
 - B affiché à **sa position replacée** (rond plein) au moment où A frappe, et à sa position de frappe en **rond pointillé**. **Pas de flèche** entre les deux.
 - Retour de l'élève **en jaune** avec une petite croix au point visé, avec le même style qu'à l'étape 1.
 - Meilleur retour en **pointillé blanc**.
-- Panneau : ton choix, score sur 100, meilleur retour (coup + zone), « Pourquoi » en **liste à puces** (une raison par ligne : position/statut, ce que fait B, la zone, le coup, la direction), et une alternative.
+- Panneau : ton choix, score sur 100, meilleur retour (coup + zone), « Pourquoi » en **liste à puces** (une raison par ligne : position/statut, ce que fait B, la zone, le coup, la direction), et une alternative.
 
 ### 4.4 Légendes
 - Une légende sous chaque terrain, qui décrit tout ce qui est dessiné (joueurs, raquette, coup de B, point de chute, ton retour, meilleur retour, couleurs de la carte, B pointillé/plein).
 - Un bouton **affiche ou masque la légende**. Masquée, elle laisse le terrain occuper tout l'écran.
 
 ### 4.5 Code des trajectoires (vue de dessus)
-Deux règles, valables pour le coup de B (orange), l'aperçu et le retour de l'élève (jaune) et le meilleur retour (blanc) :
-- **Le pointillé dit la vitesse** : plus c'est espacé, plus le volant est lent.
-- **La courbe dit la hauteur** : droit = à plat ou descendant, légère courbe = juste assez haut pour passer, forte courbe = très haut. C'est un symbole : vu réellement de dessus, la trajectoire serait droite.
+Deux règles, valables pour le coup de B (orange), l'aperçu et le retour de l'élève (jaune) et le meilleur retour (blanc) :
+- **Le pointillé dit la vitesse** : plus c'est espacé, plus le volant est lent.
+- **La courbe dit la hauteur** : droit = à plat ou descendant, légère courbe = juste assez haut pour passer, forte courbe = très haut. C'est un symbole : vu réellement de dessus, la trajectoire serait droite.
 
 | Coup | Pointillé | Courbe |
 |---|---|---|
@@ -85,66 +85,82 @@ Deux règles, valables pour le coup de B (orange), l'aperçu et le retour de l'�
 | Filet, contre-amorti | points espacés | droit, court |
 
 ### 4.6 Mobile
-- Une colonne : le terrain en pleine largeur en haut, le panneau en dessous.
+- Une colonne : le terrain en pleine largeur en haut, le panneau en dessous.
 - Légende masquée par défaut sur mobile, état mémorisé (par appareil).
 
 ## 5. Le moteur de décision
 
 ### 5.1 Ce que Vincent a décidé
-- Un **moteur de règles déterministe** : même situation et même niveau, même réponse.
-- **Trois niveaux** calqués sur les paliers des référentiels :
-  - **débutant** : la sécurité avant tout, un principe à la fois (faire courir, viser le revers, marges larges, lob long) ;
-  - **intermédiaire** : choisir selon son statut (attaque, neutre ou défense) ;
-  - **avancé** : exploiter le replacement de B, le croisé quand on est équilibré, les amortis rapides.
-- **Score** avec deux composantes : la qualité de la zone visée (la valeur de la carte au point cliqué) et la pertinence du coup choisi. Un coup irréaliste dans la situation est fortement pénalisé.
+- Un **moteur de règles déterministe** : même situation et même niveau, même réponse.
+- **Trois niveaux** calqués sur les paliers des référentiels :
+  - **débutant** : la sécurité avant tout, un principe à la fois (faire courir, viser le revers, marges larges, lob long) ;
+  - **intermédiaire** : choisir selon son statut (attaque, neutre ou défense) ;
+  - **avancé** : exploiter le replacement de B, le croisé quand on est équilibré, les amortis rapides.
+- **Score** avec deux composantes : la qualité de la zone visée (la valeur de la carte au point cliqué) et la pertinence du coup choisi. Un coup irréaliste dans la situation est fortement pénalisé.
 - **Justification** générée à partir des critères qui ont le plus pesé dans la décision. Chaque règle est rattachée à une source.
 
 ### 5.2 Le modèle validé
-1. **Génération** : positions aléatoires de A et B, puis un coup de B tiré parmi les coups réalistes depuis la position de B, avec sa direction, sa vitesse, sa hauteur et sa zone d'arrivée probable chez A.
-2. **Statut de A**, déduit de la hauteur de prise du volant et du temps disponible pour l'atteindre : attaque (pris haut et tôt), neutre, défense (pris bas, tard ou loin). Le statut restreint les coups possibles pour A.
-3. **Replacement de B** après son coup, biaisé selon le coup joué : vers l'arrière après un dégagement ou un amorti rapide, vers l'avant après un filet.
-4. **Carte** : chaque point du terrain de B reçoit une note qui combine la distance à B replacé, le côté faible de B (fond côté revers pour un droitier), le risque (proximité des lignes, croisé hors équilibre) et le temps de replacement que le coup laisse à A. Le niveau pondère ces critères.
+1. **Génération** : positions aléatoires de A et B, puis un coup de B tiré parmi les coups réalistes depuis la position de B, avec sa direction, sa vitesse, sa hauteur et sa zone d'arrivée probable chez A.
+2. **Statut de A**, déduit de la hauteur de prise du volant et du temps disponible pour l'atteindre : attaque (pris haut et tôt), neutre, défense (pris bas, tard ou loin). Le statut restreint les coups possibles pour A.
+3. **Replacement de B** après son coup, biaisé selon le coup joué : vers l'arrière après un dégagement ou un amorti rapide, vers l'avant après un filet.
+4. **Carte** : chaque point du terrain de B reçoit une note qui combine la distance à B replacé, le côté faible de B (fond côté revers pour un droitier), le risque (proximité des lignes, croisé hors équilibre) et le temps de replacement que le coup laisse à A. Le niveau pondère ces critères.
 5. **Meilleur coup** pour atteindre la meilleure zone, compatible avec le statut de A. Une alternative distincte est aussi proposée.
+
+**Logiques reprises de Mofan-mofan/badminton-tactics** (idées seulement, aucun code repris, voir `docs/research/prior-art.md`, annexe) :
+- **Coups impossibles avec leur raison** : chaque coup déclare d'où il se joue (profondeur), la hauteur de frappe minimale et les coups reçus auxquels il répond. Si l'élève choisit un coup impossible, la raison lui est donnée.
+- **Position de B replacé** : un mélange entre son point de frappe et le centre de son demi-terrain, selon une proportion réglable.
+- **Temps d'atteinte** : distance de B replacé à la cible, moins son allonge, divisée par sa vitesse de déplacement, rapportée à un temps de référence.
+- **Balle dans le dos** : pénalité de déplacement quand la cible est derrière B, nulle sous un petit seuil, puis croissante.
+- **Croisé** : risque de faute et temps d'atteinte majorés par rapport à la ligne.
+- **Note et justification** : chaque critère donne une contribution pondérée, la note est leur moyenne normalisée, et la justification reprend les contributions les plus fortes, pour et contre.
+- **Ce que B va probablement jouer ensuite** : une phrase dans la justification.
+
+**Ce que le moteur doit couvrir en plus** (absent chez Mofan) :
+- **Temps de vol du volant** selon le coup : la qualité d'un retour dépend de l'écart entre le temps de vol et le temps d'atteinte de B, pas de la seule distance.
+- **Décalage latéral de B** replacé : B ne revient pas forcément au centre en largeur, pour pouvoir jouer le croisé quand il est décalé.
+- **Risque près des lignes** : viser trop près d'une ligne est pénalisé, et le surcoût du croisé augmente quand A est en défense.
 
 ### 5.2 bis Carte, score et justification (précisions)
 - **Le moteur évalue des couples (point, coup).** Pour chaque coup permis par le statut de A, chaque point du terrain de B reçoit une valeur et le détail des critères qui la composent. *(choix de Claude)*
 - **La carte affichée** donne, pour chaque point, la valeur du meilleur coup permis vers ce point (carte composite). *(choix de Claude)*
 - **Le score de l'élève** est la valeur du couple qu'il a choisi (son point, son coup), ramenée sur 100 par rapport au meilleur couple. Un coup incohérent avec la zone (amorti visé sur la ligne de fond) ou avec le statut (smash sur un volant pris sous le filet) est pénalisé par cette même valeur. Le score ne peut donc pas contredire la carte. *(choix de Claude)*
-- **Le « Pourquoi »** a deux blocs, sans IA :
-  - « Meilleur retour » : les critères qui ont le plus pesé pour le meilleur couple ;
-  - « Ton choix » : la comparaison critère par critère entre le couple de l'élève et le meilleur ; les plus gros écarts deviennent des puces (par ex. « tu vises à 1 m de l'endroit où B se replace », « un amorti lent depuis le fond lui laisse un filet serré »).
-  Décision de Vincent : expliquer aussi le choix de l'élève. Méthode déterministe : choix de Claude.
+- **Le « Pourquoi »** a deux blocs, sans IA :
+  - « Meilleur retour » : les critères qui ont le plus pesé pour le meilleur couple ;
+  - « Ton choix » : la comparaison critère par critère entre le couple de l'élève et le meilleur ; les plus gros écarts deviennent des puces (par ex. « tu vises à 1 m de l'endroit où B se replace », « un amorti lent depuis le fond lui laisse un filet serré »).
+  Décision de Vincent : expliquer aussi le choix de l'élève. Méthode déterministe : choix de Claude.
 - **Le niveau** ne change que les pondérations, donc la bonne réponse, le score et la justification. Les situations générées, les coups proposés et l'interface sont les mêmes à tous les niveaux. *(décision de Vincent)*
 - **Les règles** vivent dans un seul fichier de configuration lisible dans le projet (critères, poids par niveau, seuils, et source de chaque principe). Pas d'écran d'édition. *(décision de Vincent)* Afficher la source dans l'appli n'est pas requis.
 
 ### 5.2 ter Situations de service
-B peut aussi **servir** *(décision de Vincent)*. Le générateur applique alors les règles du simple : B dans sa zone de service (droite si son score est pair, gauche s'il est impair, tirée au hasard), A dans la zone de réception en diagonale. Service court : le volant tombe au-delà de la ligne de service court, dans la zone de service de A. Service long : il tombe au fond, jusqu'à la ligne de fond. A répond selon les mêmes règles qu'en cours d'échange.
+B peut aussi **servir** *(décision de Vincent)*. Le générateur applique alors les règles du simple : B dans sa zone de service (droite si son score est pair, gauche s'il est impair, tirée au hasard), A dans la zone de réception en diagonale. Service court : le volant tombe au-delà de la ligne de service court, dans la zone de service de A. Service long : il tombe au fond, jusqu'à la ligne de fond. A répond selon les mêmes règles qu'en cours d'échange.
 
 ### 5.2 quater Calibrage
-Vincent ne fournira pas de situations de référence : **Claude calibre** les poids à partir des principes du §5.4. Le livrable inclut une série de situations types (au moins une par famille de coup de B et par statut de A), avec la réponse attendue par niveau et sa justification par les principes. Ces situations servent de tests automatisés et de base de discussion pour la suite.
+Vincent ne fournira pas de situations de référence : **Claude calibre** les poids à partir des principes du §5.4. Le livrable inclut une série de situations types (au moins une par famille de coup de B et par statut de A), avec la réponse attendue par niveau et sa justification par les principes. Ces situations servent de tests automatisés et de base de discussion pour la suite.
 
 ### 5.3 Catalogue des coups de simple
 Service court, service long, dégagement haut, dégagement d'attaque, smash, amorti lent, amorti rapide, filet, lob défensif, lob d'attaque, drive, contre-amorti (bloc). Chacun peut être joué en ligne ou en croisé, en coup droit, en revers ou en tour de tête.
 
 ### 5.4 Principes de coaching retenus (sources)
-- Le dégagement n'est à jouer que s'il n'y a pas d'alternative, car il expose au smash ; un dégagement haut et long sert à gagner du temps pour se replacer. ([mobilesport.ch](https://assets01.sdd1.ch/assets/lbwp-cdn/mobilesport/files/1676392051/mobilesport-badminton--tactique-bons-choix.pdf), [Wikibooks](https://en.wikibooks.org/wiki/Badminton/Strategy))
+- Le dégagement n'est à jouer que s'il n'y a pas d'alternative, car il expose au smash ; un dégagement haut et long sert à gagner du temps pour se replacer. ([mobilesport.ch](https://assets01.sdd1.ch/assets/lbwp-cdn/mobilesport/files/1676392051/mobilesport-badminton--tactique-bons-choix.pdf), [Wikibooks](https://en.wikibooks.org/wiki/Badminton/Strategy))
 - Replacement biaisé vers l'arrière après un dégagement, un lob ou un amorti rapide, vers l'avant après un filet. Après un amorti croisé, on atteint rarement la base idéale. ([Badminton Bible – base centrale](https://badmintonbible.com/tactics/singles/central-base))
-- Ligne plus sûre que croisé ; croisé seulement quand on est équilibré ; un filet croisé ouvre le terrain au contre en ligne ; un lob croisé est difficile depuis une position étirée. ([Badminton Bible – filet croisé](https://badmintonbible.com/shots/forecourt/net-shots/cross), [lob croisé](https://www.badmintonbible.com/shots/forecourt/lifts/cross))
+- Ligne plus sûre que croisé ; croisé seulement quand on est équilibré ; un filet croisé ouvre le terrain au contre en ligne ; un lob croisé est difficile depuis une position étirée. ([Badminton Bible – filet croisé](https://badmintonbible.com/shots/forecourt/net-shots/cross), [lob croisé](https://www.badmintonbible.com/shots/forecourt/lifts/cross))
 - L'amorti croisé est fort quand l'adversaire est décalé (déplacement en diagonale). L'amorti en ligne serré est plus sûr quand il est centré mais au fond. ([Dear Badminton](https://dearbadminton.com/best-shot-to-play-when-opponent-fails-to-return-to-base-position))
-- Un amorti rapide empêche le filet serré adverse ; un amorti lent le permet. ([Badminton Bible](https://badmintonbible.com/tactics/singles/building-shots/drops))
-- Le revers de fond est la cible classique ; un bon tour de tête la neutralise. ([Wikibooks](https://en.wikibooks.org/wiki/Badminton/Strategy), [badminton-coach.co.uk](https://badminton-coach.co.uk/discussion-forum/intermediate-general-qa/better-shots-down-the-backhand-side))
-- Paliers par niveau : un principe à la fois, puis selon son statut dans le rapport de force, puis selon un adversaire identifié. ([Référentiel EPS Grenoble](https://eps-pedagogie.web.ac-grenoble.fr/sites/default/files/media-d7/media-fichiers/2019-12/bcp_referentiel_badminton.pdf))
+- Un amorti rapide empêche le filet serré adverse ; un amorti lent le permet. ([Badminton Bible](https://badmintonbible.com/tactics/singles/building-shots/drops))
+- Le revers de fond est la cible classique ; un bon tour de tête la neutralise. ([Wikibooks](https://en.wikibooks.org/wiki/Badminton/Strategy), [badminton-coach.co.uk](https://badminton-coach.co.uk/discussion-forum/intermediate-general-qa/better-shots-down-the-backhand-side))
+- Paliers par niveau : un principe à la fois, puis selon son statut dans le rapport de force, puis selon un adversaire identifié. ([Référentiel EPS Grenoble](https://eps-pedagogie.web.ac-grenoble.fr/sites/default/files/media-d7/media-fichiers/2019-12/bcp_referentiel_badminton.pdf))
 
-**Limite connue** : aucune source ne fournit une table officielle « tel coup reçu, telle position → tel retour ». Le moteur est une **modélisation** construite à partir de ces principes. Les règles doivent rester lisibles et modifiables, pour qu'un coach puisse les contester et les corriger.
+- Structure d'un moteur de règles pour le simple (temps d'atteinte, balle dans le dos, replacement déduit du coup, note décomposée par critère), reprise sous forme d'idées seulement. ([Mofan-mofan/badminton-tactics](https://github.com/Mofan-mofan/badminton-tactics))
+
+**Limite connue** : aucune source ne fournit une table officielle « tel coup reçu, telle position → tel retour ». Le moteur est une **modélisation** construite à partir de ces principes. Les règles doivent rester lisibles et modifiables, pour qu'un coach puisse les contester et les corriger.
 
 ## 5 bis. Existant à consulter
-Voir `docs/research/prior-art.md`. Rien n'existe sous cette forme. Pour le constructeur :
-- **Mofan-mofan/badminton-tactics** (MIT) : liste de 9 facteurs pondérés, modèle « balle dans le dos », bloc de calibration unique et auto-tests. C'est une check-list utile pour la carte.
-- **ShuttleSet** (CoachAI) : taxonomie de 18 coups et positions réelles. Peut servir hors ligne à vérifier les règles. La licence des données est à vérifier avant tout usage.
-- **Padel Chess** : puzzle du jour, pile de révision des erreurs. Ce sont des idées pour plus tard, **hors périmètre** de cette version.
+Voir `docs/research/prior-art.md`. Rien n'existe sous cette forme. Pour le constructeur :
+- **Mofan-mofan/badminton-tactics** (MIT) : liste de 9 facteurs pondérés, modèle « balle dans le dos », bloc de calibration unique et auto-tests. C'est une check-list utile pour la carte.
+- **ShuttleSet** (CoachAI) : taxonomie de 18 coups et positions réelles. Peut servir hors ligne à vérifier les règles. La licence des données est à vérifier avant tout usage.
+- **Padel Chess** : puzzle du jour, pile de révision des erreurs. Ce sont des idées pour plus tard, **hors périmètre** de cette version.
 
 ## 6. L'IA (hors périmètre, mais à ne pas bloquer)
-Plus tard, une IA pourra reformuler la justification calculée par le moteur ou répondre à « et si j'avais joué X ? ». Elle explique, elle ne décide jamais. Le moteur doit donc exposer ses critères et leurs poids de façon structurée.
+Plus tard, une IA pourra reformuler la justification calculée par le moteur ou répondre à « et si j'avais joué X ? ». Elle explique, elle ne décide jamais. Le moteur doit donc exposer ses critères et leurs poids de façon structurée.
 
 ## 7. Laissé au constructeur
 - Le choix du framework ou du JavaScript vanilla, et de l'outillage (build, tests), tant que le résultat est une page statique.
@@ -158,7 +174,7 @@ Plus tard, une IA pourra reformuler la justification calculée par le moteur ou 
 - Une raquette fixe, sans posture de frappe.
 - Le coup de B en orange, pour réserver le jaune au choix de l'élève.
 - Le retour qui part du point d'impact.
-- Le comportement tactile : glisser, relâcher, croix déplaçable.
+- Le comportement tactile : glisser, relâcher, croix déplaçable.
 - La légende masquée par défaut sur mobile, état mémorisé.
 - L'abandon de la vue de côté, remplacée par le code des trajectoires.
 - La page web statique (Vincent laisse le choix de la techno libre).
