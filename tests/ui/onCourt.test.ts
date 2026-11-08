@@ -23,8 +23,8 @@ afterEach(() => {
   history.replaceState(null, '', '/')
 })
 
-function startedApp(): HTMLElement {
-  history.replaceState(null, '', `/?seed=${SEED}&level=debutant`)
+function startedApp(seed = SEED): HTMLElement {
+  history.replaceState(null, '', `/?seed=${seed}&level=debutant`)
   const root = document.createElement('div')
   document.body.append(root)
   startApp(root)
@@ -363,16 +363,14 @@ describe('shot tags on the court', () => {
   })
 })
 
-describe('best return cross', () => {
-  it('marks the end of the white line with a white cross', () => {
+describe('best return point', () => {
+  it('marks the end of the white line with a white dot instead of a cross', () => {
     const root = revealed(startedApp())
     const {best} = scoreChoice(generateSituation(SEED), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
-    const whiteLines = [...root.querySelectorAll(`svg.court line[stroke="${BEST_RETURN_COLOR}"]`)]
-    expect(whiteLines).toHaveLength(2)
-    const centerX = whiteLines.map((line) => (Number(line.getAttribute('x1')) + Number(line.getAttribute('x2'))) / 2)
-    const centerY = whiteLines.map((line) => (Number(line.getAttribute('y1')) + Number(line.getAttribute('y2'))) / 2)
-    centerX.forEach((x) => expect(x).toBeCloseTo(best.point.x))
-    centerY.forEach((y) => expect(y).toBeCloseTo(best.point.y))
+    expect(root.querySelectorAll(`svg.court line[stroke="${BEST_RETURN_COLOR}"]`)).toHaveLength(0)
+    const dot = root.querySelector(`svg.court circle.best-point[fill="${BEST_RETURN_COLOR}"]`)!
+    expect(Number(dot.getAttribute('cx'))).toBeCloseTo(best.point.x)
+    expect(Number(dot.getAttribute('cy'))).toBeCloseTo(best.point.y)
   })
 })
 
@@ -413,6 +411,20 @@ describe('best return zones', () => {
     expect(Number(zoneOne.getAttribute('ry'))).toBeCloseTo(bestZone!.radiusY)
     expect(root.querySelectorAll('svg.court ellipse.zone')).toHaveLength(alternativeZone === null ? 1 : 2)
     expect(root.querySelector('canvas')).toBeNull()
+  })
+
+  it('never puts a zone tag on top of the cross that marks the zone point', () => {
+    for (const seed of [SEED, 1794143594958, 1794142100907]) {
+      document.body.replaceChildren()
+      const root = revealed(startedApp(seed))
+      const viewBox = root.querySelector<SVGSVGElement>('svg.court')!.viewBox.baseVal
+      const {bestZone, alternativeZone} = scoreChoice(generateSituation(seed), 'debutant', {x: 3, y: 3}, 'drop-slow').analysis
+      const zones = [bestZone, alternativeZone].filter((zone) => zone !== null)
+      root.querySelectorAll<HTMLElement>('.trajectory-tag[data-kind^="zone"]').forEach((tag, index) => {
+        const tagY = viewBox.y + (parseFloat(tag.style.top) / 100) * viewBox.height
+        expect(Math.abs(tagY - zones[index]!.center.y)).toBeGreaterThanOrEqual(0.4)
+      })
+    }
   })
 
   it('keeps the zone tags on the side of B, above the net', () => {

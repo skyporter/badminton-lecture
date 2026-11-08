@@ -40,6 +40,8 @@ const CROSS_HALF_SIZE = 0.15
 const PREVIEW_OPACITY = 0.7
 const HALF_OF_B_CLIP_ID = 'half-of-b'
 const ZONE_TAG_NET_GAP = 0.35
+const ZONE_TAG_OFFSET = 0.45
+const BEST_POINT_RADIUS = 0.12
 const DEFAULT_LEVEL: Level = 'intermediaire'
 const MOBILE_MEDIA_QUERY = '(max-width: 767px)'
 
@@ -120,7 +122,7 @@ function bestReturn(from: Point, best: PairEvaluation): SVGElement[] {
     fill: 'none',
     ...constantStroke(STROKE_PIXELS.bestReturn, STROKE_PIXELS.returnDashArray),
   })
-  return [trajectory, ...cross(best.point, BEST_RETURN_COLOR)]
+  return [trajectory, svgElement('circle', {class: 'best-point', cx: best.point.x, cy: best.point.y, r: BEST_POINT_RADIUS, fill: BEST_RETURN_COLOR})]
 }
 
 type CourtTag = {point: Point; text: string; kind: 'shot-b' | 'return' | 'zone-1' | 'zone-2' | 'handedness-a' | 'handedness-b'}
@@ -130,7 +132,8 @@ function trajectoryTag(from: Point, to: Point, shot: ShotId, kind: 'shot-b' | 'r
 }
 
 function zoneTag(zone: Zone, rank: 1 | 2): CourtTag {
-  const point = {x: zone.center.x, y: Math.min(zone.center.y, NET_Y - ZONE_TAG_NET_GAP)}
+  const belowCenter = zone.center.y + ZONE_TAG_OFFSET
+  const point = {x: zone.center.x, y: belowCenter <= NET_Y - ZONE_TAG_NET_GAP ? belowCenter : zone.center.y - ZONE_TAG_OFFSET}
   return {point, text: `${rank} · ${SHOTS[zone.shot].label}`, kind: rank === 1 ? 'zone-1' : 'zone-2'}
 }
 

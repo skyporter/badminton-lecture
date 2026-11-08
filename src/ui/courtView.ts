@@ -17,8 +17,8 @@ export const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const PLAYER_RADIUS = 0.35
 export const BANNER_RESERVED_METRES = 0.75
 const COURT_MARGIN = 0.6
-const HANDEDNESS_TAG_OFFSET_X = 0.42
-const HANDEDNESS_TAG_OFFSET_Y = 0.32
+const HANDEDNESS_TAG_OFFSET_X = 0.27
+const HANDEDNESS_TAG_OFFSET_Y = 0.27
 export const HANDEDNESS_LETTERS: Record<Handedness, string> = {droitier: 'D'}
 const OUT_ZONE_BELOW_BANNER = 0.4
 
