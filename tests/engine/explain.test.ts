@@ -126,6 +126,15 @@ describe('predictNextShotB', () => {
   })
 })
 
+describe('AGAINST_BULLETS', () => {
+  it('speaks of the student shot as « Ton coup » and compares it with the best return, never as « Ce coup »', () => {
+    Object.values(AGAINST_BULLETS).forEach((bullet) => expect(bullet.startsWith('Ce coup')).toBe(false))
+    expect(AGAINST_BULLETS.pressure).toBe('Ton coup met moins de pression sur B que le meilleur retour.')
+    expect(AGAINST_BULLETS.recoveryTime).toBe('Ton coup te laisse moins de temps pour te replacer que le meilleur retour.')
+    expect(AGAINST_BULLETS.risk).toBe("Plus risqué que le meilleur retour\u00a0: trop près d'une ligne, ou croisé hors équilibre.")
+  })
+})
+
 describe('explainChoice', () => {
   it('gives a single bullet for a click out of the court', () => {
     expect(explainChoice(F1, scoreChoice(F1, 'avance', {x: 3, y: 7.5}, 'smash'))).toEqual(['Le volant sort du terrain.'])

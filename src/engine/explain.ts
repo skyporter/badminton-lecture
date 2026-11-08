@@ -28,9 +28,9 @@ export const REAR_FOR_BULLET = 'Tu vises le fond du terrain de B.'
 export const AGAINST_BULLETS: Record<CriterionId, string> = {
   reachTime: 'B atteindra ce point à temps : trop près de lui, ou coup trop lent.',
   weakSide: 'Tu ne vises pas le fond côté revers de B, son côté faible.',
-  risk: "Plus risqué : trop près d'une ligne, ou croisé hors équilibre.",
-  recoveryTime: 'Ce coup te laisse moins de temps pour te replacer.',
-  pressure: 'Ce coup met moins de pression sur B.',
+  risk: "Plus risqué que le meilleur retour : trop près d'une ligne, ou croisé hors équilibre.",
+  recoveryTime: 'Ton coup te laisse moins de temps pour te replacer que le meilleur retour.',
+  pressure: 'Ton coup met moins de pression sur B que le meilleur retour.',
 }
 
 const DIRECTION_BULLETS: Record<Direction, string> = {
