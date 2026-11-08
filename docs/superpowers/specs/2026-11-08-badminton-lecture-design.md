@@ -57,6 +57,7 @@ Tout se passe sur le terrain, sans panneau à côté.
 - Trajectoire du coup de B en **trait continu rouge** (couleur de B) jusqu'au point de chute, un **rond bleu** (couleur de A).
 - A est affiché à sa position de départ. Son retour part du **point d'impact** (là où il rejoint le volant), pas de sa position de départ.
 - **Au survol** du terrain de B (ordinateur), un aperçu en **pointillé bleu** part du point d'impact vers le curseur, terminé par un petit point bleu.
+- **Seul le demi-terrain de simple de B est cliquable** *(décision de Vincent)* : un clic chez soi, dans un couloir ou derrière la ligne de fond de B ne fait rien, et l'aperçu au survol n'apparaît que sur cette zone.
 - **Un clic sur le demi-terrain de B** place le point et ouvre une **fenêtre de choix du coup** à côté du point. Elle contient trois groupes de boutons, « Vers l'avant », « Vers le fond » et « Rapides », un bouton « ✕ » pour la fermer et le bouton « Valider », inactif tant qu'aucun coup n'est choisi. Échap ou « ✕ » ferme la fenêtre en gardant le point ; un nouveau clic sur le terrain déplace le point et rouvre la fenêtre.
 - **Sur tactile**, l'aperçu apparaît au contact, suit le glisser, et le relâchement place le point et ouvre la fenêtre. Le point reste déplaçable jusqu'à la validation.
 

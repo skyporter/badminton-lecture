@@ -1,6 +1,6 @@
 import {scoreChoice} from '../engine/analysis'
 import type {ChoiceResult, Zone} from '../engine/analysis'
-import {NET_Y, SINGLES_LEFT, SINGLES_RIGHT} from '../engine/court'
+import {NET_Y, SINGLES_LEFT, SINGLES_RIGHT, isInSinglesHalf} from '../engine/court'
 import {reachableLanding} from '../engine/evaluate'
 import type {PairEvaluation} from '../engine/evaluate'
 import {generateSituation} from '../engine/generator'
@@ -60,7 +60,7 @@ export function nextState(state: QuizState, action: QuizAction): QuizState {
         return {...state, level: action.level, result: scoreChoice(state.situation, action.level, point, shot)}
       }
     case 'set-target':
-      return state.result === null ? {...state, target: roundedToCentimetre(action.point), popoverOpen: true} : state
+      return state.result === null && isInSinglesHalf(action.point, 'B') ? {...state, target: roundedToCentimetre(action.point), popoverOpen: true} : state
     case 'set-shot':
       return state.result === null ? {...state, shot: action.shot} : state
     case 'validate':
@@ -340,7 +340,7 @@ export function startApp(root: HTMLElement): void {
 
   listenToCourt(svg, {
     onPreview: (point) => {
-      preview = point
+      preview = point !== null && isInSinglesHalf(point, 'B') ? point : null
       renderPreview()
     },
     onTarget: (point) => dispatch({type: 'set-target', point}),

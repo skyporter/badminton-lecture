@@ -494,3 +494,34 @@ describe('student target point', () => {
     expect(root.querySelectorAll(`svg.court line[stroke="${RETURN_COLOR}"]`)).toHaveLength(0)
   })
 })
+
+describe('clickable area', () => {
+  it('ignores presses outside the singles half of B: own half, tramlines and behind the back line', () => {
+    const root = startedApp()
+    const svg = root.querySelector('svg.court')!
+    const boardBefore = svg.innerHTML
+    for (const [x, y] of [[3, 9], [0.2, 3], [5.9, 3], [3, -0.3]]) press(svg, x, y)
+    expect(popover(root).hidden).toBe(true)
+    expect(svg.innerHTML).toBe(boardBefore)
+  })
+
+  it('accepts a press inside the singles half of B', () => {
+    const root = startedApp()
+    press(root.querySelector('svg.court')!, 0.5, 0.1)
+    expect(popover(root).hidden).toBe(false)
+  })
+
+  it('shows no preview while hovering outside the singles half of B', () => {
+    const root = startedApp()
+    const svg = root.querySelector('svg.court')!
+    const hover = (clientX: number, clientY: number) => {
+      const event = new MouseEvent('pointermove', {bubbles: true, clientX, clientY})
+      Object.defineProperty(event, 'pointerType', {value: 'mouse'})
+      svg.dispatchEvent(event)
+    }
+    hover(3, 9)
+    expect(root.querySelector(`svg.court path[stroke="${RETURN_COLOR}"]`)).toBeNull()
+    hover(3, 3)
+    expect(root.querySelector(`svg.court path[stroke="${RETURN_COLOR}"]`)).not.toBeNull()
+  })
+})
