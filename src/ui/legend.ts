@@ -1,7 +1,7 @@
 import {MAP_BRIGHT_GREEN, MAP_LIGHT_GREEN, MAP_RED} from '../engine/rules'
 import {SHOTS} from '../engine/shots'
 import type {ShotId} from '../engine/shots'
-import {PLAYER_A_COLOR, PLAYER_B_COLOR, SHOT_B_COLOR, SVG_NAMESPACE, racket, svgElement} from './courtView'
+import {PLAYER_A_COLOR, PLAYER_B_COLOR, SHOT_B_COLOR, SVG_NAMESPACE, forehandArc, svgElement} from './courtView'
 import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
 
 const STORAGE_KEY = 'badminton-lecture:legend-visible'
@@ -48,11 +48,11 @@ function shapeSwatch(className: string, color: string): HTMLSpanElement {
   return swatch
 }
 
-function racketSwatch(): SVGSVGElement {
+function forehandArcSwatch(): SVGSVGElement {
   const svg = document.createElementNS(SVG_NAMESPACE, 'svg')
-  svg.setAttribute('viewBox', '0.2 -0.95 0.8 1')
-  svg.classList.add('legend-racket')
-  svg.append(racket({x: 0, y: 0}, 'A'))
+  svg.setAttribute('viewBox', '-0.55 -0.55 1.1 1.1')
+  svg.classList.add('legend-forehand')
+  svg.append(svgElement('circle', {cx: 0, cy: 0, r: 0.35, fill: PLAYER_A_COLOR}), forehandArc({x: 0, y: 0}, 'A'))
   return svg
 }
 
@@ -72,7 +72,7 @@ function questionRows(): HTMLElement[] {
   return [
     row(shapeSwatch('disc', PLAYER_A_COLOR), 'A : toi (droitier)'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), "B : l'adversaire (droitier)"),
-    row(racketSwatch(), 'raquette = côté coup droit'),
+    row(forehandArcSwatch(), 'arc blanc = côté coup droit'),
     row(straightLine(SHOT_B_COLOR, trajectoryStyle('clear-attack').dashArray), 'coup de B'),
     row(shapeSwatch('disc', SHOT_B_COLOR), 'point de chute du volant'),
     row(straightLine(RETURN_COLOR, ''), 'ton retour au survol (✕ = point visé)'),

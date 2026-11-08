@@ -202,14 +202,19 @@ describe('banner reservation', () => {
   })
 })
 
-describe('racket orientation', () => {
-  it('draws B racket on the -x side of B and A racket on the +x side of A', () => {
+describe('forehand arc', () => {
+  it('draws a white arc on the -x side of B and on the +x side of A, with no racket', () => {
     const root = startedApp()
     const situation = generateSituation(SEED)
     const [playerBGroup, playerAGroup] = [...root.querySelectorAll('svg.court > g')].pop()!.children
-    const handleX = (group: Element) => Number(group.querySelector('g line')!.getAttribute('x1'))
-    expect(handleX(playerBGroup)).toBeLessThan(situation.playerBHit.x)
-    expect(handleX(playerAGroup)).toBeGreaterThan(situation.playerA.x)
+    const arcEndsX = (group: Element) => {
+      const numbers = group.querySelector('.forehand-arc')!.getAttribute('d')!.match(/-?[\d.]+/g)!.map(Number)
+      return [numbers[0], numbers[numbers.length - 2]]
+    }
+    arcEndsX(playerBGroup).forEach((x) => expect(x).toBeLessThan(situation.playerBHit.x))
+    arcEndsX(playerAGroup).forEach((x) => expect(x).toBeGreaterThan(situation.playerA.x))
+    expect(playerAGroup.querySelector('.forehand-arc')!.getAttribute('stroke')).toBe('#ffffff')
+    expect(root.querySelector('svg.court ellipse')).toBeNull()
   })
 })
 

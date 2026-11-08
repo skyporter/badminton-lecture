@@ -53,7 +53,7 @@ describe('renderLegend', () => {
 
   it('lists the question entries', () => {
     const text = legendText('question')
-    ;['A : toi', 'raquette', 'coup de B', 'point de chute', 'ton retour au survol'].forEach((entry) => expect(text).toContain(entry))
+    ;['A : toi', 'arc blanc = côté coup droit', 'coup de B', 'point de chute', 'ton retour au survol'].forEach((entry) => expect(text).toContain(entry))
     expect(text).not.toContain('meilleur spot')
   })
 

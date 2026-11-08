@@ -19,7 +19,7 @@ Static TypeScript web quiz (Vite, Vitest) to learn reading badminton singles pla
 
 Court coordinates are in metres: origin top left, x from 0 to 6.10, y from 0 to 13.40. B is at the top (y < 6.70), A at the bottom (y > 6.70), net at y = 6.70. Singles tramlines are at x = 0.46 and x = 5.64. The UI never stores pixels: the cross, the preview and the map are in court coordinates, so they stay aligned after a resize or rotation.
 
-Both players are right-handed (`handedness: 'droitier'` is a parameter, only that value is implemented). A faces -y, so her forehand is at +x. B faces +y, so his forehand is at -x.
+Both players are right-handed (`handedness: 'droitier'` is a parameter, only that value is implemented). A faces -y, so her forehand is at +x. B faces +y, so his forehand is at -x. The forehand side is shown by a white arc around each player disc (`forehandArc` in `courtView.ts`, ±45° around the forehand direction), not by a drawn racket.
 
 ## Colours and trajectory code
 
@@ -27,7 +27,7 @@ A `#3b82f6`, B `#e05252`, B's shot `#ff8a65`, the student's return `#ffd54a`, be
 
 Trajectories (top view, `trajectory.ts`): the dash pattern says the speed (solid = very fast, long tight dashes = fast, medium dashes = medium, spaced dots = slow), the curvature says the height (straight = flat, slight curve = low arc, strong curve = high arc). The same code is used for B's shot, the student's return and the best return. The legend reuses these constants and `trajectoryPath` for its swatches.
 
-Stroke widths and dash lengths are constant in screen pixels, whatever the zoom or court size: every stroke in the court SVG carries `vector-effect="non-scaling-stroke"` through `constantStroke(...)` and its width comes from `STROKE_PIXELS` (`trajectory.ts`, also used by the legend swatches). Only shapes (discs, landing dot, cross size, racket head) scale with the court. Each situation writes `?seed=<integer>&level=<level>`: « Nouvelle situation » adds a history entry (`history.pushState`), every other change (level, answer) replaces the current one (`history.replaceState`). The same URL on load restores the situation, and browser back/forward (`popstate`, action `restore-situation`) shows the situation of the address bar as a fresh question.
+Stroke widths and dash lengths are constant in screen pixels, whatever the zoom or court size: every stroke in the court SVG carries `vector-effect="non-scaling-stroke"` through `constantStroke(...)` and its width comes from `STROKE_PIXELS` (`trajectory.ts`, also used by the legend swatches). Only shapes (discs, landing dot, cross size, forehand arc radius) scale with the court. Each situation writes `?seed=<integer>&level=<level>`: « Nouvelle situation » adds a history entry (`history.pushState`), every other change (level, answer) replaces the current one (`history.replaceState`). The same URL on load restores the situation, and browser back/forward (`popstate`, action `restore-situation`) shows the situation of the address bar as a fresh question.
 
 ## Layout
 
