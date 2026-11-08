@@ -5,7 +5,8 @@ import {
   LINE_DIRECTION_PROBABILITY,
   RECEIVER_BASE,
   RECEIVER_BASE_SPREAD,
-  RECEIVER_DEPTH_RANGE,
+  RECEIVER_SERVE_CENTER_OFFSET,
+  RECEIVER_SERVE_DEPTH,
   SERVER_DEPTH_BEHIND_SHORT_LINE,
   SERVER_SCORE_MAXIMUM,
   SERVER_X_RANGE_BY_SIDE,
@@ -96,13 +97,13 @@ function serveInput(rng: () => number): SituationInput {
   const serverSide = serverScore % 2 === 0 ? 'right' : 'left'
   const receiverSide = serverSide === 'right' ? 'left' : 'right'
   const [serverMinimumX, serverMaximumX] = SERVER_X_RANGE_BY_SIDE[serverSide]
-  const [receiverMinimumX, receiverMaximumX] = SERVER_X_RANGE_BY_SIDE[receiverSide]
+  const receiverX = receiverSide === 'left' ? CENTER_X + RECEIVER_SERVE_CENTER_OFFSET : CENTER_X - RECEIVER_SERVE_CENTER_OFFSET
   const [minimumDepthBehind, maximumDepthBehind] = SERVER_DEPTH_BEHIND_SHORT_LINE
   const shotB = pick(rng, SERVE_SHOT_IDS)
   const [landingMinimumX, landingMaximumX] = SERVE_LANDING_X_RANGE_BY_SIDE[serverSide]
 
   const playerBHit = pointAtDepth('B', SHORT_SERVICE_DISTANCE + randomBetween(rng, minimumDepthBehind, maximumDepthBehind), randomBetween(rng, serverMinimumX, serverMaximumX))
-  const playerA = pointAtDepth('A', randomBetween(rng, ...RECEIVER_DEPTH_RANGE), randomBetween(rng, receiverMinimumX, receiverMaximumX))
+  const playerA = pointAtDepth('A', RECEIVER_SERVE_DEPTH, receiverX)
   const landing = pointAtDepth('A', randomBetween(rng, ...SHOTS[shotB].landingDepth), randomBetween(rng, landingMinimumX, landingMaximumX))
 
   return {playerA, playerBHit, shotB, landing, isServe: true}

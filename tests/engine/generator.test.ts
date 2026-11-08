@@ -25,6 +25,17 @@ describe('generateSituation', () => {
     expect(serves.length).toBeLessThan(400)
   })
 
+  it('places the receiver at the usual receiving spot: 3 m from the net, 0.5 m from the centre line, in the diagonal box', () => {
+    for (let seed = 0; seed < 600; seed++) {
+      const situation = generateSituation(seed)
+      if (!situation.isServe) continue
+      expect(situation.playerA.y - 6.7).toBeCloseTo(3.0)
+      expect(Math.abs(situation.playerA.x - 3.05)).toBeCloseTo(0.5)
+      const serverOnLeftOfScreen = situation.playerBHit.x < 3.05
+      expect(situation.playerA.x > 3.05).toBe(serverOnLeftOfScreen)
+    }
+  })
+
   it('lands serves diagonally in the receiving service box', () => {
     for (let seed = 0; seed < 2000; seed++) {
       const situation = generateSituation(seed)
