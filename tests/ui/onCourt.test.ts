@@ -245,7 +245,7 @@ describe('unreachable choice', () => {
 
   it('says the shot cannot go that far on the collapsed drawer line', () => {
     const text = drawer(revealedNetToBackLine()).textContent!
-    expect(text).toContain('Filet impossible jusque-là — 0 / 100')
+    expect(text).toContain('Score\u00a0: 0 / 100 — Filet impossible jusque-là — Meilleur')
   })
 
   it('draws no red segment for a reachable choice', () => {
