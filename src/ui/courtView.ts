@@ -56,7 +56,7 @@ export function renderCourt(svg: SVGSVGElement): void {
   svg.replaceChildren(lines, net)
 }
 
-function racket(position: Point, side: 'A' | 'B'): SVGElement {
+export function racket(position: Point, side: 'A' | 'B'): SVGElement {
   const direction = forehandIsPositiveX(side) ? 1 : -1
   const racketGroup = svgElement('g', {})
   const handle = line(position.x + direction * 0.3, position.y, position.x + direction * 0.55, position.y - direction * 0.35)

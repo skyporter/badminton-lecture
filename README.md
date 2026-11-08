@@ -1,6 +1,6 @@
 # Lecture de jeu au badminton
 
-Quiz web statique pour apprendre à lire le jeu en simple. L'application montre une situation vue de dessus : B (en haut) vient de frapper, A (en bas, toi) doit renvoyer. Tu cliques sur le terrain de B pour choisir où tu renvoies, tu choisis ton coup, puis tu valides : l'application te donne un score sur 100, le meilleur retour, une carte de couleurs du terrain de B (vert vif = meilleur spot, vert clair = bonne alternative, rouge = à éviter) et les raisons de chaque choix.
+Quiz web statique pour apprendre à lire le jeu en simple. L'application montre une situation vue de dessus : B (en haut) vient de frapper, A (en bas, toi) doit renvoyer. Tu cliques sur le terrain de B pour choisir où tu renvoies, tu choisis ton coup, puis tu valides : l'application te donne un score sur 100, le meilleur retour, une carte de couleurs du terrain de B (vert vif = meilleur spot, vert clair = bonne alternative, rouge = à éviter) et les raisons de chaque choix.
 
 Tout tourne dans le navigateur : pas de serveur, pas d'API externe, pas d'IA. Le moteur est déterministe : même situation et même niveau, même résultat. Trois niveaux sont proposés (débutant, intermédiaire, avancé). Une légende, masquable avec le bouton « Légende », explique les couleurs et le code des trajectoires (le pointillé dit la vitesse, la courbe dit la hauteur). Elle est masquée par défaut sur mobile.
 

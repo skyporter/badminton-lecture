@@ -1,12 +1,15 @@
 import type {ChoiceResult} from '../engine/analysis'
 import {describeReturn, describeShotB, explainBest, explainChoice} from '../engine/explain'
 import type {Situation} from '../engine/generator'
-import {RETURN_SHOTS, SHOTS} from '../engine/shots'
+import {SHOT_FAMILIES} from '../engine/rules'
+import type {ShotFamily} from '../engine/rules'
+import {SHOTS} from '../engine/shots'
 import type {Level} from '../engine/types'
 import {canValidate} from './app'
 import type {QuizAction, QuizState} from './app'
 
 const LEVEL_LABELS: Record<Level, string> = {debutant: 'Débutant', intermediaire: 'Intermédiaire', avance: 'Avancé'}
+const SHOT_FAMILY_HEADINGS: Record<ShotFamily, string> = {front: "Vers l'avant", rear: 'Vers le fond', flat: 'Rapides'}
 const NO_PLAYABLE_RETURN = "Aucun coup n'est jouable ici : tous les retours sont à éviter."
 
 type Dispatch = (action: QuizAction) => void
@@ -38,10 +41,16 @@ export function renderControls(container: HTMLElement, state: QuizState, dispatc
 
 function questionSection(state: QuizState, dispatch: Dispatch): HTMLElement[] {
   const shotButtons = element('div', 'shots')
-  shotButtons.append(...RETURN_SHOTS.map((shot) => {
-    const button = element('button', shot === state.shot ? 'button shot selected' : 'button shot', SHOTS[shot].label)
-    button.addEventListener('click', () => dispatch({type: 'set-shot', shot}))
-    return button
+  shotButtons.append(...(Object.keys(SHOT_FAMILIES) as ShotFamily[]).map((family) => {
+    const group = element('div', 'shot-group')
+    const buttons = element('div', 'shot-buttons')
+    buttons.append(...SHOT_FAMILIES[family].map((shot) => {
+      const button = element('button', shot === state.shot ? 'button shot selected' : 'button shot', SHOTS[shot].label)
+      button.addEventListener('click', () => dispatch({type: 'set-shot', shot}))
+      return button
+    }))
+    group.append(element('div', 'label', SHOT_FAMILY_HEADINGS[family]), buttons)
+    return group
   }))
 
   const validateButton = element('button', 'button validate', 'Valider')

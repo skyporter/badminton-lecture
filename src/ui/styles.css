@@ -14,7 +14,6 @@ body {
 
 .layout {
   --chrome-height: 40px;
-  --legend-height: 230px;
   display: grid;
   grid-template-columns: auto minmax(280px, 1fr);
   grid-template-areas:
@@ -28,29 +27,48 @@ body {
   padding: 16px;
 }
 
-.layout.legend-hidden {
-  --legend-height: 42px;
-}
-
 .court-column {
   grid-area: court;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
 }
 
 .court-frame {
   position: relative;
-  width: max(240px, calc((100dvh - var(--chrome-height) - var(--legend-height)) / 2));
+  width: max(240px, calc((100dvh - var(--chrome-height)) / 2));
   background: #2f7d4f;
   border-radius: 6px;
 }
 
+.legend-overlay {
+  position: absolute;
+  left: 8px;
+  bottom: 8px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  max-width: calc(100% - 16px);
+  max-height: 70%;
+}
+
 .legend {
+  box-sizing: border-box;
   width: 310px;
+  max-width: 100%;
+  min-height: 0;
+  overflow-y: auto;
+  padding: 8px 10px;
+  border-radius: 8px;
+  background: rgba(20, 22, 26, 0.88);
   font-size: 12px;
   line-height: 1.9;
+}
+
+.legend-racket {
+  width: 40px;
+  height: 22px;
 }
 
 .legend-row {
@@ -178,10 +196,18 @@ body {
 }
 
 .shots {
+  margin: 6px 0 12px;
+}
+
+.shot-group {
+  margin-bottom: 6px;
+}
+
+.shot-buttons {
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
-  margin: 6px 0 12px;
+  margin-top: 2px;
 }
 
 .shot {
@@ -211,7 +237,6 @@ body {
 @media (max-width: 767px) {
   .layout {
     --chrome-height: 130px;
-    --legend-height: 0px;
     grid-template-columns: minmax(0, 1fr);
     grid-template-areas:
       "controls"
@@ -225,7 +250,4 @@ body {
     width: min(100%, calc((100dvh - var(--chrome-height)) / 2));
   }
 
-  .legend {
-    width: 100%;
-  }
 }

@@ -104,16 +104,19 @@ export function startApp(root: HTMLElement): void {
   placeOverHalfOfB(heatmap, svg)
   const courtFrame = document.createElement('div')
   courtFrame.className = 'court-frame'
-  courtFrame.append(heatmap, svg)
   const legend = document.createElement('div')
   legend.className = 'legend'
-  const courtColumn = document.createElement('div')
-  courtColumn.className = 'court-column'
+  const legendOverlay = document.createElement('div')
+  legendOverlay.className = 'legend-overlay'
   const legendToggle = document.createElement('button')
   legendToggle.className = 'button legend-toggle'
   legendToggle.textContent = 'Légende'
   legendToggle.addEventListener('click', () => toggleLegend())
-  courtColumn.append(courtFrame, legendToggle, legend)
+  legendOverlay.append(legend, legendToggle)
+  courtFrame.append(heatmap, svg, legendOverlay)
+  const courtColumn = document.createElement('div')
+  courtColumn.className = 'court-column'
+  courtColumn.append(courtFrame)
   const controlsBar = document.createElement('div')
   controlsBar.className = 'controls'
   const panel = document.createElement('div')
@@ -129,7 +132,6 @@ export function startApp(root: HTMLElement): void {
     legend.hidden = !legendVisible
     legendToggle.classList.toggle('selected', legendVisible)
     legendToggle.setAttribute('aria-pressed', String(legendVisible))
-    layout.classList.toggle('legend-hidden', !legendVisible)
   }
 
   function toggleLegend(): void {

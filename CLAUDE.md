@@ -29,4 +29,4 @@ Trajectories (top view, `trajectory.ts`): the dash pattern says the speed (solid
 
 ## Layout
 
-Below 768 px the layout is one column (court full width, panel below). The « Légende » button sits directly under the court; the legend is visible by default on desktop and hidden on mobile, the choice is remembered in `localStorage` (`badminton-lecture:legend-visible`, every access in `try/catch`). Hidden, the court takes the full available height.
+Below 768 px the layout is one column (court full width, panel below). The « Légende » button and the legend box float over the bottom of the court frame (`.legend-overlay`, absolutely positioned, semi-opaque, scrollable); the court frame's size depends only on the viewport, never on legend visibility. Pointer events on the overlay do not reach the court input. The legend is visible by default on desktop and hidden on mobile, the choice is remembered in `localStorage` (`badminton-lecture:legend-visible`, every access in `try/catch`).

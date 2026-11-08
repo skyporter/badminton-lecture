@@ -1,7 +1,7 @@
 import {MAP_BRIGHT_GREEN, MAP_LIGHT_GREEN, MAP_RED} from '../engine/rules'
 import {SHOTS} from '../engine/shots'
 import type {ShotId} from '../engine/shots'
-import {PLAYER_A_COLOR, PLAYER_B_COLOR, SHOT_B_COLOR} from './courtView'
+import {PLAYER_A_COLOR, PLAYER_B_COLOR, SHOT_B_COLOR, racket} from './courtView'
 import {BEST_RETURN_COLOR, BEST_RETURN_DASH_ARRAY, RETURN_COLOR, trajectoryPath, trajectoryStyle} from './trajectory'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
@@ -56,6 +56,14 @@ function shapeSwatch(className: string, color: string): HTMLSpanElement {
   return swatch
 }
 
+function racketSwatch(): SVGSVGElement {
+  const svg = document.createElementNS(SVG_NAMESPACE, 'svg')
+  svg.setAttribute('viewBox', '0.2 -0.95 0.8 1')
+  svg.classList.add('legend-racket')
+  svg.append(racket({x: 0, y: 0}, 'A'))
+  return svg
+}
+
 function row(swatch: Node | string, label: string): HTMLDivElement {
   const created = document.createElement('div')
   created.className = 'legend-row'
@@ -72,7 +80,7 @@ function questionRows(): HTMLElement[] {
   return [
     row(shapeSwatch('disc', PLAYER_A_COLOR), 'A : toi (droitier)'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), "B : l'adversaire (droitier)"),
-    row('🏸', 'raquette = côté coup droit'),
+    row(racketSwatch(), 'raquette = côté coup droit'),
     row(straightLine(SHOT_B_COLOR, trajectoryStyle('clear-attack').dashArray), 'coup de B'),
     row(shapeSwatch('disc', SHOT_B_COLOR), 'point de chute du volant'),
     row(straightLine(RETURN_COLOR, ''), 'ton retour au survol (✕ = point visé)'),
