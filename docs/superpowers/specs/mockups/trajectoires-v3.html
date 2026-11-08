@@ -1,0 +1,59 @@
+<h2>Le code des trajectoires (vue de dessus)</h2>
+<p class="subtitle">Deux règles seulement : <b>le pointillé dit la vitesse</b> (plus c'est espacé, plus c'est lent) et <b>la courbe dit la hauteur</b> (courbe = volant envoyé haut, droit = à plat ou descendant). Même code pour le coup de B (orange) et pour ton retour (jaune).</p>
+
+<div class="mockup">
+  <div class="mockup-header">Les coups</div>
+  <div class="mockup-body">
+    <svg viewBox="0 0 820 330" style="width:100%;max-width:820px;background:#2f7d4f;border-radius:6px">
+      <g font-size="14" fill="#fff">
+        <line x1="20" y1="30" x2="260" y2="30" stroke="#ffd54a" stroke-width="3.5"/>
+        <text x="290" y="35"><tspan font-weight="bold">Smash</tspan> : trait plein, droit (très rapide, descendant)</text>
+
+        <line x1="20" y1="75" x2="260" y2="75" stroke="#ffd54a" stroke-width="3" stroke-dasharray="16 4"/>
+        <text x="290" y="80"><tspan font-weight="bold">Drive, amorti rapide</tspan> : longs tirets serrés, droit (rapide, à plat ou descendant)</text>
+
+        <path d="M20 128 Q 140 100 260 128" stroke="#ffd54a" stroke-width="3" fill="none" stroke-dasharray="16 4"/>
+        <text x="290" y="128"><tspan font-weight="bold">Dégagement d'attaque, lob d'attaque</tspan> : longs tirets serrés, légère courbe</text>
+        <text x="290" y="146" fill="#cfe">(rapide, juste assez haut pour passer au-dessus)</text>
+
+        <line x1="20" y1="185" x2="260" y2="185" stroke="#ffd54a" stroke-width="3" stroke-dasharray="8 8"/>
+        <text x="290" y="190"><tspan font-weight="bold">Amorti lent</tspan> : tirets moyens, droit</text>
+
+        <path d="M20 250 Q 140 195 260 250" stroke="#ffd54a" stroke-width="3" fill="none" stroke-dasharray="3 12"/>
+        <text x="290" y="243"><tspan font-weight="bold">Dégagement haut, lob défensif</tspan> : points espacés, forte courbe</text>
+        <text x="290" y="261" fill="#cfe">(lent, très haut)</text>
+
+        <line x1="20" y1="300" x2="90" y2="300" stroke="#ffd54a" stroke-width="3" stroke-dasharray="3 12"/>
+        <text x="290" y="305"><tspan font-weight="bold">Filet</tspan> : points espacés, très court</text>
+      </g>
+    </svg>
+  </div>
+</div>
+
+<div class="mockup" style="margin-top:16px">
+  <div class="mockup-header">Sur le terrain : l'exemple d'avant</div>
+  <div class="mockup-body" style="display:flex;gap:24px;align-items:flex-start;flex-wrap:wrap">
+    <svg viewBox="-0.6 -0.6 7.3 14.6" style="width:220px;background:#2f7d4f;border-radius:6px">
+      <g stroke="#fff" stroke-width="0.05" fill="none">
+        <rect x="0" y="0" width="6.1" height="13.4"/>
+        <line x1="0.46" y1="0" x2="0.46" y2="13.4"/><line x1="5.64" y1="0" x2="5.64" y2="13.4"/>
+        <line x1="0" y1="4.72" x2="6.1" y2="4.72"/><line x1="0" y1="8.68" x2="6.1" y2="8.68"/>
+        <line x1="0" y1="0.76" x2="6.1" y2="0.76"/><line x1="0" y1="12.64" x2="6.1" y2="12.64"/>
+        <line x1="3.05" y1="0" x2="3.05" y2="4.72"/><line x1="3.05" y1="8.68" x2="3.05" y2="13.4"/>
+      </g>
+      <line x1="-0.4" y1="6.7" x2="6.5" y2="6.7" stroke="#ddd" stroke-width="0.12" stroke-dasharray="0.2 0.1"/>
+      <path d="M2.2 2.0 Q 2.6 7 1.1 12.2" stroke="#ff8a65" stroke-width="0.08" fill="none" stroke-dasharray="0.4 0.1"/>
+      <circle cx="1.1" cy="12.2" r="0.15" fill="#ff8a65"/>
+      <line x1="1.1" y1="12.2" x2="1.0" y2="5.6" stroke="#ffd54a" stroke-width="0.08" stroke-dasharray="0.4 0.1"/>
+      <line x1="0.85" y1="5.45" x2="1.15" y2="5.75" stroke="#ffd54a" stroke-width="0.08"/><line x1="1.15" y1="5.45" x2="0.85" y2="5.75" stroke="#ffd54a" stroke-width="0.08"/>
+      <line x1="1.9" y1="2.0" x2="1.65" y2="2.35" stroke="#222" stroke-width="0.06"/><ellipse cx="1.52" cy="2.62" rx="0.17" ry="0.26" transform="rotate(35 1.52 2.62)" fill="#fffbe6" stroke="#222" stroke-width="0.05"/>
+      <circle cx="2.2" cy="2.0" r="0.35" fill="#e05252"/><text x="2.2" y="2.15" font-size="0.4" text-anchor="middle" fill="#fff" font-weight="bold">B</text>
+      <line x1="3.4" y1="9.9" x2="3.65" y2="9.55" stroke="#222" stroke-width="0.06"/><ellipse cx="3.78" cy="9.28" rx="0.17" ry="0.26" transform="rotate(35 3.78 9.28)" fill="#fffbe6" stroke="#222" stroke-width="0.05"/>
+      <circle cx="3.1" cy="9.9" r="0.35" fill="#3b82f6"/><text x="3.1" y="10.05" font-size="0.4" text-anchor="middle" fill="#fff" font-weight="bold">A</text>
+    </svg>
+    <div style="font-size:14px;max-width:360px">
+      <p><span style="color:#e8774f;font-weight:bold">Orange</span> : dégagement d'attaque de B, longs tirets serrés et légère courbe.</p>
+      <p><span style="color:#c9a100;font-weight:bold">Jaune</span> : ton amorti rapide, longs tirets serrés, droit.</p>
+    </div>
+  </div>
+</div>
