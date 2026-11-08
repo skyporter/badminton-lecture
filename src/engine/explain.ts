@@ -1,8 +1,9 @@
 import type {Analysis, ChoiceResult} from './analysis'
 import {CENTER_X, depthFromNet, forehandIsPositiveX, isInSinglesHalf} from './court'
+import {allowedShots} from './evaluate'
 import type {CriterionScore, PairEvaluation} from './evaluate'
 import type {Situation} from './generator'
-import {EXCELLENT_SCORE, EXPLAIN_CRITERIA_MAXIMUM, EXPLAIN_FOR_MINIMUM_RAW, EXPLAIN_GAP_THRESHOLD, LIKELY_REPLIES, WEAK_SIDE_BACKHAND_VALUE} from './rules'
+import {ALLOWED_BY_STATUS, EXCELLENT_SCORE, EXPLAIN_CRITERIA_MAXIMUM, EXPLAIN_FOR_MINIMUM_RAW, EXPLAIN_GAP_THRESHOLD, LIKELY_REPLIES, WEAK_SIDE_BACKHAND_VALUE} from './rules'
 import type {CriterionId} from './rules'
 import {SHOTS, hitZoneOf} from './shots'
 import type {Arrival, HitZone, ShotId} from './shots'
@@ -38,8 +39,12 @@ const DIRECTION_BULLETS: Record<Direction, string> = {
 }
 
 const OUT_OF_COURT_BULLET = 'Le volant sort du terrain.'
-const SMASH_TOO_LOW_BULLET = 'Pris aussi bas, tu ne peux pas smasher.'
-const NOT_PLAYABLE_BULLET = "Dans ta situation, ce coup n'est pas jouable."
+const STATUS_TOO_WEAK_BULLETS: Record<Status, (shotName: string) => string> = {
+  attaque: (shotName) => `Tu es en attaque : ${shotName} ne sert pas ici.`,
+  neutre: (shotName) => `Tu n'es pas en attaque : ${shotName} demande d'être en avance, bien placé sous le volant.`,
+  defense: (shotName) => `Tu es en défense, en retard sur le volant : tu n'as pas le temps de jouer ${shotName}.`,
+}
+const NO_PLAYABLE_SHOT_BULLET = "Aucun coup n'est vraiment jouable ici."
 const DROP_TOO_DEEP_BULLET = "Un amorti ne va pas jusqu'au fond."
 const TOO_DEEP_BULLET = 'Ce coup ne va pas aussi loin.'
 const TOO_SHORT_BULLET = 'Ce coup va plus loin que le point visé.'
@@ -104,8 +109,10 @@ export function explainBest(situation: Situation, analysis: Analysis): string[] 
 export function explainChoice(situation: Situation, result: ChoiceResult): string[] {
   if (result.choice.feasible) {
     return explainFeasibleChoice(result)
+  } else if (result.choice.infeasibility === 'statut') {
+    return [notPlayableBullet(situation, result.choice.shot), playableShotsBullet(situation)]
   } else {
-    return [infeasibilityBullet(situation, result.choice)]
+    return [infeasibilityBullet(result.choice)]
   }
 }
 
@@ -140,14 +147,32 @@ function forBullet(criterion: CriterionScore): string {
   return onForehandRear ? REAR_FOR_BULLET : FOR_BULLETS[criterion.id]
 }
 
-function infeasibilityBullet(situation: Situation, choice: PairEvaluation): string {
-  switch (choice.infeasibility) {
-    case 'dehors':
-      return OUT_OF_COURT_BULLET
-    case 'statut':
-      return choice.shot === 'smash' && situation.arrival !== 'high' ? SMASH_TOO_LOW_BULLET : NOT_PLAYABLE_BULLET
-    default:
-      return zoneBullet(choice)
+function infeasibilityBullet(choice: PairEvaluation): string {
+  return choice.infeasibility === 'dehors' ? OUT_OF_COURT_BULLET : zoneBullet(choice)
+}
+
+function notPlayableBullet(situation: Situation, shot: ShotId): string {
+  const statuses = Object.keys(ALLOWED_BY_STATUS) as Status[]
+  const arrivalsOfShot = (Object.keys(ARRIVAL_LABELS) as Arrival[])
+    .filter((arrival) => statuses.some((status) => (ALLOWED_BY_STATUS[status][arrival] ?? []).includes(shot)))
+  if (!arrivalsOfShot.includes(situation.arrival)) {
+    const arrivalNames = arrivalsOfShot.map((arrival) => ARRIVAL_LABELS[arrival]).join(' ou ')
+    return `Volant pris ${ARRIVAL_LABELS[situation.arrival]} : ${SHOT_NAMES[shot]} se joue seulement sur un volant pris ${arrivalNames}.`
+  } else if (!(ALLOWED_BY_STATUS[situation.status][situation.arrival] ?? []).includes(shot)) {
+    return STATUS_TOO_WEAK_BULLETS[situation.status](SHOT_NAMES[shot])
+  } else {
+    return `Depuis ${ZONE_LABELS[hitZoneOf(situation.impact)]} de ton terrain, ${SHOT_NAMES[shot]} ne se joue pas.`
+  }
+}
+
+function playableShotsBullet(situation: Situation): string {
+  const names = allowedShots(situation).map((shot) => SHOT_NAMES[shot])
+  if (names.length === 0) {
+    return NO_PLAYABLE_SHOT_BULLET
+  } else if (names.length === 1) {
+    return `Coups jouables ici : ${names[0]}.`
+  } else {
+    return `Coups jouables ici : ${names.slice(0, -1).join(', ')} ou ${names[names.length - 1]}.`
   }
 }
 
