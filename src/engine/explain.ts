@@ -95,7 +95,7 @@ export function describeShotB(situation: Situation): string {
   const shotWithDirection = situation.isServe ? shotName : `${shotName} ${DIRECTION_LABELS[situation.directionB]}`
   const landsOnForehand = (situation.landing.x > CENTER_X) === forehandIsPositiveX('A')
   const side = landsOnForehand ? 'coup droit' : 'revers'
-  return `Situation : B fait ${shotWithDirection}, vers ${ZONE_LABELS[hitZoneOf(situation.landing)]} côté ${side} de A. Volant pris ${ARRIVAL_LABELS[situation.arrival]}, ${CONTACT_LABELS[situation.contact]}.`
+  return `Situation : B fait ${shotWithDirection}, vers ${ZONE_LABELS[hitZoneOf(situation.landing)]} côté ${side} de A. A le prend ${ARRIVAL_LABELS[situation.arrival]}, ${CONTACT_LABELS[situation.contact]}.`
 }
 
 export function describeReturn(evaluation: PairEvaluation): string {
