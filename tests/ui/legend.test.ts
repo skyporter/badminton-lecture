@@ -76,7 +76,7 @@ describe('renderLegend', () => {
     expect(text).toContain('B au moment de sa frappe')
     expect(text).toContain('A avant de se déplacer')
     expect(text).not.toContain('pas\u00a0:')
-    expect(text).toContain('ton retour\u00a0: Filet')
+    expect(text).toContain('ton retour\u00a0: Filet (● = point visé)')
     expect(text).toContain(`meilleur retour\u00a0: ${SHOTS[best.shot].label} (● = point idéal)`)
     expect(text).toContain(`zone 1 · meilleur coup\u00a0: ${SHOTS[bestZone!.shot].label}`)
     if (alternativeZone !== null) expect(text).toContain(`zone 2 · deuxième choix\u00a0: ${SHOTS[alternativeZone.shot].label}`)

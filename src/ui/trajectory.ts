@@ -22,7 +22,6 @@ export const STROKE_PIXELS = {
   bestReturn: 2,
   unreachable: 2,
   unreachableDashArray: '3 4',
-  cross: 2.5,
   ghost: 1.5,
   ghostDashArray: '4 3',
 }

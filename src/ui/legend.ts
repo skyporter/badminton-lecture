@@ -65,7 +65,7 @@ function handednessSwatch(): HTMLElement {
 }
 
 function questionRows(state: QuizState): HTMLElement[] {
-  const studentReturn = state.shot === null ? 'ton retour au survol (✕ = point visé)' : `ton retour\u00a0: ${SHOTS[state.shot].label} (✕ = point visé)`
+  const studentReturn = state.shot === null ? 'ton retour au survol (● = point visé)' : `ton retour\u00a0: ${SHOTS[state.shot].label} (● = point visé)`
   return [
     row(shapeSwatch('disc', PLAYER_A_COLOR), 'A : toi (droitier)'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), "B : l'adversaire (droitier)"),
@@ -83,7 +83,7 @@ function revealRows(result: ChoiceResult): HTMLElement[] {
     row(shapeSwatch('disc ghost', 'transparent'), 'B au moment de sa frappe'),
     row(shapeSwatch('disc ghost', 'transparent'), 'A avant de se déplacer'),
     row(shapeSwatch('disc', PLAYER_B_COLOR), 'B replacé quand tu frappes'),
-    row(straightLine(RETURN_COLOR, STROKE_PIXELS.returnDashArray), `ton retour\u00a0: ${SHOTS[choice.shot].label} (✕ = point visé)`),
+    row(straightLine(RETURN_COLOR, STROKE_PIXELS.returnDashArray), `ton retour\u00a0: ${SHOTS[choice.shot].label} (● = point visé)`),
     ...(choice.infeasibility === 'zone' ? [row(straightLine(UNREACHABLE_COLOR, STROKE_PIXELS.unreachableDashArray, STROKE_PIXELS.unreachable), 'au-delà de la portée de ton coup')] : []),
     ...(best.value === 0 ? [] : [row(straightLine(BEST_RETURN_COLOR, STROKE_PIXELS.returnDashArray, STROKE_PIXELS.bestReturn), `meilleur retour\u00a0: ${SHOTS[best.shot].label} (● = point idéal)`)]),
     ...(bestZone === null ? [] : [row(shapeSwatch('zone', ZONE_BEST_COLOR), `zone 1 · meilleur coup\u00a0: ${SHOTS[bestZone.shot].label}`)]),

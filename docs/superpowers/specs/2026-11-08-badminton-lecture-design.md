@@ -56,17 +56,17 @@ Tout se passe sur le terrain, sans panneau à côté.
 - Un **bandeau** au-dessus du terrain décrit le coup de B en mots : type, direction (ligne ou croisé), zone d'arrivée, hauteur à laquelle A prend le volant (par ex. « volant pris haut, en tour de tête »). Il commence par « Situation : B fait … » (par ex. « Situation : B fait un amorti rapide en ligne, vers le milieu côté revers de A. Volant pris bas, en revers. »). La consigne « Clique sur le terrain de B pour choisir ton retour. » est en bas à droite du terrain, en petit texte clair, sans fond, pendant la question seulement. *(décision de Vincent)* Le bandeau occupe une **bande réservée** au-dessus du terrain : il ne cache jamais la ligne de fond de B ni la zone « dehors » derrière elle, qui restent visibles et cliquables. La bande est ajustée aux deux lignes du texte, et 0,4 m de zone « dehors » reste visible au-dessus de la ligne de fond de B. *(décision de Vincent)*
 - Trajectoire du coup de B en **trait continu rouge** (couleur de B) jusqu'au point de chute, un **rond bleu** (couleur de A).
 - A est affiché à sa position de départ. Son retour part du **point d'impact** (là où il rejoint le volant), pas de sa position de départ.
-- **Au survol** du terrain de B (ordinateur), un aperçu en **pointillé bleu** part du point d'impact vers le curseur, terminé par une petite croix bleue.
-- **Un clic sur le demi-terrain de B** place la croix et ouvre une **fenêtre de choix du coup** à côté de la croix. Elle contient trois groupes de boutons, « Vers l'avant », « Vers le fond » et « Rapides », un bouton « ✕ » pour la fermer et le bouton « Valider », inactif tant qu'aucun coup n'est choisi. Échap ou « ✕ » ferme la fenêtre en gardant la croix ; un nouveau clic sur le terrain déplace la croix et rouvre la fenêtre.
-- **Sur tactile**, l'aperçu apparaît au contact, suit le glisser, et le relâchement place la croix et ouvre la fenêtre. La croix reste déplaçable jusqu'à la validation.
+- **Au survol** du terrain de B (ordinateur), un aperçu en **pointillé bleu** part du point d'impact vers le curseur, terminé par un petit point bleu.
+- **Un clic sur le demi-terrain de B** place le point et ouvre une **fenêtre de choix du coup** à côté du point. Elle contient trois groupes de boutons, « Vers l'avant », « Vers le fond » et « Rapides », un bouton « ✕ » pour la fermer et le bouton « Valider », inactif tant qu'aucun coup n'est choisi. Échap ou « ✕ » ferme la fenêtre en gardant le point ; un nouveau clic sur le terrain déplace le point et rouvre la fenêtre.
+- **Sur tactile**, l'aperçu apparaît au contact, suit le glisser, et le relâchement place le point et ouvre la fenêtre. Le point reste déplaçable jusqu'à la validation.
 
 ### 4.3 Étape 2 : la révélation
 La révélation se fait sur le terrain.
 - **Plus de carte de couleurs** *(décision de Vincent)* : deux **ovales** sur le terrain de B, coupés aux limites du demi-terrain de simple. **Zone 1** (vert vif) autour du meilleur retour, **zone 2** (vert clair) autour du deuxième choix, c'est-à-dire le meilleur coup d'une autre famille. Chaque ovale est centré sur le point du retour et couvre les points à moins de 1,5 m où le même coup garde 90 % de sa valeur. Une étiquette « 1 · <coup> » / « 2 · <coup> » nomme le coup. La ligne du tiroir « Alternative » devient « Deuxième choix ».
 - B affiché à **sa position replacée** (rond plein) au moment où A frappe, et à sa position de frappe en **rond pointillé**. A affiché à son **point de frappe**, et à sa position de départ en **rond pointillé**. Entre les deux positions de chaque joueur, de **légères traces de pas** (semelle et talon, alternées, dans le sens de la marche) montrent le déplacement, sans entrée dans la légende. Pas de flèche. *(décision de Vincent)*
-- Retour de l'élève **en pointillé bleu** (couleur de A) avec une petite croix bleue au point visé, avec le même style qu'à l'étape 1. *(décision de Vincent, il était d'abord jaune)*
+- Retour de l'élève **en pointillé bleu** (couleur de A) avec un petit point bleu au point visé, avec le même style qu'à l'étape 1. *(décision de Vincent, il était d'abord jaune)*
 - Meilleur retour en **pointillé blanc**, comme tout retour de A.
-- Si le coup choisi ne peut pas atterrir à la profondeur de la croix, « Ton choix » commence par « Coup impossible jusque-là. » (la ligne repliée du tiroir garde seulement le score et le meilleur coup), le trajet bleu s'arrête au vrai point de chute (sur la même ligne, à la profondeur la plus proche que le coup peut atteindre) et la suite jusqu'à la croix est en pointillé rouge. *(décision de Vincent)*
+- Si le coup choisi ne peut pas atterrir à la profondeur du point, « Ton choix » commence par « Coup impossible jusque-là. » (la ligne repliée du tiroir garde seulement le score et le meilleur coup), le trajet bleu s'arrête au vrai point de chute (sur la même ligne, à la profondeur la plus proche que le coup peut atteindre) et la suite jusqu'au point est en pointillé rouge. *(décision de Vincent)*
 - Un **tiroir repliable** en bas du terrain, **déplié dès la validation** (décision de Vincent, il était d'abord replié) : une ligne « Score : NN / 100 — Meilleur : <coup> » avec un chevron. Déplié, il donne le détail : ton choix, score sur 100, meilleur retour (coup + zone), « Pourquoi » en **liste à puces** (une raison par ligne : position/statut, ce que fait B, la zone, le coup, la direction), et une ligne « Alternative : <coup et zone> » sans référence à une couleur.
 - Un changement de niveau après la révélation recalcule la révélation pour la même situation et garde l'état du tiroir.
 
@@ -87,7 +87,7 @@ La révélation se fait sur le terrain.
 ### 4.6 Mobile et traits
 - Même écran que sur ordinateur : le terrain en pleine largeur, la barre du haut au-dessus, le bandeau, la fenêtre de choix et le tiroir par-dessus le terrain.
 - Légende masquée par défaut sur mobile, état mémorisé (par appareil).
-- Les **épaisseurs de trait et les longueurs de pointillé sont constantes en pixels**, quelle que soit la taille de la fenêtre ; seules les formes (ronds, point de chute, croix) suivent la taille du terrain.
+- Les **épaisseurs de trait et les longueurs de pointillé sont constantes en pixels**, quelle que soit la taille de la fenêtre ; seules les formes (ronds, point de chute, points visés) suivent la taille du terrain.
 - Chaque situation est **partageable** : l'adresse contient `?seed=&level=`, et la même adresse rechargée affiche la même situation. « Nouvelle situation » ajoute une entrée à l'historique du navigateur : précédent et suivant font revenir aux situations déjà vues, telles qu'elles étaient (avec la révélation si la réponse avait été validée). Le changement de niveau remplace l'entrée courante. *(décision de Vincent)*
 - Une fois la réponse validée, l'adresse contient aussi le choix (`&shot=…&x=…&y=…`, le point visé arrondi au centimètre) : recharger ou partager le lien réaffiche la révélation avec le même score. La validation ajoute une entrée à l'historique : « précédent » réaffiche la même situation sans réponse. *(décision de Vincent)*
 
@@ -178,7 +178,7 @@ Plus tard, une IA pourra reformuler la justification calculée par le moteur ou 
 - Une pastille fixe de latéralité, sans posture de frappe.
 - Le coup de B à la couleur de B, et les retours de A à la couleur de A.
 - Le retour qui part du point d'impact.
-- Le comportement tactile : glisser, relâcher, croix déplaçable.
+- Le comportement tactile : glisser, relâcher, point déplaçable.
 - La légende masquée par défaut sur mobile, état mémorisé.
 - L'abandon de la vue de côté, remplacée par la courbe des tracés.
 - La page web statique (Vincent laisse le choix de la techno libre).
@@ -187,7 +187,7 @@ Plus tard, une IA pourra reformuler la justification calculée par le moteur ou 
 - Le calibrage des poids et la série de situations types (§5.2 quater).
 - Tout sur le terrain, sans panneau latéral : barre du haut, bandeau, fenêtre de choix du coup et tiroir de révélation. *(décision de Vincent)*
 - Le bandeau dans une bande réservée au-dessus du terrain, pour que la ligne de fond de B et la zone « dehors » restent visibles. *(décision de Vincent)*
-- Le clic sur le demi-terrain de B place la croix et ouvre la fenêtre de choix du coup, en trois groupes « Vers l'avant », « Vers le fond », « Rapides ». *(décision de Vincent)*
+- Le clic sur le demi-terrain de B place le point et ouvre la fenêtre de choix du coup, en trois groupes « Vers l'avant », « Vers le fond », « Rapides ». *(décision de Vincent)*
 - Le tiroir de révélation, déplié dès la validation. *(décision de Vincent)*
 - La légende en surimpression avec un petit bouton « Légende » en bas à gauche, au-dessus du tiroir, sans que le terrain change de taille. *(décision de Vincent)*
 - Des épaisseurs de trait et des pointillés constants en pixels. *(décision de Vincent)*

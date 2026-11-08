@@ -36,12 +36,11 @@ export type QuizAction =
   | {type: 'close-popover'}
   | {type: 'toggle-drawer'}
 
-const CROSS_HALF_SIZE = 0.15
 const PREVIEW_OPACITY = 0.7
 const HALF_OF_B_CLIP_ID = 'half-of-b'
 const ZONE_TAG_NET_GAP = 0.35
 const ZONE_TAG_OFFSET = 0.45
-const BEST_POINT_RADIUS = 0.12
+const POINT_MARKER_RADIUS = 0.12
 const DEFAULT_LEVEL: Level = 'intermediaire'
 const MOBILE_MEDIA_QUERY = '(max-width: 767px)'
 
@@ -83,12 +82,8 @@ function layer(): SVGGElement {
   return document.createElementNS(SVG_NAMESPACE, 'g')
 }
 
-function cross(point: Point, color: string): SVGElement[] {
-  const style = {stroke: color, ...constantStroke(STROKE_PIXELS.cross)}
-  return [
-    svgElement('line', {x1: point.x - CROSS_HALF_SIZE, y1: point.y - CROSS_HALF_SIZE, x2: point.x + CROSS_HALF_SIZE, y2: point.y + CROSS_HALF_SIZE, ...style}),
-    svgElement('line', {x1: point.x + CROSS_HALF_SIZE, y1: point.y - CROSS_HALF_SIZE, x2: point.x - CROSS_HALF_SIZE, y2: point.y + CROSS_HALF_SIZE, ...style}),
-  ]
+function pointMarker(point: Point, color: string, className: string): SVGElement {
+  return svgElement('circle', {class: className, cx: point.x, cy: point.y, r: POINT_MARKER_RADIUS, fill: color})
 }
 
 function studentTrajectory(from: Point, target: Point, shot: ShotId | null): SVGElement {
@@ -97,7 +92,7 @@ function studentTrajectory(from: Point, target: Point, shot: ShotId | null): SVG
 }
 
 function studentReturn(from: Point, target: Point, shot: ShotId | null): SVGElement[] {
-  return [studentTrajectory(from, target, shot), ...cross(target, RETURN_COLOR)]
+  return [studentTrajectory(from, target, shot), pointMarker(target, RETURN_COLOR, 'target-point')]
 }
 
 function revealedStudentReturn(from: Point, choice: PairEvaluation): SVGElement[] {
@@ -109,7 +104,7 @@ function revealedStudentReturn(from: Point, choice: PairEvaluation): SVGElement[
       fill: 'none',
       ...constantStroke(STROKE_PIXELS.unreachable, STROKE_PIXELS.unreachableDashArray),
     })
-    return [studentTrajectory(from, landing, choice.shot), unreachable, ...cross(choice.point, RETURN_COLOR)]
+    return [studentTrajectory(from, landing, choice.shot), unreachable, pointMarker(choice.point, RETURN_COLOR, 'target-point')]
   } else {
     return studentReturn(from, choice.point, choice.shot)
   }
@@ -122,7 +117,7 @@ function bestReturn(from: Point, best: PairEvaluation): SVGElement[] {
     fill: 'none',
     ...constantStroke(STROKE_PIXELS.bestReturn, STROKE_PIXELS.returnDashArray),
   })
-  return [trajectory, svgElement('circle', {class: 'best-point', cx: best.point.x, cy: best.point.y, r: BEST_POINT_RADIUS, fill: BEST_RETURN_COLOR})]
+  return [trajectory, pointMarker(best.point, BEST_RETURN_COLOR, 'best-point')]
 }
 
 type CourtTag = {point: Point; text: string; kind: 'shot-b' | 'return' | 'zone-1' | 'zone-2' | 'handedness-a' | 'handedness-b'}

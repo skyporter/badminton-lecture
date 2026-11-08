@@ -489,3 +489,15 @@ describe('player moves', () => {
     expect(footstepsBetween(root, situation.playerBHit, situation.playerBRecovered).length).toBeGreaterThanOrEqual(Math.max(0, Math.floor(moved / 0.42) - 2))
   })
 })
+
+describe('student target point', () => {
+  it('marks the chosen point with a blue dot instead of a cross, before and after validation', () => {
+    const root = answered(startedApp())
+    const dotBefore = root.querySelector(`svg.court circle.target-point[fill="${RETURN_COLOR}"]`)!
+    expect([Number(dotBefore.getAttribute('cx')), Number(dotBefore.getAttribute('cy'))]).toEqual([3, 3])
+    expect(root.querySelectorAll(`svg.court line[stroke="${RETURN_COLOR}"]`)).toHaveLength(0)
+    popover(root).querySelector<HTMLButtonElement>('.validate')!.click()
+    expect(root.querySelector(`svg.court circle.target-point[fill="${RETURN_COLOR}"]`)).not.toBeNull()
+    expect(root.querySelectorAll(`svg.court line[stroke="${RETURN_COLOR}"]`)).toHaveLength(0)
+  })
+})
