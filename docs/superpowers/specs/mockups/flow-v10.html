@@ -1,0 +1,84 @@
+<h2>Le déroulé d'une situation (v10)</h2>
+<p class="subtitle">Vue de dessus, depuis le joueur A (en bas, il reçoit). B est en haut et vient de frapper. Les deux joueurs sont droitiers : la raquette est dans leur main droite, donc à droite de l'écran pour A (il regarde vers le haut) et à gauche pour B (il regarde vers le bas).</p>
+
+<div class="split">
+  <div class="mockup">
+    <div class="mockup-header">Étape 1 : la question</div>
+    <div class="mockup-body" style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+      <div><svg viewBox="-0.6 -0.6 7.3 14.6" style="width:220px;background:#2f7d4f;border-radius:6px">
+        <g stroke="#fff" stroke-width="0.05" fill="none">
+          <rect x="0" y="0" width="6.1" height="13.4"/>
+          <line x1="0.46" y1="0" x2="0.46" y2="13.4"/><line x1="5.64" y1="0" x2="5.64" y2="13.4"/>
+          <line x1="0" y1="4.72" x2="6.1" y2="4.72"/><line x1="0" y1="8.68" x2="6.1" y2="8.68"/>
+          <line x1="0" y1="0.76" x2="6.1" y2="0.76"/><line x1="0" y1="12.64" x2="6.1" y2="12.64"/>
+          <line x1="3.05" y1="0" x2="3.05" y2="4.72"/><line x1="3.05" y1="8.68" x2="3.05" y2="13.4"/>
+        </g>
+        <line x1="-0.4" y1="6.7" x2="6.5" y2="6.7" stroke="#ddd" stroke-width="0.12" stroke-dasharray="0.2 0.1"/>
+        <path d="M2.2 2.0 Q 1.0 7 1.1 12.2" stroke="#ff8a65" stroke-width="0.08" fill="none" stroke-dasharray="0.25 0.15"/>
+        <circle cx="1.1" cy="12.2" r="0.18" fill="#ff8a65"/>
+        <g stroke="#222" stroke-width="0.06"><line x1="1.9000000000000001" y1="2.0" x2="1.6500000000000001" y2="2.35"/></g><ellipse cx="1.52" cy="2.62" rx="0.17" ry="0.26" transform="rotate(35 1.52 2.62)" fill="#fffbe6" stroke="#222" stroke-width="0.05"/><circle cx="2.2" cy="2.0" r="0.35" fill="#e05252"/><text x="2.2" y="2.15" font-size="0.4" text-anchor="middle" fill="#fff" font-weight="bold">B</text>
+        <g stroke="#222" stroke-width="0.06"><line x1="3.4" y1="9.9" x2="3.6500000000000004" y2="9.55"/></g><ellipse cx="3.7800000000000002" cy="9.280000000000001" rx="0.17" ry="0.26" transform="rotate(35 3.7800000000000002 9.280000000000001)" fill="#fffbe6" stroke="#222" stroke-width="0.05"/><circle cx="3.1" cy="9.9" r="0.35" fill="#3b82f6"/><text x="3.1" y="10.05" font-size="0.4" text-anchor="middle" fill="#fff" font-weight="bold">A</text>
+      <path d="M1.1 12.2 Q 3.0 7.5 4.3 3.0" stroke="#ffd54a" stroke-width="0.08" fill="none"/><line x1="4.15" y1="2.85" x2="4.45" y2="3.15" stroke="#ffd54a" stroke-width="0.08"/><line x1="4.45" y1="2.85" x2="4.15" y2="3.15" stroke="#ffd54a" stroke-width="0.08"/><path d="M4.35 3.05 l0 0.7 l0.18 -0.18 l0.14 0.3 l0.1 -0.05 l-0.14 -0.3 l0.25 0 z" fill="#fff" stroke="#222" stroke-width="0.03"/></svg><div style="font-size:12px;line-height:1.9;margin-top:8px;width:220px"><div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;background:#3b82f6"></span>A : toi (droitier)</div><div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;background:#e05252"></span>B : l'adversaire (droitier)</div><div><span style="margin-right:6px">🏸</span>raquette = côté coup droit</div><div><span style="display:inline-block;width:22px;height:0;vertical-align:middle;margin-right:6px;border-top:3px dashed #ff8a65"></span>coup de B</div><div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;background:#ff8a65"></span>point de chute du volant</div><div><span style="display:inline-block;width:22px;height:0;vertical-align:middle;margin-right:6px;border-top:3px solid #ffd54a"></span>ton retour au survol (✕ = point visé)</div></div></div>
+      <div style="flex:1;min-width:180px;font-size:14px">
+        <div class="label">Niveau</div>
+        <div style="margin:4px 0 12px"><b>Intermédiaire</b> ▾</div>
+        <div class="label">Coup de B</div>
+        <p style="margin:4px 0 12px"><b>Dégagement d'attaque</b> en ligne, vers le fond côté revers de A. Volant pris par A <b>haut</b>, en tour de tête.</p>
+        <div class="label">À toi</div>
+        <p style="margin:4px 0">1. Clique sur le terrain de B, là où tu renvoies.</p>
+        <p style="margin:4px 0">2. Choisis ton coup :</p>
+        <div style="display:flex;flex-wrap:wrap;gap:4px;margin:6px 0 12px">
+          <span class="mock-button" style="padding:4px 8px;font-size:12px">Dégagement</span>
+          <span class="mock-button" style="padding:4px 8px;font-size:12px">Amorti</span>
+          <span class="mock-button" style="padding:4px 8px;font-size:12px">Smash</span>
+          <span class="mock-button" style="padding:4px 8px;font-size:12px">Contre-amorti</span>
+          <span class="mock-button" style="padding:4px 8px;font-size:12px">…</span>
+        </div>
+        <button class="mock-button">Valider</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="mockup">
+    <div class="mockup-header">Étape 2 : la révélation</div>
+    <div class="mockup-body" style="display:flex;gap:16px;align-items:flex-start;flex-wrap:wrap">
+      <div><svg viewBox="-0.6 -0.6 7.3 14.6" style="width:220px;background:#2f7d4f;border-radius:6px">
+        <defs>
+          <radialGradient id="g1"><stop offset="0" stop-color="#00e676" stop-opacity="0.95"/><stop offset="1" stop-color="#00e676" stop-opacity="0"/></radialGradient>
+          <radialGradient id="g2"><stop offset="0" stop-color="#b2ff59" stop-opacity="0.7"/><stop offset="1" stop-color="#b2ff59" stop-opacity="0"/></radialGradient>
+          <radialGradient id="r1"><stop offset="0" stop-color="#ff1744" stop-opacity="0.8"/><stop offset="1" stop-color="#ff1744" stop-opacity="0"/></radialGradient>
+        </defs>
+        <rect x="0.46" y="0" width="5.18" height="6.7" fill="#ff5252" opacity="0.25"/>
+        <ellipse cx="3.05" cy="2.7" rx="2.0" ry="2.0" fill="url(#r1)"/>
+        <ellipse cx="1.1" cy="5.6" rx="1.3" ry="1.1" fill="url(#g1)"/>
+        <ellipse cx="5.0" cy="0.9" rx="1.3" ry="1.0" fill="url(#g2)"/>
+        <g stroke="#fff" stroke-width="0.05" fill="none">
+          <rect x="0" y="0" width="6.1" height="13.4"/>
+          <line x1="0.46" y1="0" x2="0.46" y2="13.4"/><line x1="5.64" y1="0" x2="5.64" y2="13.4"/>
+          <line x1="0" y1="4.72" x2="6.1" y2="4.72"/><line x1="0" y1="8.68" x2="6.1" y2="8.68"/>
+          <line x1="0" y1="0.76" x2="6.1" y2="0.76"/><line x1="0" y1="12.64" x2="6.1" y2="12.64"/>
+          <line x1="3.05" y1="0" x2="3.05" y2="4.72"/><line x1="3.05" y1="8.68" x2="3.05" y2="13.4"/>
+        </g>
+        <line x1="-0.4" y1="6.7" x2="6.5" y2="6.7" stroke="#ddd" stroke-width="0.12" stroke-dasharray="0.2 0.1"/>
+        
+        <circle cx="2.2" cy="2.0" r="0.35" fill="none" stroke="#fff" stroke-width="0.05" stroke-dasharray="0.12 0.08" opacity="0.8"/><text x="2.2" y="2.15" font-size="0.35" text-anchor="middle" fill="#fff" opacity="0.8">B</text><defs><marker id="ar" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4" markerHeight="4" orient="auto"><path d="M0 0 L10 5 L0 10 z" fill="#fff"/></marker></defs><line x1="2.75" y1="2.7" x2="2.5" y2="3.0500000000000003" stroke="#222" stroke-width="0.06"/><ellipse cx="2.3699999999999997" cy="3.3200000000000003" rx="0.17" ry="0.26" transform="rotate(35 2.3699999999999997 3.3200000000000003)" fill="#fffbe6" stroke="#222" stroke-width="0.05"/><circle cx="3.05" cy="2.7" r="0.35" fill="#e05252"/><text x="3.05" y="2.85" font-size="0.4" text-anchor="middle" fill="#fff" font-weight="bold">B</text>
+        
+        <g stroke="#222" stroke-width="0.06"><line x1="1.4000000000000001" y1="12.2" x2="1.6500000000000001" y2="11.85"/></g><ellipse cx="1.7800000000000002" cy="11.58" rx="0.17" ry="0.26" transform="rotate(35 1.7800000000000002 11.58)" fill="#fffbe6" stroke="#222" stroke-width="0.05"/><circle cx="1.1" cy="12.2" r="0.35" fill="#3b82f6"/><text x="1.1" y="12.35" font-size="0.4" text-anchor="middle" fill="#fff" font-weight="bold">A</text>
+        <path d="M1.1 12.2 Q 2.6 8 3.5 4.1" stroke="#ffd54a" stroke-width="0.08" fill="none"/><line x1="3.35" y1="3.95" x2="3.65" y2="4.25" stroke="#ffd54a" stroke-width="0.08"/><line x1="3.65" y1="3.95" x2="3.35" y2="4.25" stroke="#ffd54a" stroke-width="0.08"/>
+        <path d="M1.1 12.2 Q 1.0 8 1.1 5.6" stroke="#fff" stroke-width="0.06" fill="none" stroke-dasharray="0.2 0.12"/>
+      </svg><div style="font-size:12px;line-height:1.9;margin-top:8px;width:220px"><div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;border:1.5px dashed #888"></span>B au moment de sa frappe</div><div><span style="display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:6px;vertical-align:middle;background:#e05252"></span>B replacé quand tu frappes</div><div><span style="display:inline-block;width:22px;height:0;vertical-align:middle;margin-right:6px;border-top:3px solid #ffd54a"></span><b>ton retour</b> (✕ = point visé)</div><div><span style="display:inline-block;width:22px;height:0;vertical-align:middle;margin-right:6px;border-top:3px dashed #ffffff;outline:1px solid #999"></span>meilleur retour</div><div><span style="display:inline-block;width:14px;height:14px;border-radius:3px;margin-right:6px;vertical-align:middle;background:#00e676"></span>meilleur spot</div><div><span style="display:inline-block;width:14px;height:14px;border-radius:3px;margin-right:6px;vertical-align:middle;background:#b2ff59"></span>bonne alternative</div><div><span style="display:inline-block;width:14px;height:14px;border-radius:3px;margin-right:6px;vertical-align:middle;background:#ff5252"></span>à éviter</div></div></div>
+      <div style="flex:1;min-width:180px;font-size:14px">
+        <div class="label">Ton choix</div>
+        <p style="margin:4px 0 10px">✕ Amorti, milieu du terrain</p>
+        <div class="label">Score</div>
+        <p style="margin:4px 0 10px;font-size:22px"><b>45 / 100</b></p>
+        <div class="label">Meilleur retour</div>
+        <p style="margin:4px 0 10px"><b>Amorti rapide en ligne</b>, vers l'avant côté coup droit de B.</p>
+        <div class="label">Pourquoi</div>
+        <ul style="margin:4px 0;padding-left:18px;line-height:1.5"><li><b>Ta position</b> : volant pris haut, tu es en neutre-offensif.</li><li><b>B</b> : il se replace vers le centre-arrière après son dégagement.</li><li><b>La zone</b> : l'avant côté coup droit de B est le point le plus loin de lui.</li><li><b>Le coup</b> : l'amorti rapide l'empêche de jouer un filet serré.</li><li><b>La direction</b> : en ligne, tu couvres bien son contre.</li></ul>
+        <p style="margin:6px 0 0;color:#888">Alternative (vert clair) : dégagement d'attaque dans le revers de B.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
