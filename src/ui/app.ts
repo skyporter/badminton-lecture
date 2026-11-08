@@ -12,6 +12,7 @@ import {listenToCourt} from './input'
 import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
 import {renderBanner, renderControls, renderDrawer, renderShotPopover} from './panel'
 import {readSituationParams, situationSearch} from './situationUrl'
+import type {Choice} from './situationUrl'
 import {BEST_RETURN_COLOR, RETURN_COLOR, STROKE_PIXELS, UNREACHABLE_COLOR, constantStroke, trajectoryPath, trajectoryStyle} from './trajectory'
 
 export type QuizState = {
@@ -26,7 +27,7 @@ export type QuizState = {
 
 export type QuizAction =
   | {type: 'new-situation'; seed: number}
-  | {type: 'restore-situation'; seed: number; level: Level}
+  | {type: 'restore-situation'; seed: number; level: Level; choice: Choice | null}
   | {type: 'set-level'; level: Level}
   | {type: 'set-target'; point: Point}
   | {type: 'set-shot'; shot: ShotId}
@@ -48,7 +49,7 @@ export function nextState(state: QuizState, action: QuizAction): QuizState {
     case 'new-situation':
       return {...state, situation: generateSituation(action.seed), target: null, shot: null, result: null, popoverOpen: false, drawerExpanded: false}
     case 'restore-situation':
-      return {...state, situation: generateSituation(action.seed), level: action.level, target: null, shot: null, result: null, popoverOpen: false, drawerExpanded: false}
+      return restoredState(state, action.seed, action.level, action.choice)
     case 'set-level':
       if (state.result === null) {
         return {...state, level: action.level, target: null, shot: null, popoverOpen: false}
@@ -57,7 +58,7 @@ export function nextState(state: QuizState, action: QuizAction): QuizState {
         return {...state, level: action.level, result: scoreChoice(state.situation, action.level, point, shot)}
       }
     case 'set-target':
-      return state.result === null ? {...state, target: action.point, popoverOpen: true} : state
+      return state.result === null ? {...state, target: roundedToCentimetre(action.point), popoverOpen: true} : state
     case 'set-shot':
       return state.result === null ? {...state, shot: action.shot} : state
     case 'validate':
@@ -127,11 +128,29 @@ function placeNextTo(popover: HTMLElement, point: Point, svg: SVGSVGElement): vo
   popover.classList.toggle('upward', point.y - viewBox.y > viewBox.height / 2)
 }
 
+function restoredState(state: QuizState, seed: number, level: Level, choice: Choice | null): QuizState {
+  const situation = generateSituation(seed)
+  const question = {...state, situation, level, target: null, shot: null, result: null, popoverOpen: false, drawerExpanded: false}
+  if (choice === null) {
+    return question
+  } else {
+    return {...question, target: choice.point, shot: choice.shot, result: scoreChoice(situation, level, choice.point, choice.shot)}
+  }
+}
+
+function roundedToCentimetre(point: Point): Point {
+  return {x: Math.round(point.x * 100) / 100, y: Math.round(point.y * 100) / 100}
+}
+
+function stateSearch(state: QuizState): string {
+  return situationSearch(state.situation.seed, state.level, state.result === null ? null : {point: state.result.choice.point, shot: state.result.choice.shot})
+}
+
 let removeGlobalListeners = (): void => undefined
 
 export function startApp(root: HTMLElement): void {
   const params = readSituationParams(window.location.search)
-  let state: QuizState = {
+  const emptyState: QuizState = {
     situation: generateSituation(params.seed ?? Date.now()),
     level: params.level ?? DEFAULT_LEVEL,
     target: null,
@@ -140,7 +159,8 @@ export function startApp(root: HTMLElement): void {
     popoverOpen: false,
     drawerExpanded: false,
   }
-  history.replaceState(null, '', situationSearch(state.situation.seed, state.level))
+  let state = nextState(emptyState, {type: 'restore-situation', seed: emptyState.situation.seed, level: emptyState.level, choice: params.choice})
+  history.replaceState(null, '', stateSearch(state))
   let preview: Point | null = null
 
   const svg = document.createElementNS(SVG_NAMESPACE, 'svg')
@@ -232,7 +252,7 @@ export function startApp(root: HTMLElement): void {
 
   function dispatch(action: QuizAction): void {
     state = nextState(state, action)
-    const search = situationSearch(state.situation.seed, state.level)
+    const search = stateSearch(state)
     if (action.type === 'new-situation') {
       history.pushState(null, '', search)
     } else {
@@ -278,7 +298,7 @@ export function startApp(root: HTMLElement): void {
   document.addEventListener('keydown', closePopoverOnEscape)
   const showSituationOfAddressBar = (): void => {
     const restored = readSituationParams(window.location.search)
-    dispatch({type: 'restore-situation', seed: restored.seed ?? state.situation.seed, level: restored.level ?? DEFAULT_LEVEL})
+    dispatch({type: 'restore-situation', seed: restored.seed ?? state.situation.seed, level: restored.level ?? DEFAULT_LEVEL, choice: restored.choice})
   }
   window.addEventListener('popstate', showSituationOfAddressBar)
   removeGlobalListeners = () => {

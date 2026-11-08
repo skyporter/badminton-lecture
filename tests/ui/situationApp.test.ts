@@ -7,10 +7,12 @@ import {startApp} from '../../src/ui/app'
 beforeEach(() => {
   vi.stubGlobal('localStorage', {getItem: () => null, setItem: () => undefined})
   vi.stubGlobal('matchMedia', () => ({matches: false}))
+  vi.spyOn(HTMLCanvasElement.prototype, 'getContext').mockReturnValue({fillRect: () => undefined} as unknown as CanvasRenderingContext2D)
 })
 
 afterEach(() => {
   vi.unstubAllGlobals()
+  vi.restoreAllMocks()
   document.body.replaceChildren()
   history.replaceState(null, '', '/')
 })
@@ -51,6 +53,30 @@ describe('shareable situation url', () => {
     select.dispatchEvent(new Event('change'))
     expect(window.location.search).toBe('?seed=123&level=avance')
     expect(history.length).toBe(historyLength)
+  })
+
+  it('writes the validated choice in the address bar and restores the reveal on reload', () => {
+    const root = started('?seed=5&level=debutant')
+    const svg = root.querySelector<SVGSVGElement>('svg.court')!
+    svg.getScreenCTM = () => ({inverse: () => ({a: 1, b: 0, c: 0, d: 1, e: 0, f: 0})}) as unknown as DOMMatrix
+    svg.setPointerCapture = () => undefined
+    for (const type of ['pointerdown', 'pointerup']) svg.dispatchEvent(new MouseEvent(type, {bubbles: true, clientX: 3.123, clientY: 3.456}))
+    root.querySelector<HTMLButtonElement>('.shot-popover .shot')!.click()
+    root.querySelector<HTMLButtonElement>('.shot-popover .validate')!.click()
+    const search = window.location.search
+    expect(search).toMatch(/^\?seed=5&level=debutant&shot=[a-z-]+&x=3\.12&y=3\.46$/)
+    const summary = root.querySelector('.reveal-drawer')!.textContent
+    document.body.replaceChildren()
+    const reloaded = started(search)
+    expect(reloaded.querySelector<HTMLElement>('.reveal-drawer')!.hidden).toBe(false)
+    expect(reloaded.querySelector('.reveal-drawer')!.textContent).toBe(summary)
+    expect(window.location.search).toBe(search)
+  })
+
+  it('drops the choice from the address bar on a new situation', () => {
+    const root = started('?seed=5&level=debutant&shot=lob-defensive&x=3&y=1')
+    root.querySelector<HTMLButtonElement>('.controls .button')!.click()
+    expect(window.location.search).toMatch(/^\?seed=\d+&level=debutant$/)
   })
 
   it('shows the situation of the address bar when navigating back or forward', () => {

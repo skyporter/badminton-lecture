@@ -55,8 +55,18 @@ describe('nextState', () => {
     expect(renewed.level).toBe('avance')
   })
 
+  it('rounds the target to the centimetre so the url restores the same score', () => {
+    expect(nextState(state, {type: 'set-target', point: {x: 1.23456, y: 2.34567}}).target).toEqual({x: 1.23, y: 2.35})
+  })
+
+  it('restores a validated choice as the reveal', () => {
+    const restored = nextState(state, {type: 'restore-situation', seed: 3, level: 'avance', choice: {point, shot: 'clear-high'}})
+    expect(restored).toMatchObject({target: point, shot: 'clear-high', popoverOpen: false, drawerExpanded: false})
+    expect(restored.result).toEqual(scoreChoice(generateSituation(3), 'avance', point, 'clear-high'))
+  })
+
   it('restores the situation and level of a history entry as a fresh question', () => {
-    const restored = nextState(revealedState, {type: 'restore-situation', seed: 3, level: 'debutant'})
+    const restored = nextState(revealedState, {type: 'restore-situation', seed: 3, level: 'debutant', choice: null})
     expect(restored.situation).toEqual(generateSituation(3))
     expect(restored).toMatchObject({level: 'debutant', target: null, shot: null, result: null, popoverOpen: false, drawerExpanded: false})
   })
