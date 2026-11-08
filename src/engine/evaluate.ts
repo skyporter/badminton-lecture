@@ -116,11 +116,24 @@ function weakSideScore(point: Point): number {
   }
 }
 
-function riskScore(situation: Situation, point: Point, shot: ShotId): number {
+export interface RiskSources {
+  line: number
+  cross: number
+  shot: number
+}
+
+export function riskSources(situation: Situation, point: Point, shot: ShotId): RiskSources {
   const distanceToLine = Math.max(0, Math.min(point.x - SINGLES_LEFT, SINGLES_RIGHT - point.x, point.y))
-  const lineRisk = clamp(1 - distanceToLine / LINE_RISK_DISTANCE)
-  const crossRisk = CROSS_RISK[situation.status === 'defense' ? 'defense' : 'neutral'] * crossFraction(situation, point)
-  return clamp(1 - Math.max(lineRisk, SHOT_RISK[shot] + crossRisk))
+  return {
+    line: clamp(1 - distanceToLine / LINE_RISK_DISTANCE),
+    cross: CROSS_RISK[situation.status === 'defense' ? 'defense' : 'neutral'] * crossFraction(situation, point),
+    shot: SHOT_RISK[shot],
+  }
+}
+
+function riskScore(situation: Situation, point: Point, shot: ShotId): number {
+  const sources = riskSources(situation, point, shot)
+  return clamp(1 - Math.max(sources.line, sources.shot + sources.cross))
 }
 
 function crossFraction(situation: Situation, point: Point): number {

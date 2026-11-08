@@ -140,6 +140,8 @@ B peut aussi **servir** *(décision de Vincent)*. Le générateur applique alors
 ### 5.2 ter bis Croisé progressif
 La pénalité du croisé (risque et temps de vol) grandit progressivement avec le changement de côté entre le point d'impact de A et le point visé : nulle jusqu'à 1 m, complète à partir de 3 m. Deux points voisins ne sont plus jugés très différemment selon qu'ils tombent d'un côté ou de l'autre du seuil de 2 m, qui ne sert plus qu'aux mots « en ligne » et « croisé ». *(décision de Vincent)*
 
+Quand le risque fait partie des raisons de « Ton choix », la phrase donne la vraie cause, celle qui augmente le plus le risque par rapport au meilleur retour : trop près d'une ligne, croisé alors que tu es en défense, plus croisé, ou coup qui demande plus de précision. *(décision de Vincent)*
+
 ### 5.2 quater Calibrage
 Vincent ne fournira pas de situations de référence : **Claude calibre** les poids à partir des principes du §5.4. Le livrable inclut une série de situations types (au moins une par famille de coup de B et par statut de A), avec la réponse attendue par niveau et sa justification par les principes. Ces situations servent de tests automatisés et de base de discussion pour la suite.
 

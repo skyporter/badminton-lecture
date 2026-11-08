@@ -1,8 +1,8 @@
 import {describe, expect, it} from 'vitest'
 import {analyse, scoreChoice} from '../../src/engine/analysis'
-import {AGAINST_BULLETS, FOR_BULLETS, REAR_FOR_BULLET, SHOT_DESCRIPTIONS, describeReturn, describeShotB, explainBest, explainChoice, predictNextShotB} from '../../src/engine/explain'
+import {AGAINST_BULLETS, FOR_BULLETS, REAR_FOR_BULLET, RISK_BULLETS, SHOT_DESCRIPTIONS, riskAgainstBullet, describeReturn, describeShotB, explainBest, explainChoice, predictNextShotB} from '../../src/engine/explain'
 import {allowedShots, evaluatePair} from '../../src/engine/evaluate'
-import {generateSituation} from '../../src/engine/generator'
+import {buildSituation, generateSituation} from '../../src/engine/generator'
 import {EXPLAIN_FOR_MINIMUM_RAW, SHOT_FAMILIES} from '../../src/engine/rules'
 import type {CriterionId} from '../../src/engine/rules'
 import {createRng, randomBetween} from '../../src/engine/rng'
@@ -131,7 +131,35 @@ describe('AGAINST_BULLETS', () => {
     Object.values(AGAINST_BULLETS).forEach((bullet) => expect(bullet.startsWith('Ce coup')).toBe(false))
     expect(AGAINST_BULLETS.pressure).toBe('Ton coup met moins de pression sur B que le meilleur retour.')
     expect(AGAINST_BULLETS.recoveryTime).toBe('Ton coup te laisse moins de temps pour te replacer que le meilleur retour.')
-    expect(AGAINST_BULLETS.risk).toBe("Plus risqué que le meilleur retour\u00a0: trop près d'une ligne, ou croisé hors équilibre.")
+  })
+})
+
+describe('riskAgainstBullet', () => {
+  const rally = buildSituation({playerA: {x: 3.05, y: 10.6}, playerBHit: {x: 3.05, y: 1.5}, shotB: 'clear-high', landing: {x: 3.05, y: 12.7}})
+  const sidelineDefence = buildSituation({playerA: {x: 5.5, y: 7.5}, playerBHit: {x: 3.05, y: 1.5}, shotB: 'clear-high', landing: {x: 0.6, y: 12.7}})
+
+  it('names the line when the student point is too close to a line', () => {
+    const choice = evaluatePair(rally, 'intermediaire', {x: 0.55, y: 1.5}, 'clear-high')
+    const best = evaluatePair(rally, 'intermediaire', {x: 2.5, y: 1.5}, 'clear-high')
+    expect(riskAgainstBullet(rally, choice, best)).toBe("Plus risqué que le meilleur retour\u00a0: trop près d'une ligne.")
+  })
+
+  it('names the cross-court shot in defence', () => {
+    expect(sidelineDefence.status).toBe('defense')
+    const choice = evaluatePair(sidelineDefence, 'intermediaire', {x: sidelineDefence.impact.x + 3, y: 1.5}, 'lob-defensive')
+    const best = evaluatePair(sidelineDefence, 'intermediaire', {x: sidelineDefence.impact.x + 0.5, y: 1.5}, 'lob-defensive')
+    expect(riskAgainstBullet(sidelineDefence, choice, best)).toBe('Plus risqué que le meilleur retour\u00a0: croisé alors que tu es en défense.')
+  })
+
+  it('names the shot itself when it is the riskier part', () => {
+    const choice = evaluatePair(rally, 'intermediaire', {x: 3.05, y: 3}, 'smash')
+    const best = evaluatePair(rally, 'intermediaire', {x: 3.05, y: 1.5}, 'clear-high')
+    expect(riskAgainstBullet(rally, choice, best)).toBe('Plus risqué que le meilleur retour\u00a0: ce coup demande plus de précision.')
+  })
+
+  it('has one bullet per cause, all with a non-breaking space before the colon', () => {
+    expect(Object.values(RISK_BULLETS)).toHaveLength(4)
+    Object.values(RISK_BULLETS).forEach((bullet) => expect(bullet).not.toMatch(PLAIN_SPACE_BEFORE_PUNCTUATION))
   })
 })
 
@@ -235,5 +263,5 @@ describe('French typography', () => {
 })
 
 function isAgainstBulletOf(id: CriterionId, bullet: string): boolean {
-  return AGAINST_BULLETS[id] === bullet
+  return id === 'risk' ? Object.values(RISK_BULLETS).includes(bullet) : AGAINST_BULLETS[id] === bullet
 }

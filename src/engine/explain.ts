@@ -1,6 +1,6 @@
 import type {Analysis, ChoiceResult} from './analysis'
 import {CENTER_X, depthFromNet, forehandIsPositiveX, isInSinglesHalf} from './court'
-import {allowedShots} from './evaluate'
+import {allowedShots, riskSources} from './evaluate'
 import type {CriterionScore, PairEvaluation} from './evaluate'
 import type {Situation} from './generator'
 import {ALLOWED_BY_STATUS, EXCELLENT_SCORE, EXPLAIN_CRITERIA_MAXIMUM, EXPLAIN_FOR_MINIMUM_RAW, EXPLAIN_GAP_THRESHOLD, LIKELY_REPLIES, WEAK_SIDE_BACKHAND_VALUE} from './rules'
@@ -25,10 +25,17 @@ export const FOR_BULLETS: Record<CriterionId, string> = {
 
 export const REAR_FOR_BULLET = 'Tu vises le fond du terrain de B.'
 
+export const RISK_BULLETS = {
+  line: "Plus risqué que le meilleur retour : trop près d'une ligne.",
+  crossInDefence: 'Plus risqué que le meilleur retour : croisé alors que tu es en défense.',
+  cross: 'Plus risqué que le meilleur retour : plus croisé, donc plus long et plus exposé.',
+  shot: 'Plus risqué que le meilleur retour : ce coup demande plus de précision.',
+}
+
 export const AGAINST_BULLETS: Record<CriterionId, string> = {
   reachTime: 'B atteindra ce point à temps : trop près de lui, ou coup trop lent.',
   weakSide: 'Tu ne vises pas le fond côté revers de B, son côté faible.',
-  risk: "Plus risqué que le meilleur retour : trop près d'une ligne, ou croisé hors équilibre.",
+  risk: RISK_BULLETS.shot,
   recoveryTime: 'Ton coup te laisse moins de temps pour te replacer que le meilleur retour.',
   pressure: 'Ton coup met moins de pression sur B que le meilleur retour.',
 }
@@ -125,7 +132,7 @@ export function explainBest(situation: Situation, analysis: Analysis): string[] 
 
 export function explainChoice(situation: Situation, result: ChoiceResult): string[] {
   if (result.choice.feasible) {
-    return explainFeasibleChoice(result)
+    return explainFeasibleChoice(situation, result)
   } else if (result.choice.infeasibility === 'statut') {
     return [NOT_PLAYABLE_BULLET, notPlayableBullet(situation, result.choice.shot), playableShotsBullet(situation)]
   } else if (result.choice.infeasibility === 'zone') {
@@ -135,7 +142,7 @@ export function explainChoice(situation: Situation, result: ChoiceResult): strin
   }
 }
 
-function explainFeasibleChoice(result: ChoiceResult): string[] {
+function explainFeasibleChoice(situation: Situation, result: ChoiceResult): string[] {
   const {choice, analysis} = result
   const gaps = analysis.best.criteria.map((bestCriterion) => ({
     id: bestCriterion.id,
@@ -145,13 +152,28 @@ function explainFeasibleChoice(result: ChoiceResult): string[] {
     .filter(({gap}) => gap > EXPLAIN_GAP_THRESHOLD)
     .sort((first, second) => second.gap - first.gap)
     .slice(0, EXPLAIN_CRITERIA_MAXIMUM)
-    .map(({id}) => AGAINST_BULLETS[id])
+    .map(({id}) => (id === 'risk' ? riskAgainstBullet(situation, choice, analysis.best) : AGAINST_BULLETS[id]))
   if (result.score >= EXCELLENT_SCORE) {
     return [EXCELLENT_BULLET, ...againstBullets]
   } else if (againstBullets.length === 0) {
     return [NEAR_BEST_BULLET]
   } else {
     return againstBullets
+  }
+}
+
+export function riskAgainstBullet(situation: Situation, choice: PairEvaluation, best: PairEvaluation): string {
+  const choiceRisk = riskSources(situation, choice.point, choice.shot)
+  const bestRisk = riskSources(situation, best.point, best.shot)
+  const lineIncrease = choiceRisk.line - bestRisk.line
+  const crossIncrease = choiceRisk.cross - bestRisk.cross
+  const shotIncrease = choiceRisk.shot - bestRisk.shot
+  if (lineIncrease >= crossIncrease && lineIncrease >= shotIncrease) {
+    return RISK_BULLETS.line
+  } else if (crossIncrease >= shotIncrease) {
+    return situation.status === 'defense' ? RISK_BULLETS.crossInDefence : RISK_BULLETS.cross
+  } else {
+    return RISK_BULLETS.shot
   }
 }
 
