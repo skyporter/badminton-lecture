@@ -152,3 +152,16 @@ export const RULE_SOURCES: Record<string, string[]> = {
   NEUTRAL_MARGIN_BY_ARRIVAL: ['epsGrenoble', 'badmintonCoach'],
   RECOVERY_BASE_BY_SHOT: ['badmintonBibleCentralBase', 'dearBadminton'],
 }
+
+export const SERVE_PROBABILITY = 0.15
+export const SERVER_SCORE_MAXIMUM = 20
+export const SERVER_DEPTH_BEHIND_SHORT_LINE: [number, number] = [0.3, 1.0]
+export const SERVER_X_RANGE_BY_SIDE: Record<'right' | 'left', [number, number]> = {right: [2.0, 2.9], left: [3.2, 4.1]}
+export const RECEIVER_DEPTH_RANGE: [number, number] = [2.5, 3.5]
+export const SERVE_LANDING_X_RANGE_BY_SIDE: Record<'right' | 'left', [number, number]> = {right: [3.2, 5.5], left: [0.6, 2.9]}
+export const SERVE_SHOT_IDS: ['serve-short', 'serve-long'] = ['serve-short', 'serve-long']
+export const LINE_DIRECTION_PROBABILITY = 0.6
+export const LANDING_X_RANGE_BY_SIDE: Record<'low' | 'high', [number, number]> = {low: [0.6, 2.4], high: [3.7, 5.5]}
+export const RECEIVER_BASE: Point = {x: 3.05, y: 10.6}
+export const RECEIVER_BASE_SPREAD = 1
+export const HIGH_ARRIVAL_IMPACT_ADVANCE = 0.3
