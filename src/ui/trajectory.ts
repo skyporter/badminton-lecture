@@ -2,6 +2,10 @@ import type {Point} from '../engine/types'
 import {SHOTS} from '../engine/shots'
 import type {Arc, ShotId, Speed} from '../engine/shots'
 
+export const RETURN_COLOR = '#ffd54a'
+export const BEST_RETURN_COLOR = '#ffffff'
+export const BEST_RETURN_DASH_ARRAY = '0.2 0.12'
+
 const DASH_ARRAYS: Record<Speed, string> = {
   'very-fast': '',
   'fast': '0.4 0.1',

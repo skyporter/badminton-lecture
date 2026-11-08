@@ -24,7 +24,7 @@ function bulletList(bullets: string[]): HTMLUListElement {
   return list
 }
 
-function controls(state: QuizState, dispatch: Dispatch): HTMLElement {
+export function renderControls(container: HTMLElement, state: QuizState, dispatch: Dispatch): void {
   const levelSelect = element('select', 'level')
   levelSelect.setAttribute('aria-label', 'Niveau')
   levelSelect.append(...(Object.keys(LEVEL_LABELS) as Level[]).map((level) => new Option(LEVEL_LABELS[level], level, false, level === state.level)))
@@ -33,9 +33,7 @@ function controls(state: QuizState, dispatch: Dispatch): HTMLElement {
   const newSituationButton = element('button', 'button', 'Nouvelle situation')
   newSituationButton.addEventListener('click', () => dispatch({type: 'new-situation', seed: Date.now()}))
 
-  const bar = element('div', 'controls')
-  bar.append(levelSelect, newSituationButton)
-  return bar
+  container.replaceChildren(levelSelect, newSituationButton)
 }
 
 function questionSection(state: QuizState, dispatch: Dispatch): HTMLElement[] {
@@ -94,5 +92,5 @@ function revealSection(situation: Situation, result: ChoiceResult): HTMLElement[
 
 export function renderPanel(container: HTMLElement, state: QuizState, dispatch: Dispatch): void {
   const section = state.result === null ? questionSection(state, dispatch) : revealSection(state.situation, state.result)
-  container.replaceChildren(controls(state, dispatch), ...section)
+  container.replaceChildren(...section)
 }

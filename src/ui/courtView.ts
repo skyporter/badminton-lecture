@@ -15,9 +15,9 @@ import {trajectoryPath, trajectoryStyle} from './trajectory'
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
 const PLAYER_RADIUS = 0.35
-const PLAYER_A_COLOR = '#3b82f6'
-const PLAYER_B_COLOR = '#e05252'
-const SHOT_B_COLOR = '#ff8a65'
+export const PLAYER_A_COLOR = '#3b82f6'
+export const PLAYER_B_COLOR = '#e05252'
+export const SHOT_B_COLOR = '#ff8a65'
 
 function svgElement(name: string, attributes: Record<string, string | number>): SVGElement {
   const element = document.createElementNS(SVG_NAMESPACE, name)

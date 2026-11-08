@@ -8,30 +8,105 @@ body {
 .court {
   display: block;
   width: 100%;
-  max-width: 360px;
-  margin: 0 auto;
   background: #2f7d4f;
   border-radius: 6px;
 }
 
 .layout {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 24px;
-  align-items: flex-start;
-  justify-content: center;
+  --chrome-height: 40px;
+  --legend-height: 230px;
+  display: grid;
+  grid-template-columns: auto minmax(280px, 1fr);
+  grid-template-areas:
+    "court controls"
+    "court panel";
+  grid-template-rows: auto 1fr;
+  gap: 8px 24px;
+  align-items: start;
   max-width: 900px;
   margin: 0 auto;
   padding: 16px;
 }
 
+.layout.legend-hidden {
+  --legend-height: 42px;
+}
+
+.court-column {
+  grid-area: court;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
 .court-frame {
   position: relative;
-  flex: 0 1 360px;
-  width: 100%;
-  max-width: 360px;
+  width: max(240px, calc((100dvh - var(--chrome-height) - var(--legend-height)) / 2));
   background: #2f7d4f;
   border-radius: 6px;
+}
+
+.legend {
+  width: 310px;
+  font-size: 12px;
+  line-height: 1.9;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+}
+
+.legend-holder {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: center;
+  width: 72px;
+  margin-right: 6px;
+}
+
+.legend-line {
+  width: 72px;
+  height: 22px;
+  background: #2f7d4f;
+  border-radius: 3px;
+}
+
+.legend-swatch {
+  display: inline-block;
+}
+
+.legend-swatch.disc {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.legend-swatch.ghost {
+  border: 1.5px dashed #fff;
+  box-sizing: border-box;
+}
+
+.legend-swatch.square {
+  width: 14px;
+  height: 14px;
+  border-radius: 3px;
+}
+
+.legend-code {
+  margin-top: 4px;
+}
+
+.legend-code summary {
+  cursor: pointer;
+  color: #9aa4ad;
+}
+
+.legend-code p {
+  margin: 2px 0;
+  color: #9aa4ad;
 }
 
 .court-frame .court {
@@ -49,7 +124,7 @@ body {
 }
 
 .panel {
-  flex: 1 1 280px;
+  grid-area: panel;
   font-size: 14px;
   line-height: 1.5;
 }
@@ -63,9 +138,15 @@ body {
 }
 
 .controls {
+  grid-area: controls;
   display: flex;
+  flex-wrap: wrap;
   gap: 8px;
-  margin-bottom: 16px;
+}
+
+.legend-toggle.selected {
+  border-color: #ffd54a;
+  color: #ffd54a;
 }
 
 .label {
@@ -125,4 +206,26 @@ body {
 
 .alternative {
   color: #9aa4ad;
+}
+
+@media (max-width: 767px) {
+  .layout {
+    --chrome-height: 130px;
+    --legend-height: 0px;
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-areas:
+      "controls"
+      "court"
+      "panel";
+    gap: 12px;
+    padding: 8px;
+  }
+
+  .court-frame {
+    width: min(100%, calc((100dvh - var(--chrome-height)) / 2));
+  }
+
+  .legend {
+    width: 100%;
+  }
 }

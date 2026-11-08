@@ -8,8 +8,9 @@ import type {Level, Point} from '../engine/types'
 import {renderCourt, renderPlayers, renderShotB} from './courtView'
 import {placeOverHalfOfB, renderHeatmap} from './heatmap'
 import {listenToCourt} from './input'
-import {renderPanel} from './panel'
-import {trajectoryPath, trajectoryStyle} from './trajectory'
+import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
+import {renderControls, renderPanel} from './panel'
+import {BEST_RETURN_COLOR, BEST_RETURN_DASH_ARRAY, RETURN_COLOR, trajectoryPath, trajectoryStyle} from './trajectory'
 
 export type QuizState = {situation: Situation; level: Level; target: Point | null; shot: ShotId | null; result: ChoiceResult | null}
 
@@ -21,12 +22,10 @@ export type QuizAction =
   | {type: 'validate'}
 
 const SVG_NAMESPACE = 'http://www.w3.org/2000/svg'
-const RETURN_COLOR = '#ffd54a'
-const BEST_RETURN_COLOR = '#ffffff'
-const BEST_RETURN_DASH_ARRAY = '0.2 0.12'
 const CROSS_HALF_SIZE = 0.15
 const PREVIEW_OPACITY = 0.7
 const DEFAULT_LEVEL: Level = 'intermediaire'
+const MOBILE_MEDIA_QUERY = '(max-width: 767px)'
 
 export function canValidate(state: QuizState): state is QuizState & {target: Point; shot: ShotId} {
   return state.result === null && state.target !== null && state.shot !== null
@@ -106,12 +105,38 @@ export function startApp(root: HTMLElement): void {
   const courtFrame = document.createElement('div')
   courtFrame.className = 'court-frame'
   courtFrame.append(heatmap, svg)
+  const legend = document.createElement('div')
+  legend.className = 'legend'
+  const courtColumn = document.createElement('div')
+  courtColumn.className = 'court-column'
+  const legendToggle = document.createElement('button')
+  legendToggle.className = 'button legend-toggle'
+  legendToggle.textContent = 'Légende'
+  legendToggle.addEventListener('click', () => toggleLegend())
+  courtColumn.append(courtFrame, legendToggle, legend)
+  const controlsBar = document.createElement('div')
+  controlsBar.className = 'controls'
   const panel = document.createElement('div')
   panel.className = 'panel'
   const layout = document.createElement('div')
   layout.className = 'layout'
-  layout.append(courtFrame, panel)
+  layout.append(controlsBar, courtColumn, panel)
   root.replaceChildren(layout)
+
+  let legendVisible = loadLegendVisible(window.matchMedia(MOBILE_MEDIA_QUERY).matches)
+
+  function renderLegendVisibility(): void {
+    legend.hidden = !legendVisible
+    legendToggle.classList.toggle('selected', legendVisible)
+    legendToggle.setAttribute('aria-pressed', String(legendVisible))
+    layout.classList.toggle('legend-hidden', !legendVisible)
+  }
+
+  function toggleLegend(): void {
+    legendVisible = !legendVisible
+    saveLegendVisible(legendVisible)
+    renderLegendVisibility()
+  }
 
   function renderPreview(): void {
     if (preview === null || state.result !== null) {
@@ -144,6 +169,12 @@ export function startApp(root: HTMLElement): void {
     state = nextState(state, action)
     renderBoard()
     renderPreview()
+    renderChrome()
+  }
+
+  function renderChrome(): void {
+    renderControls(controlsBar, state, dispatch)
+    renderLegend(legend, state.result === null ? 'question' : 'reveal')
     renderPanel(panel, state, dispatch)
   }
 
@@ -154,6 +185,7 @@ export function startApp(root: HTMLElement): void {
     },
     onTarget: (point) => dispatch({type: 'set-target', point}),
   })
+  renderLegendVisibility()
   renderBoard()
-  renderPanel(panel, state, dispatch)
+  renderChrome()
 }
