@@ -4,6 +4,7 @@ import {scoreChoice} from '../../src/engine/analysis'
 import {describeShotB} from '../../src/engine/explain'
 import {generateSituation} from '../../src/engine/generator'
 import {startApp} from '../../src/ui/app'
+import {BANNER_RESERVED_METRES, renderCourt} from '../../src/ui/courtView'
 
 const SEED = 5
 
@@ -66,9 +67,9 @@ describe('on-court layout', () => {
   it('shows the shot banner of B in both phases', () => {
     const root = startedApp()
     const expected = describeShotB(generateSituation(SEED))
-    expect(root.querySelector('.court-frame .shot-banner')!.textContent).toBe(expected)
+    expect(root.querySelector('.court-frame .shot-banner .banner-shot')!.textContent).toBe(expected)
     revealed(root)
-    expect(root.querySelector('.court-frame .shot-banner')!.textContent).toBe(expected)
+    expect(root.querySelector('.court-frame .shot-banner .banner-shot')!.textContent).toBe(expected)
   })
 })
 
@@ -161,5 +162,27 @@ describe('reveal drawer', () => {
     const root = revealed(startedApp())
     const stack = root.querySelector('.court-frame .bottom-stack')!
     expect([...stack.children].map((child) => child.className)).toEqual(['legend-overlay', 'reveal-drawer'])
+  })
+})
+
+describe('banner reservation', () => {
+  it('keeps B back line and at least 0.4 m of out zone below the banner', () => {
+    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg')
+    renderCourt(svg)
+    const viewBox = svg.viewBox.baseVal
+    expect(-viewBox.y).toBeGreaterThanOrEqual(BANNER_RESERVED_METRES + 0.4)
+  })
+
+  it('sizes the banner to the reserved strip', () => {
+    const root = startedApp()
+    const viewBox = root.querySelector<SVGSVGElement>('svg.court')!.viewBox.baseVal
+    expect(parseFloat(root.querySelector<HTMLElement>('.shot-banner')!.style.height)).toBeCloseTo((100 * BANNER_RESERVED_METRES) / viewBox.height, 4)
+  })
+
+  it('adds the instruction line only in the question phase', () => {
+    const root = startedApp()
+    expect(root.querySelector('.shot-banner .banner-hint')!.textContent).toBe('Clique sur le terrain de B pour choisir ton retour.')
+    revealed(root)
+    expect(root.querySelector('.shot-banner .banner-hint')).toBeNull()
   })
 })

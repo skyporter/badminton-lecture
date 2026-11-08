@@ -5,7 +5,7 @@ import {generateSituation} from '../engine/generator'
 import type {Situation} from '../engine/generator'
 import type {ShotId} from '../engine/shots'
 import type {Level, Point} from '../engine/types'
-import {renderCourt, renderPlayers, renderShotB} from './courtView'
+import {BANNER_RESERVED_METRES, renderCourt, renderPlayers, renderShotB} from './courtView'
 import {placeOverHalfOfB, renderHeatmap} from './heatmap'
 import {listenToCourt} from './input'
 import {loadLegendVisible, renderLegend, saveLegendVisible} from './legend'
@@ -140,8 +140,11 @@ export function startApp(root: HTMLElement): void {
   placeOverHalfOfB(heatmap, svg)
   const courtFrame = document.createElement('div')
   courtFrame.className = 'court-frame'
+  const viewBox = svg.viewBox.baseVal
+  courtFrame.style.setProperty('--court-aspect', String(viewBox.width / viewBox.height))
   const banner = document.createElement('div')
   banner.className = 'shot-banner'
+  banner.style.height = `${(100 * BANNER_RESERVED_METRES) / viewBox.height}%`
   const popover = document.createElement('div')
   popover.className = 'shot-popover'
   const legend = document.createElement('div')
@@ -218,7 +221,7 @@ export function startApp(root: HTMLElement): void {
   function renderChrome(): void {
     renderControls(controlsBar, state, dispatch)
     renderLegend(legend, state.result === null ? 'question' : 'reveal')
-    renderBanner(banner, state.situation)
+    renderBanner(banner, state)
     renderPopover()
     renderDrawer(drawer, state, dispatch)
   }

@@ -39,8 +39,13 @@ export function renderControls(container: HTMLElement, state: QuizState, dispatc
   container.replaceChildren(levelSelect, newSituationButton)
 }
 
-export function renderBanner(container: HTMLElement, situation: Situation): void {
-  container.textContent = describeShotB(situation)
+export function renderBanner(container: HTMLElement, state: QuizState): void {
+  const shot = element('div', 'banner-shot', describeShotB(state.situation))
+  if (state.result === null) {
+    container.replaceChildren(shot, element('div', 'banner-hint', 'Clique sur le terrain de B pour choisir ton retour.'))
+  } else {
+    container.replaceChildren(shot)
+  }
 }
 
 export function renderShotPopover(container: HTMLElement, state: QuizState, dispatch: Dispatch): void {

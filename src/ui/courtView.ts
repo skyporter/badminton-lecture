@@ -18,6 +18,8 @@ const PLAYER_RADIUS = 0.35
 export const PLAYER_A_COLOR = '#3b82f6'
 export const PLAYER_B_COLOR = '#e05252'
 export const SHOT_B_COLOR = '#ff8a65'
+export const BANNER_RESERVED_METRES = 1.1
+const COURT_MARGIN = 0.6
 
 function svgElement(name: string, attributes: Record<string, string | number>): SVGElement {
   const element = document.createElementNS(SVG_NAMESPACE, name)
@@ -34,7 +36,8 @@ function courtLine(x1: number, y1: number, x2: number, y2: number): SVGElement {
 }
 
 export function renderCourt(svg: SVGSVGElement): void {
-  svg.setAttribute('viewBox', '-0.6 -0.6 7.3 14.6')
+  const top = -(COURT_MARGIN + BANNER_RESERVED_METRES)
+  svg.setAttribute('viewBox', `${-COURT_MARGIN} ${top} ${COURT_WIDTH + 2 * COURT_MARGIN} ${COURT_LENGTH + COURT_MARGIN - top}`)
   svg.classList.add('court')
 
   const lines = svgElement('g', {stroke: '#fff', fill: 'none'})
