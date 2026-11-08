@@ -63,10 +63,10 @@ describe('renderLegend', () => {
     expect(text).not.toContain('point de chute')
   })
 
-  it('has no forehand marker entry', () => {
+  it('explains the handedness badge', () => {
     const container = document.createElement('div')
     renderLegend(container, 'question')
-    expect(container.textContent).not.toContain('coup droit')
+    expect(container.textContent).toContain('D = droitier, G = gaucher (côté coup droit)')
   })
 
   it('has no trajectory code block anymore', () => {

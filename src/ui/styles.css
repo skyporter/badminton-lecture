@@ -387,3 +387,10 @@ body {
   line-height: 24px;
   white-space: nowrap;
 }
+
+.legend-badge {
+  width: 30px;
+  height: 28px;
+  border-radius: 4px;
+  background: #2f7d4f;
+}

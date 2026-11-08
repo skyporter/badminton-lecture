@@ -224,9 +224,20 @@ describe('banner reservation', () => {
 })
 
 describe('players', () => {
-  it('draws no forehand marker around the players', () => {
+  it('draws no forehand arc around the players', () => {
     const root = startedApp()
     expect(root.querySelector('svg.court .forehand-arc')).toBeNull()
+  })
+
+  it('puts a « D » badge on the forehand side of each right-handed player: right of A, left of B', () => {
+    const root = startedApp()
+    const situation = generateSituation(SEED)
+    const [playerBGroup, playerAGroup] = [...root.querySelectorAll('svg.court > g')].pop()!.children
+    const badgeOf = (group: Element) => group.querySelector('.handedness-badge')!
+    expect(badgeOf(playerAGroup).textContent).toBe('D')
+    expect(badgeOf(playerBGroup).textContent).toBe('D')
+    expect(Number(badgeOf(playerAGroup).querySelector('circle')!.getAttribute('cx'))).toBeGreaterThan(situation.playerA.x)
+    expect(Number(badgeOf(playerBGroup).querySelector('circle')!.getAttribute('cx'))).toBeLessThan(situation.playerBHit.x)
   })
 })
 
